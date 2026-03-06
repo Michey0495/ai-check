@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo, useSyncExternalStore } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { UrlCheckForm } from "@/components/url-check-form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { CheckReport } from "@/lib/check-indicators";
-import { GENERATOR_TYPES } from "@/lib/check-indicators";
 
 type HistoryEntry = {
   url: string;
@@ -195,12 +194,20 @@ function PriorityActions({ report }: { report: CheckReport }) {
   );
 }
 
-function CheckHistory({ currentUrl }: { currentUrl: string }) {
-  const [history, setHistory] = useState<HistoryEntry[]>([]);
+const emptyHistory: HistoryEntry[] = [];
 
-  useEffect(() => {
-    setHistory(getHistory().filter((h) => h.url !== currentUrl));
-  }, [currentUrl]);
+function subscribeStorage(cb: () => void) {
+  window.addEventListener("storage", cb);
+  return () => window.removeEventListener("storage", cb);
+}
+
+function CheckHistory({ currentUrl }: { currentUrl: string }) {
+  const allHistory = useSyncExternalStore(subscribeStorage, getHistory, () => emptyHistory);
+
+  const history = useMemo(
+    () => allHistory.filter((h) => h.url !== currentUrl),
+    [allHistory, currentUrl]
+  );
 
   if (history.length === 0) return null;
 
