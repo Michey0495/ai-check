@@ -18,28 +18,38 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "AI Check - AI検索対応度チェッカー & ジェネレーター",
-    template: "%s | AI Check",
+    default: "AI Check - AI検索対応度チェッカー & GEO対策ツール | 無料",
+    template: "%s | AI Check - GEO対策ツール",
   },
   description:
-    "URLを入力するだけでWebサイトのAI検索対応度をスコア化。llms.txt・robots.txt・JSON-LD構造化データを自動生成。GEO対策の第一歩を無料で。",
+    "URLを入力するだけでWebサイトのAI検索（ChatGPT・Perplexity・Gemini）対応度を7指標でスコア化。llms.txt・robots.txt・JSON-LD構造化データを自動生成。89%のサイトが未対応のGEO対策を無料で今すぐ。",
   keywords: [
     "GEO対策",
+    "GEO対策 ツール",
     "AI検索 対策",
+    "AI検索 最適化",
     "llms.txt",
+    "llms.txt 作り方",
+    "llms.txt 書き方",
     "構造化データ",
+    "構造化データ 書き方",
     "JSON-LD",
+    "JSON-LD 生成",
     "AI検索最適化",
     "LLMO",
     "AEO",
     "SEO",
-    "robots.txt",
+    "Generative Engine Optimization",
+    "robots.txt AIクローラー",
     "agent.json",
+    "ChatGPT SEO",
+    "Perplexity 対策",
+    "AI検索 対応",
   ],
   openGraph: {
-    title: "AI Check - AI検索対応度チェッカー & ジェネレーター",
+    title: "AI Check - AI検索対応度チェッカー & GEO対策ツール",
     description:
-      "URLを入力するだけでWebサイトのAI検索対応度をスコア化。llms.txt・robots.txt・JSON-LD構造化データを自動生成。",
+      "URLを入力するだけでAI検索対応度を7指標でスコア化。llms.txt・robots.txt・JSON-LDを自動生成。89%のサイトが未対応のGEO対策を無料で。",
     url: "https://ai-check.ezoai.jp",
     siteName: "AI Check",
     locale: "ja_JP",
@@ -47,13 +57,23 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "AI Check - AI検索対応度チェッカー & ジェネレーター",
+    title: "AI Check - AI検索対応度チェッカー & GEO対策ツール",
     description:
-      "URLを入力するだけでWebサイトのAI検索対応度をスコア化。GEO対策の第一歩を無料で。",
+      "89%のWebサイトがAI検索に未対応。URLを入力するだけでGEOスコアを算出し、llms.txt・JSON-LDを自動生成。無料。",
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: "https://ai-check.ezoai.jp",
   },
   metadataBase: new URL("https://ai-check.ezoai.jp"),
 };

@@ -27,7 +27,7 @@ const jsonLd = {
   name: "AI Check",
   url: "https://ai-check.ezoai.jp",
   description:
-    "URLを入力するだけでWebサイトのAI検索対応度をスコア化。llms.txt・robots.txt・JSON-LD構造化データを自動生成。",
+    "URLを入力するだけでWebサイトのAI検索対応度を7指標でスコア化。llms.txt・robots.txt・JSON-LD構造化データを自動生成するGEO対策ツール。",
   applicationCategory: "SEO Tool",
   operatingSystem: "Web",
   offers: {
@@ -35,6 +35,15 @@ const jsonLd = {
     price: "0",
     priceCurrency: "JPY",
   },
+  featureList: [
+    "AI検索対応度スコア（7指標）",
+    "llms.txt自動生成",
+    "robots.txt AIクローラー設定生成",
+    "JSON-LD構造化データ生成",
+    "agent.json（A2A Agent Card）生成",
+    "改善提案レポート",
+  ],
+  inLanguage: "ja",
 };
 
 const faqJsonLd = {
@@ -63,20 +72,23 @@ export default function Home() {
       />
       {/* Hero */}
       <section className="py-16 text-center">
+        <p className="mb-4 text-sm font-medium tracking-wide text-primary/80">
+          89%のWebサイトがAI検索に未対応
+        </p>
         <h1 className="mb-4 text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl">
           あなたのサイトは
           <br />
           <span className="text-primary">AI検索</span>に対応していますか?
         </h1>
         <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-white/70">
-          URLを入力するだけで、WebサイトのAI検索対応度を7つの指標でスコア化。
-          問題点の特定から修正コードの自動生成まで、GEO対策の全てをワンストップで。
+          ChatGPT、Perplexity、Geminiで検索されたとき、あなたのサイトは表示されていますか?
+          URLを入力するだけで対応度を7指標でスコア化し、修正コードまで自動生成。
         </p>
         <div className="mx-auto max-w-xl">
           <UrlCheckForm size="lg" />
         </div>
         <p className="mt-4 text-sm text-white/40">
-          無料でチェック可能 - アカウント登録不要
+          無料 / 登録不要 / 30秒で結果表示
         </p>
       </section>
 
@@ -196,10 +208,12 @@ export default function Home() {
       {/* Bottom CTA */}
       <section className="py-16 text-center">
         <h2 className="mb-4 text-2xl font-bold text-white">
-          今すぐGEOスコアをチェック
+          GEO対策は今がチャンス
         </h2>
         <p className="mb-8 text-white/50">
-          無料・登録不要。URLを入力するだけで始められます。
+          SEOと違い、まだ競合が少ない今が先行者優位を取れるタイミング。
+          <br />
+          無料・登録不要。30秒でスコアが分かります。
         </p>
         <div className="mx-auto max-w-xl">
           <UrlCheckForm size="lg" />
