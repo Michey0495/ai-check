@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { CheckResult, CheckReport } from "@/lib/check-indicators";
-import { CHECK_INDICATORS, getGrade } from "@/lib/check-indicators";
+import { getGrade } from "@/lib/check-indicators";
 
 export async function POST(request: NextRequest) {
   try {
@@ -8,6 +8,10 @@ export async function POST(request: NextRequest) {
 
     if (!url || typeof url !== "string") {
       return NextResponse.json({ error: "URLを入力してください。" }, { status: 400 });
+    }
+
+    if (url.length > 2048) {
+      return NextResponse.json({ error: "URLが長すぎます。2048文字以内にしてください。" }, { status: 400 });
     }
 
     let parsedUrl: URL;
@@ -256,8 +260,6 @@ export async function POST(request: NextRequest) {
     // 3d. SSR check
     const bodyContent = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
     const hasContent = bodyContent && bodyContent[1].replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "").trim().length > 200;
-    const hasNextData = /__NEXT_DATA__/i.test(html);
-
     if (hasContent) {
       results.push({
         id: "ssr",

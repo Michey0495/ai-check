@@ -24,10 +24,12 @@ export function UrlCheckForm({ size = "lg" }: { size?: "lg" | "sm" }) {
   return (
     <form onSubmit={handleSubmit} className="flex w-full gap-3">
       <Input
-        type="text"
+        type="url"
         placeholder="https://example.com"
         value={url}
         onChange={(e) => setUrl(e.target.value)}
+        aria-label="チェックするURL"
+        maxLength={2048}
         className={`flex-1 border-white/10 bg-white/5 text-white placeholder:text-white/30 ${
           isLg ? "h-14 text-lg" : "h-10"
         }`}

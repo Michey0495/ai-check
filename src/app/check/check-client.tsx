@@ -70,25 +70,35 @@ export function CheckPageClient() {
 
   useEffect(() => {
     if (!url) return;
-    setLoading(true);
-    setError("");
-    setReport(null);
+    let cancelled = false;
 
-    fetch("/api/check", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
+    const runCheck = async () => {
+      try {
+        const res = await fetch("/api/check", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url }),
+        });
+        const data = await res.json();
+        if (cancelled) return;
         if (data.error) {
           setError(data.error);
         } else {
           setReport(data);
         }
-      })
-      .catch(() => setError("チェック中にエラーが発生しました。"))
-      .finally(() => setLoading(false));
+      } catch {
+        if (!cancelled) setError("チェック中にエラーが発生しました。");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    setReport(null);
+    setError("");
+    setLoading(true);
+    runCheck();
+
+    return () => { cancelled = true; };
   }, [url]);
 
   return (
