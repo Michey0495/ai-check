@@ -79,3 +79,12 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - AI公開チャネル (llms.txt, agent.json, robots.txt, MCP)
 - SEOメタデータ、OGP、sitemap.xml
 - トップページ（ヒーロー、7指標、3ステップ、生成ツール、FAQ）
+
+### Night 2 (完了)
+- Google Analytics対応（NEXT_PUBLIC_GA_ID環境変数）
+- フィードバックウィジェット + /api/feedback エンドポイント（GitHub Issues連携）
+- JSON-LD構造化データ（WebApplication + FAQPage）をトップページに追加
+- チェック結果ページUX改善:
+  - SVGスコアサークル（アニメーション付きプログレスリング）
+  - ローディングアニメーション（チェック項目インジケーター表示）
+  - 各指標にスコアバー追加
