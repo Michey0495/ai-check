@@ -1,0 +1,34 @@
+# AI Check
+
+> WebサイトのAI検索対応度をチェックし、改善コードを自動生成する無料ツール。URLを入力するだけで7指標でGEOスコアを算出。llms.txt、robots.txt、JSON-LD構造化データを自動生成。
+
+## 主要ページ
+- [トップ](https://ai-check.ezoai.jp/): GEOスコアチェック入力、7指標の説明、FAQ
+- [チェック](https://ai-check.ezoai.jp/check): URLを入力してAI検索対応度をチェック
+- [llms.txt生成](https://ai-check.ezoai.jp/generate/llms-txt): AI向けサイト説明ファイル生成ツール
+- [robots.txt生成](https://ai-check.ezoai.jp/generate/robots-txt): AIクローラー対応robots.txt生成ツール
+- [JSON-LD生成](https://ai-check.ezoai.jp/generate/json-ld): Schema.org構造化データ生成ツール
+- [agent.json生成](https://ai-check.ezoai.jp/generate/agent-json): A2A Agent Card生成ツール
+- [GEO対策ガイド](https://ai-check.ezoai.jp/guides/geo): AI検索最適化の基本ガイド
+- [llms.txt書き方ガイド](https://ai-check.ezoai.jp/guides/llms-txt): llms.txtのフォーマットと設置方法
+- [About](https://ai-check.ezoai.jp/about): サービス概要
+
+## チェック指標
+1. AIクローラーアクセス (robots.txt)
+2. llms.txt Presence
+3. 構造化データ (JSON-LD)
+4. メタタグ & 鮮度
+5. コンテンツ構造 (セマンティックHTML)
+6. サーバーサイドレンダリング
+7. サイトマップ品質
+
+## API
+- POST /api/check: URLのGEOスコアチェック（パラメータ: url）
+- POST /api/generate: ファイル生成（パラメータ: type, data）
+- POST /api/mcp: MCP Server (JSON-RPC 2.0)
+
+## 技術スタック
+- Next.js 15, TypeScript, Tailwind CSS, shadcn/ui, Vercel
+
+## 連絡先
+- サイト: https://ai-check.ezoai.jp

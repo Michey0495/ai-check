@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Check
 
-## Getting Started
+AI検索対応度チェッカー & ジェネレーター。URLを入力するだけでWebサイトのGEOスコアを算出し、llms.txt・robots.txt・JSON-LD構造化データを自動生成。
 
-First, run the development server:
+## 技術スタック
+
+- Next.js 15 (App Router)
+- TypeScript (strict)
+- Tailwind CSS
+- shadcn/ui
+
+## セットアップ
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+http://localhost:3000 で起動。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ページ構成
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| パス | 説明 |
+|------|------|
+| `/` | トップページ: URL入力、7指標説明、FAQ |
+| `/check` | GEOスコアチェック結果ページ |
+| `/generate/llms-txt` | llms.txt生成ツール |
+| `/generate/robots-txt` | robots.txt生成ツール（AIクローラー対応） |
+| `/generate/json-ld` | JSON-LD構造化データ生成ツール |
+| `/generate/agent-json` | agent.json (A2A Agent Card) 生成ツール |
+| `/guides/geo` | GEO対策ガイド |
+| `/guides/llms-txt` | llms.txt書き方ガイド |
+| `/about` | サービス概要 |
 
-## Learn More
+## チェック指標（7項目）
 
-To learn more about Next.js, take a look at the following resources:
+| 指標 | 重み | 内容 |
+|------|------|------|
+| AIクローラーアクセス | 15 | robots.txtでAIクローラーを許可しているか |
+| llms.txt | 15 | AI向けサイト説明ファイルが存在するか |
+| 構造化データ | 20 | JSON-LDが適切に設置されているか |
+| メタタグ & 鮮度 | 15 | title, description, OGP等が適切か |
+| コンテンツ構造 | 15 | セマンティックHTMLを正しく使用しているか |
+| SSR | 10 | サーバーサイドレンダリングされているか |
+| サイトマップ | 10 | sitemap.xmlが存在し適切か |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## API
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| エンドポイント | メソッド | 説明 |
+|---------------|---------|------|
+| `/api/check` | POST | URLのGEOスコアチェック |
+| `/api/generate` | POST | ファイル生成（llms-txt, robots-txt） |
+| `/api/mcp` | POST | MCP Server (JSON-RPC 2.0) |
 
-## Deploy on Vercel
+## AI公開チャネル
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `/llms.txt` - AI向けサイト説明
+- `/.well-known/agent.json` - A2A Agent Card
+- `/robots.txt` - AIクローラー許可設定
+- `/api/mcp` - MCP Server エンドポイント
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## デプロイ
+
+```bash
+npm run build
+```
+
+Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
+
+## 開発進捗
+
+### Night 1 (完了)
+- プロジェクト初期化 (Next.js 15, Tailwind CSS, shadcn/ui)
+- 7指標チェックエンジン（robots.txt, llms.txt, JSON-LD, メタタグ, コンテンツ構造, SSR, サイトマップ）
+- GEOスコアチェックページ（URL入力 -> 即座にスコア表示 + 改善コード）
+- 4つの生成ツール（llms.txt, robots.txt, JSON-LD, agent.json）
+- GEO対策ガイド、llms.txt書き方ガイド
+- REST API + MCP Server
+- AI公開チャネル (llms.txt, agent.json, robots.txt, MCP)
+- SEOメタデータ、OGP、sitemap.xml
+- トップページ（ヒーロー、7指標、3ステップ、生成ツール、FAQ）

@@ -1,65 +1,171 @@
-import Image from "next/image";
+import Link from "next/link";
+import { UrlCheckForm } from "@/components/url-check-form";
+import { CHECK_INDICATORS, GENERATOR_TYPES } from "@/lib/check-indicators";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="py-16">
+      {/* Hero */}
+      <section className="py-16 text-center">
+        <h1 className="mb-4 text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl">
+          あなたのサイトは
+          <br />
+          <span className="text-primary">AI検索</span>に対応していますか?
+        </h1>
+        <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-white/70">
+          URLを入力するだけで、WebサイトのAI検索対応度を7つの指標でスコア化。
+          問題点の特定から修正コードの自動生成まで、GEO対策の全てをワンストップで。
+        </p>
+        <div className="mx-auto max-w-xl">
+          <UrlCheckForm size="lg" />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <p className="mt-4 text-sm text-white/40">
+          無料でチェック可能 - アカウント登録不要
+        </p>
+      </section>
+
+      {/* 7 Indicators */}
+      <section className="py-16">
+        <h2 className="mb-2 text-center text-2xl font-bold text-white">
+          7つのチェック指標
+        </h2>
+        <p className="mb-10 text-center text-white/50">
+          AI検索エンジン（ChatGPT, Perplexity, Gemini等）に最適化するための7項目
+        </p>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {CHECK_INDICATORS.map((indicator, i) => (
+            <div
+              key={indicator.id}
+              className="rounded-lg border border-white/10 bg-white/5 p-6 transition-all duration-200 hover:border-white/20"
+            >
+              <div className="mb-2 flex items-center gap-3">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-sm font-bold text-primary">
+                  {i + 1}
+                </span>
+                <h3 className="font-semibold text-white">{indicator.name}</h3>
+              </div>
+              <p className="text-sm leading-relaxed text-white/50">
+                {indicator.description}
+              </p>
+            </div>
+          ))}
+          <div className="flex items-center justify-center rounded-lg border border-dashed border-white/10 p-6">
+            <p className="text-center text-sm text-white/30">
+              各指標は重み付けスコアで
+              <br />
+              総合GEOスコアを算出
+            </p>
+          </div>
         </div>
-      </main>
+      </section>
+
+      {/* 3 Steps */}
+      <section className="py-16">
+        <h2 className="mb-10 text-center text-2xl font-bold text-white">
+          3ステップでGEO対策
+        </h2>
+        <div className="grid gap-8 sm:grid-cols-3">
+          {[
+            {
+              step: "1",
+              title: "URLを入力",
+              desc: "チェックしたいWebサイトのURLを入力するだけ。登録不要で即座に分析開始。",
+            },
+            {
+              step: "2",
+              title: "スコアを確認",
+              desc: "7つの指標でAI検索対応度をスコア化。問題点と改善ポイントを具体的に表示。",
+            },
+            {
+              step: "3",
+              title: "コードを生成",
+              desc: "llms.txt, robots.txt, JSON-LD等の修正コードをワンクリックで自動生成・ダウンロード。",
+            },
+          ].map((item) => (
+            <div key={item.step} className="text-center">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 text-xl font-bold text-primary">
+                {item.step}
+              </div>
+              <h3 className="mb-2 text-lg font-semibold text-white">
+                {item.title}
+              </h3>
+              <p className="text-sm leading-relaxed text-white/50">
+                {item.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Generator Tools */}
+      <section className="py-16">
+        <h2 className="mb-2 text-center text-2xl font-bold text-white">
+          無料生成ツール
+        </h2>
+        <p className="mb-10 text-center text-white/50">
+          AI検索対応に必要なファイルをワンクリックで生成
+        </p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {GENERATOR_TYPES.map((gen) => (
+            <Link
+              key={gen.id}
+              href={gen.path}
+              className="cursor-pointer rounded-lg border border-white/10 bg-white/5 p-6 transition-all duration-200 hover:border-primary/30 hover:bg-white/[0.08]"
+            >
+              <h3 className="mb-1 font-semibold text-white">{gen.name}</h3>
+              <p className="text-sm text-white/50">{gen.description}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-16">
+        <h2 className="mb-10 text-center text-2xl font-bold text-white">
+          よくある質問
+        </h2>
+        <div className="mx-auto max-w-2xl space-y-6">
+          {[
+            {
+              q: "GEO対策とは何ですか?",
+              a: "GEO（Generative Engine Optimization）は、ChatGPT、Perplexity、Gemini等のAI検索エンジンに自サイトの情報を正しく参照・引用してもらうための最適化手法です。従来のSEO（検索エンジン最適化）のAI版と言えます。",
+            },
+            {
+              q: "なぜGEO対策が必要なのですか?",
+              a: "2026年現在、AI検索が全検索市場の25%（約$72B）を占めると予測されています。しかし89%のWebサイトがAI検索に未対応です。GEO対策をしないと、AI検索結果に表示されず、大きなトラフィック機会を逃すことになります。",
+            },
+            {
+              q: "チェックは無料ですか?",
+              a: "はい、基本チェックは完全無料でご利用いただけます。アカウント登録も不要です。URLを入力するだけで7つの指標でサイトを分析します。",
+            },
+            {
+              q: "llms.txtとは何ですか?",
+              a: "llms.txtは、AIエージェントやLLM（大規模言語モデル）に対してサイトの概要・構造・API情報を伝えるためのテキストファイルです。robots.txtのAI版と考えると分かりやすいです。",
+            },
+          ].map((faq) => (
+            <div
+              key={faq.q}
+              className="rounded-lg border border-white/10 bg-white/5 p-6"
+            >
+              <h3 className="mb-2 font-semibold text-white">{faq.q}</h3>
+              <p className="text-sm leading-relaxed text-white/50">{faq.a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Bottom CTA */}
+      <section className="py-16 text-center">
+        <h2 className="mb-4 text-2xl font-bold text-white">
+          今すぐGEOスコアをチェック
+        </h2>
+        <p className="mb-8 text-white/50">
+          無料・登録不要。URLを入力するだけで始められます。
+        </p>
+        <div className="mx-auto max-w-xl">
+          <UrlCheckForm size="lg" />
+        </div>
+      </section>
     </div>
   );
 }
