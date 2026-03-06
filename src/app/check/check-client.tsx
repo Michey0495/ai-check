@@ -15,10 +15,33 @@ function ScoreCircle({ score, maxScore, grade }: { score: number; maxScore: numb
     D: "text-orange-400",
     F: "text-red-400",
   };
+  const strokeColors: Record<string, string> = {
+    A: "#4ade80",
+    B: "#60a5fa",
+    C: "#facc15",
+    D: "#fb923c",
+    F: "#f87171",
+  };
+
+  const radius = 56;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (pct / 100) * circumference;
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <div className="relative flex h-32 w-32 items-center justify-center rounded-full border-4 border-white/10">
+      <div className="relative flex h-36 w-36 items-center justify-center">
+        <svg className="absolute -rotate-90" width="144" height="144" viewBox="0 0 144 144">
+          <circle cx="72" cy="72" r={radius} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
+          <circle
+            cx="72" cy="72" r={radius} fill="none"
+            stroke={strokeColors[grade] ?? "#fff"}
+            strokeWidth="8"
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            strokeDashoffset={offset}
+            style={{ transition: "stroke-dashoffset 1s ease-out" }}
+          />
+        </svg>
         <div className="text-center">
           <span className={`text-4xl font-bold ${gradeColors[grade] ?? "text-white"}`}>{grade}</span>
           <div className="text-sm text-white/50">{pct}/100</div>
@@ -80,8 +103,17 @@ export function CheckPageClient() {
 
       {loading && (
         <div className="py-16 text-center">
-          <div className="mb-4 text-lg text-white/70">チェック中...</div>
+          <div className="mx-auto mb-6 h-12 w-12 animate-spin rounded-full border-2 border-white/10 border-t-white/70" />
+          <div className="mb-2 text-lg text-white/70">チェック中...</div>
           <p className="text-sm text-white/40">{url} を分析しています</p>
+          <div className="mx-auto mt-6 max-w-xs space-y-3">
+            {["robots.txt", "llms.txt", "HTML構造", "メタデータ", "サイトマップ"].map((item) => (
+              <div key={item} className="flex items-center gap-3 text-sm text-white/30">
+                <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-white/30" />
+                {item} を確認中
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -126,8 +158,17 @@ export function CheckPageClient() {
                     <code>{r.code}</code>
                   </pre>
                 )}
-                <div className="mt-2 text-xs text-white/30">
-                  スコア: {r.score}/{r.maxScore}
+                <div className="mt-3 flex items-center gap-3">
+                  <div className="h-1.5 flex-1 rounded-full bg-white/10">
+                    <div
+                      className="h-1.5 rounded-full transition-all duration-500"
+                      style={{
+                        width: `${(r.score / r.maxScore) * 100}%`,
+                        backgroundColor: r.status === "pass" ? "#4ade80" : r.status === "warn" ? "#facc15" : "#f87171",
+                      }}
+                    />
+                  </div>
+                  <span className="text-xs text-white/30">{r.score}/{r.maxScore}</span>
                 </div>
               </div>
             ))}

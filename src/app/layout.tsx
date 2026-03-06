@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { GoogleAnalytics } from "@/components/google-analytics";
+import { FeedbackWidget } from "@/components/feedback-widget";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -66,9 +68,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-black text-white antialiased`}
       >
+        <GoogleAnalytics />
         <Header />
         <main className="mx-auto max-w-5xl px-4">{children}</main>
         <Footer />
+        <FeedbackWidget repoName="web-url-a" />
       </body>
     </html>
   );

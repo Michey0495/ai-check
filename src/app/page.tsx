@@ -2,9 +2,65 @@ import Link from "next/link";
 import { UrlCheckForm } from "@/components/url-check-form";
 import { CHECK_INDICATORS, GENERATOR_TYPES } from "@/lib/check-indicators";
 
+const faqData = [
+  {
+    q: "GEO対策とは何ですか?",
+    a: "GEO（Generative Engine Optimization）は、ChatGPT、Perplexity、Gemini等のAI検索エンジンに自サイトの情報を正しく参照・引用してもらうための最適化手法です。従来のSEO（検索エンジン最適化）のAI版と言えます。",
+  },
+  {
+    q: "なぜGEO対策が必要なのですか?",
+    a: "2026年現在、AI検索が全検索市場の25%（約$72B）を占めると予測されています。しかし89%のWebサイトがAI検索に未対応です。GEO対策をしないと、AI検索結果に表示されず、大きなトラフィック機会を逃すことになります。",
+  },
+  {
+    q: "チェックは無料ですか?",
+    a: "はい、基本チェックは完全無料でご利用いただけます。アカウント登録も不要です。URLを入力するだけで7つの指標でサイトを分析します。",
+  },
+  {
+    q: "llms.txtとは何ですか?",
+    a: "llms.txtは、AIエージェントやLLM（大規模言語モデル）に対してサイトの概要・構造・API情報を伝えるためのテキストファイルです。robots.txtのAI版と考えると分かりやすいです。",
+  },
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "AI Check",
+  url: "https://ai-check.ezoai.jp",
+  description:
+    "URLを入力するだけでWebサイトのAI検索対応度をスコア化。llms.txt・robots.txt・JSON-LD構造化データを自動生成。",
+  applicationCategory: "SEO Tool",
+  operatingSystem: "Web",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "JPY",
+  },
+};
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqData.map((faq) => ({
+    "@type": "Question",
+    name: faq.q,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.a,
+    },
+  })),
+};
+
 export default function Home() {
   return (
     <div className="py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       {/* Hero */}
       <section className="py-16 text-center">
         <h1 className="mb-4 text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl">
@@ -125,24 +181,7 @@ export default function Home() {
           よくある質問
         </h2>
         <div className="mx-auto max-w-2xl space-y-6">
-          {[
-            {
-              q: "GEO対策とは何ですか?",
-              a: "GEO（Generative Engine Optimization）は、ChatGPT、Perplexity、Gemini等のAI検索エンジンに自サイトの情報を正しく参照・引用してもらうための最適化手法です。従来のSEO（検索エンジン最適化）のAI版と言えます。",
-            },
-            {
-              q: "なぜGEO対策が必要なのですか?",
-              a: "2026年現在、AI検索が全検索市場の25%（約$72B）を占めると予測されています。しかし89%のWebサイトがAI検索に未対応です。GEO対策をしないと、AI検索結果に表示されず、大きなトラフィック機会を逃すことになります。",
-            },
-            {
-              q: "チェックは無料ですか?",
-              a: "はい、基本チェックは完全無料でご利用いただけます。アカウント登録も不要です。URLを入力するだけで7つの指標でサイトを分析します。",
-            },
-            {
-              q: "llms.txtとは何ですか?",
-              a: "llms.txtは、AIエージェントやLLM（大規模言語モデル）に対してサイトの概要・構造・API情報を伝えるためのテキストファイルです。robots.txtのAI版と考えると分かりやすいです。",
-            },
-          ].map((faq) => (
+          {faqData.map((faq) => (
             <div
               key={faq.q}
               className="rounded-lg border border-white/10 bg-white/5 p-6"
