@@ -45,7 +45,7 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
         <button onClick={() => setOpen(false)} aria-label="閉じる" className="text-white/40 hover:text-white/70 transition-colors cursor-pointer">&times;</button>
       </div>
       {sent ? (
-        <p className="text-emerald-400 text-center py-4 text-sm">送信しました</p>
+        <p className="text-green-400 text-center py-4 text-sm">送信しました</p>
       ) : (
         <>
           <div className="flex gap-2 mb-3">
