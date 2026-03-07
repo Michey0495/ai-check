@@ -326,8 +326,8 @@ export default function GeoVsSeoPage() {
           <div className="grid gap-4 sm:grid-cols-2">
             {[
               { href: "/guides/llms-txt", title: "llms.txt書き方ガイド", desc: "llms.txtの構成と記述のコツ" },
+              { href: "/guides/checklist", title: "GEO対策チェックリスト", desc: "AI検索対応の全20項目を順番にチェック" },
               { href: "/guides/glossary", title: "GEO・AI検索 用語集", desc: "GEO関連の用語をまとめて解説" },
-              { href: "/generate/robots-txt", title: "robots.txt生成ツール", desc: "AIクローラー対応のrobots.txtを生成" },
               { href: "/generate/llms-txt", title: "llms.txt生成ツール", desc: "AI向けサイト説明ファイルを自動生成" },
             ].map((item) => (
               <Link

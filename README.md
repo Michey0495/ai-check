@@ -32,6 +32,7 @@ http://localhost:3000 で起動。
 | `/guides/geo` | GEO対策ガイド |
 | `/guides/geo-vs-seo` | GEO vs SEO比較ガイド |
 | `/guides/llms-txt` | llms.txt書き方ガイド |
+| `/guides/checklist` | GEO対策チェックリスト（インタラクティブ・進捗保存） |
 | `/guides/glossary` | GEO・AI検索用語集 |
 | `/about` | サービス概要 |
 
@@ -129,3 +130,10 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - SEO: 全生成ツールページに「他の生成ツール」セクション追加（クロスリンク）
 - SEO: トップページFAQを4項目→7項目に拡充（長尾キーワード対策）
 - UX: 404ページを改善（主要機能へのリンクカード追加）
+
+### Night 8 (完了)
+- コンテンツ: GEO対策チェックリストページ追加（/guides/checklist）- 7カテゴリ・20項目、進捗localStorage保存
+- 修正: fabricated aggregateRating をトップページJSON-LDから削除
+- パフォーマンス: チェックAPI レスポンスにCache-Controlヘッダー追加（s-maxage=300）
+- SEO: sitemap.xml, llms.txt, フッターにチェックリストページ追加
+- 内部リンク: GEO vs SEOページの関連コンテンツにチェックリストを追加

@@ -63,12 +63,6 @@ const jsonLd = {
   },
   datePublished: "2026-03-06",
   dateModified: "2026-03-08",
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.8",
-    ratingCount: "62",
-    bestRating: "5",
-  },
 };
 
 const faqJsonLd = {

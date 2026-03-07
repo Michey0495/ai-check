@@ -14,6 +14,7 @@
 - [GEO vs SEO](https://ai-check.ezoai.jp/guides/geo-vs-seo): GEO対策とSEO対策の違いと両立方法
 - [llms.txt書き方ガイド](https://ai-check.ezoai.jp/guides/llms-txt): llms.txtのフォーマットと設置方法
 - [用語集](https://ai-check.ezoai.jp/guides/glossary): GEO・AI検索に関する用語解説
+- [GEO対策チェックリスト](https://ai-check.ezoai.jp/guides/checklist): AI検索対応の全20項目チェックリスト（進捗保存機能付き）
 - [About](https://ai-check.ezoai.jp/about): サービス概要
 
 ## チェック指標

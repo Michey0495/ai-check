@@ -417,7 +417,11 @@ export async function POST(request: NextRequest) {
       checkedAt: new Date().toISOString(),
     };
 
-    return NextResponse.json(report);
+    return NextResponse.json(report, {
+      headers: {
+        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+      },
+    });
   } catch {
     return NextResponse.json({ error: "チェック中にエラーが発生しました。" }, { status: 500 });
   }
