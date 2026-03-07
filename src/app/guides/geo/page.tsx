@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "GEO対策ガイド - AI検索最適化の基本",
   description:
     "GEO（Generative Engine Optimization）対策の完全ガイド。ChatGPT, Perplexity, GeminiなどのAI検索エンジンに対応するための7つのステップを解説。",
+  alternates: { canonical: "https://ai-check.ezoai.jp/guides/geo" },
 };
 
 const howToJsonLd = {

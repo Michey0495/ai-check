@@ -5,11 +5,41 @@ export const metadata: Metadata = {
   title: "AI Checkについて",
   description:
     "AI Checkは、WebサイトのAI検索対応度をチェックし、改善コードを自動生成する無料ツールです。",
+  alternates: { canonical: "https://ai-check.ezoai.jp/about" },
+};
+
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "AI Check", item: "https://ai-check.ezoai.jp" },
+    { "@type": "ListItem", position: 2, name: "AI Checkについて", item: "https://ai-check.ezoai.jp/about" },
+  ],
+};
+
+const softwareJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "AI Check",
+  url: "https://ai-check.ezoai.jp",
+  description: "WebサイトのAI検索対応度をチェックし、llms.txt・robots.txt・JSON-LD構造化データを自動生成する無料ツール。",
+  applicationCategory: "WebApplication",
+  operatingSystem: "Web",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "JPY" },
+  inLanguage: "ja",
 };
 
 export default function AboutPage() {
   return (
     <div className="py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareJsonLd) }}
+      />
       <h1 className="mb-4 text-3xl font-bold text-white">AI Checkについて</h1>
       <p className="mb-12 text-lg leading-relaxed text-white/60">
         AI Checkは、WebサイトのAI検索対応度をチェックし、

@@ -4,10 +4,28 @@ import { getGrade } from "@/lib/check-indicators";
 
 export const maxDuration = 30;
 
+function isPrivateHostname(hostname: string): boolean {
+  if (hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1") return true;
+  if (hostname.endsWith(".local") || hostname.endsWith(".internal")) return true;
+  const parts = hostname.split(".");
+  if (parts.length === 4 && parts.every((p) => /^\d+$/.test(p))) {
+    const [a, b] = parts.map(Number);
+    if (a === 10) return true;
+    if (a === 172 && b >= 16 && b <= 31) return true;
+    if (a === 192 && b === 168) return true;
+    if (a === 169 && b === 254) return true;
+    if (a === 0 || a === 127) return true;
+  }
+  return false;
+}
+
 async function safeFetch(url: string, timeoutMs = 10000): Promise<{ ok: boolean; text: string }> {
   try {
+    const parsed = new URL(url);
+    if (isPrivateHostname(parsed.hostname)) return { ok: false, text: "" };
     const res = await fetch(url, {
       signal: AbortSignal.timeout(timeoutMs),
+      redirect: "follow",
       headers: { "User-Agent": "AI-Check-Bot/1.0" },
     });
     if (!res.ok) return { ok: false, text: "" };
@@ -316,6 +334,10 @@ export async function POST(request: NextRequest) {
 
     if (!["http:", "https:"].includes(parsedUrl.protocol)) {
       return NextResponse.json({ error: "http または https のURLを入力してください。" }, { status: 400 });
+    }
+
+    if (isPrivateHostname(parsedUrl.hostname)) {
+      return NextResponse.json({ error: "プライベートネットワークのURLはチェックできません。" }, { status: 400 });
     }
 
     const baseUrl = parsedUrl.origin;

@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "robots.txt 生成ツール（AIクローラー対応）",
   description:
     "AIクローラー（GPTBot, ClaudeBot, PerplexityBot等）対応のrobots.txtを自動生成。AI検索に対応するための第一歩。",
+  alternates: { canonical: "https://ai-check.ezoai.jp/generate/robots-txt" },
 };
 
 const breadcrumbJsonLd = {

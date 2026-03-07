@@ -5,11 +5,25 @@ export const metadata: Metadata = {
   title: "llms.txt書き方ガイド",
   description:
     "llms.txtの書き方を完全解説。AI検索エンジンやLLMにサイト情報を伝えるためのフォーマット、記載項目、設置方法を紹介。",
+  alternates: { canonical: "https://ai-check.ezoai.jp/guides/llms-txt" },
+};
+
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "AI Check", item: "https://ai-check.ezoai.jp" },
+    { "@type": "ListItem", position: 2, name: "llms.txt書き方ガイド", item: "https://ai-check.ezoai.jp/guides/llms-txt" },
+  ],
 };
 
 export default function LlmsTxtGuidePage() {
   return (
     <div className="py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <h1 className="mb-4 text-3xl font-bold text-white">
         llms.txt 書き方ガイド
       </h1>

@@ -37,8 +37,10 @@ const gradeColors: Record<string, string> = {
   F: "text-red-400",
 };
 
+const MAX_URLS = 5;
+
 export function CompareClient() {
-  const [urls, setUrls] = useState(["", "", ""]);
+  const [urls, setUrls] = useState(["", ""]);
   const [results, setResults] = useState<CompareResult[]>([]);
   const [running, setRunning] = useState(false);
 
@@ -48,6 +50,14 @@ export function CompareClient() {
       next[index] = value;
       return next;
     });
+  }, []);
+
+  const addSlot = useCallback(() => {
+    setUrls((prev) => (prev.length < MAX_URLS ? [...prev, ""] : prev));
+  }, []);
+
+  const removeSlot = useCallback((index: number) => {
+    setUrls((prev) => (prev.length > 2 ? prev.filter((_, i) => i !== index) : prev));
   }, []);
 
   const handleCompare = useCallback(async () => {
@@ -113,7 +123,7 @@ export function CompareClient() {
         {urls.map((url, i) => (
           <div key={i} className="flex items-center gap-3">
             <span className="w-16 text-right text-sm text-white/40">
-              サイト{i + 1}{i < 2 ? " *" : ""}
+              サイト{i + 1}
             </span>
             <Input
               type="url"
@@ -123,8 +133,34 @@ export function CompareClient() {
               className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
               disabled={running}
             />
+            {urls.length > 2 && (
+              <button
+                type="button"
+                onClick={() => removeSlot(i)}
+                disabled={running}
+                className="cursor-pointer p-1 text-white/30 transition-all duration-200 hover:text-white/60 disabled:opacity-50"
+                aria-label={`サイト${i + 1}を削除`}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                  <line x1="6" y1="18" x2="18" y2="6" />
+                </svg>
+              </button>
+            )}
           </div>
         ))}
+        {urls.length < MAX_URLS && (
+          <div className="flex justify-center">
+            <button
+              type="button"
+              onClick={addSlot}
+              disabled={running}
+              className="cursor-pointer text-sm text-white/40 transition-all duration-200 hover:text-white/70 disabled:opacity-50"
+            >
+              + サイトを追加
+            </button>
+          </div>
+        )}
         <div className="flex justify-center pt-4">
           <Button
             onClick={handleCompare}
@@ -134,7 +170,7 @@ export function CompareClient() {
             {running ? "比較中..." : "比較する"}
           </Button>
         </div>
-        <p className="text-center text-xs text-white/30">* 必須（最低2サイト）</p>
+        <p className="text-center text-xs text-white/30">最低2サイト / 最大{MAX_URLS}サイトまで</p>
       </div>
 
       {hasResults && (
