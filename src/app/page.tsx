@@ -61,13 +61,6 @@ const jsonLd = {
     name: "ezoai.jp",
     url: "https://ezoai.jp",
   },
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.8",
-    ratingCount: "86",
-    bestRating: "5",
-    worstRating: "1",
-  },
   datePublished: "2026-03-06",
   dateModified: new Date().toISOString().split("T")[0],
 };
@@ -292,20 +285,22 @@ export default function Home() {
         </p>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { role: "Web制作会社", pain: "クライアントから「AI検索でうちのサイトが出ない」と相談されたら?" },
-            { role: "ECサイト運営者", pain: "ChatGPTに商品を聞いたとき、競合だけが表示されていたら?" },
-            { role: "SaaSプロダクト", pain: "Perplexityで「おすすめツール」を聞かれたとき、あなたのサービスは候補に入る?" },
-            { role: "メディア・ブログ", pain: "AI検索が記事を引用してくれない = PV機会の損失" },
+            { role: "Web制作会社", pain: "クライアントから「AI検索でうちのサイトが出ない」と相談されたら?", industry: "ec" },
+            { role: "ECサイト運営者", pain: "ChatGPTに商品を聞いたとき、競合だけが表示されていたら?", industry: "ec" },
+            { role: "SaaSプロダクト", pain: "Perplexityで「おすすめツール」を聞かれたとき、あなたのサービスは候補に入る?", industry: "saas" },
+            { role: "メディア・ブログ", pain: "AI検索が記事を引用してくれない = PV機会の損失", industry: "media" },
           ].map((item) => (
-            <div
+            <Link
               key={item.role}
-              className="rounded-lg border border-white/10 bg-white/5 p-6"
+              href={`/guides/industry#${item.industry}`}
+              className="cursor-pointer rounded-lg border border-white/10 bg-white/5 p-6 transition-all duration-200 hover:border-white/20 hover:bg-white/[0.08]"
             >
               <h3 className="mb-2 font-semibold text-primary">{item.role}</h3>
               <p className="text-sm leading-relaxed text-white/50">
                 {item.pain}
               </p>
-            </div>
+              <p className="mt-3 text-xs text-primary/60">業界別ガイドを見る →</p>
+            </Link>
           ))}
         </div>
       </section>

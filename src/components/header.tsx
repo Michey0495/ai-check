@@ -1,17 +1,39 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+
+const guideLinks = [
+  { href: "/guides/geo", label: "GEO対策ガイド" },
+  { href: "/guides/geo-vs-seo", label: "GEO vs SEO" },
+  { href: "/guides/checklist", label: "チェックリスト" },
+  { href: "/guides/industry", label: "業界別GEO対策" },
+  { href: "/guides/llms-txt", label: "llms.txt書き方" },
+  { href: "/guides/glossary", label: "用語集" },
+];
 
 const navLinks = [
   { href: "/check", label: "チェック" },
   { href: "/generate/llms-txt", label: "生成ツール" },
-  { href: "/guides/geo", label: "GEO対策ガイド" },
   { href: "/about", label: "About" },
 ];
 
 export function Header() {
-  const [open, setOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [guidesOpen, setGuidesOpen] = useState(false);
+  const guidesRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (guidesRef.current && !guidesRef.current.contains(e.target as Node)) {
+        setGuidesOpen(false);
+      }
+    }
+    if (guidesOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [guidesOpen]);
 
   return (
     <header className="border-b border-white/10">
@@ -31,18 +53,55 @@ export function Header() {
               {link.label}
             </Link>
           ))}
+          <div ref={guidesRef} className="relative">
+            <button
+              type="button"
+              className="flex cursor-pointer items-center gap-1 text-white/70 transition-all duration-200 hover:text-white"
+              onClick={() => setGuidesOpen(!guidesOpen)}
+              aria-expanded={guidesOpen}
+              aria-haspopup="true"
+            >
+              ガイド
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 12 12"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                className={`transition-transform duration-200 ${guidesOpen ? "rotate-180" : ""}`}
+                aria-hidden="true"
+              >
+                <path d="M3 4.5L6 7.5L9 4.5" />
+              </svg>
+            </button>
+            {guidesOpen && (
+              <div className="absolute right-0 top-full z-50 mt-2 w-48 rounded-lg border border-white/10 bg-black/95 py-1 shadow-xl backdrop-blur-sm">
+                {guideLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="block cursor-pointer px-4 py-2 text-sm text-white/70 transition-all duration-200 hover:bg-white/5 hover:text-white"
+                    onClick={() => setGuidesOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
         </nav>
 
         {/* Mobile menu button */}
         <button
           type="button"
           className="cursor-pointer p-2 text-white/70 transition-all duration-200 hover:text-white sm:hidden"
-          onClick={() => setOpen(!open)}
-          aria-label={open ? "メニューを閉じる" : "メニューを開く"}
-          aria-expanded={open}
+          onClick={() => setMobileOpen(!mobileOpen)}
+          aria-label={mobileOpen ? "メニューを閉じる" : "メニューを開く"}
+          aria-expanded={mobileOpen}
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-            {open ? (
+            {mobileOpen ? (
               <>
                 <line x1="6" y1="6" x2="18" y2="18" />
                 <line x1="6" y1="18" x2="18" y2="6" />
@@ -59,7 +118,7 @@ export function Header() {
       </div>
 
       {/* Mobile nav */}
-      {open && (
+      {mobileOpen && (
         <nav className="border-t border-white/10 sm:hidden">
           <div className="mx-auto max-w-5xl space-y-1 px-4 py-3">
             {navLinks.map((link) => (
@@ -67,11 +126,24 @@ export function Header() {
                 key={link.href}
                 href={link.href}
                 className="block cursor-pointer rounded-lg px-3 py-2 text-sm text-white/70 transition-all duration-200 hover:bg-white/5 hover:text-white"
-                onClick={() => setOpen(false)}
+                onClick={() => setMobileOpen(false)}
               >
                 {link.label}
               </Link>
             ))}
+            <div className="mt-2 border-t border-white/5 pt-2">
+              <p className="px-3 py-1 text-xs font-medium text-white/30">ガイド</p>
+              {guideLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="block cursor-pointer rounded-lg px-3 py-2 text-sm text-white/70 transition-all duration-200 hover:bg-white/5 hover:text-white"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
           </div>
         </nav>
       )}

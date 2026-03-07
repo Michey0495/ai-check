@@ -386,9 +386,10 @@ export async function POST(request: NextRequest) {
     const baseUrl = parsedUrl.origin;
 
     // Fetch all resources concurrently
-    const [robotsRes, llmsRes, pageRes, sitemapRes, agentRes] = await Promise.all([
+    const [robotsRes, llmsRes, llmsFullRes, pageRes, sitemapRes, agentRes] = await Promise.all([
       safeFetch(`${baseUrl}/robots.txt`),
       safeFetch(`${baseUrl}/llms.txt`),
+      safeFetch(`${baseUrl}/llms-full.txt`),
       safeFetch(url, 15000),
       safeFetch(`${baseUrl}/sitemap.xml`),
       safeFetch(`${baseUrl}/.well-known/agent.json`),
@@ -396,8 +397,15 @@ export async function POST(request: NextRequest) {
 
     const robotsText = robotsRes.ok ? robotsRes.text : (robotsRes.text === "" ? null : "");
     const llmsText = llmsRes.ok ? llmsRes.text : (llmsRes.text === "" ? null : "");
+    const hasLlmsFull = llmsFullRes.ok && llmsFullRes.text.length > 50;
     const html = pageRes.text;
     const sitemapText = sitemapRes.ok ? sitemapRes.text : (sitemapRes.text === "" ? null : "");
+
+    // Enrich llms.txt check with llms-full.txt info
+    const llmsResult = checkLlmsTxt(llmsText, parsedUrl.hostname, baseUrl);
+    if (hasLlmsFull) {
+      llmsResult.details += " llms-full.txt（詳細版）も検出されました。";
+    }
 
     // Enrich structured data check with agent.json info
     const structuredDataResult = checkStructuredData(html, baseUrl);
@@ -415,7 +423,7 @@ export async function POST(request: NextRequest) {
 
     const results: CheckResult[] = [
       checkRobotsTxt(robotsText, baseUrl),
-      checkLlmsTxt(llmsText, parsedUrl.hostname, baseUrl),
+      llmsResult,
       structuredDataResult,
       checkMetaTags(html),
       checkContentStructure(html),
