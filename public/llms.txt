@@ -11,7 +11,9 @@
 - [JSON-LD生成](https://ai-check.ezoai.jp/generate/json-ld): Schema.org構造化データ生成ツール
 - [agent.json生成](https://ai-check.ezoai.jp/generate/agent-json): A2A Agent Card生成ツール
 - [GEO対策ガイド](https://ai-check.ezoai.jp/guides/geo): AI検索最適化の基本ガイド
+- [GEO vs SEO](https://ai-check.ezoai.jp/guides/geo-vs-seo): GEO対策とSEO対策の違いと両立方法
 - [llms.txt書き方ガイド](https://ai-check.ezoai.jp/guides/llms-txt): llms.txtのフォーマットと設置方法
+- [用語集](https://ai-check.ezoai.jp/guides/glossary): GEO・AI検索に関する用語解説
 - [About](https://ai-check.ezoai.jp/about): サービス概要
 
 ## チェック指標

@@ -54,8 +54,18 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/guides/geo-vs-seo" className="transition-all duration-200 hover:text-white/70 cursor-pointer">
+                  GEO vs SEO
+                </Link>
+              </li>
+              <li>
                 <Link href="/guides/llms-txt" className="transition-all duration-200 hover:text-white/70 cursor-pointer">
                   llms.txt書き方ガイド
+                </Link>
+              </li>
+              <li>
+                <Link href="/guides/glossary" className="transition-all duration-200 hover:text-white/70 cursor-pointer">
+                  用語集
                 </Link>
               </li>
               <li>

@@ -3,10 +3,15 @@ import { Suspense } from "react";
 import { CheckPageClient } from "./check-client";
 
 export const metadata: Metadata = {
-  title: "GEOスコアチェック",
+  title: "GEOスコアチェック - AI検索対応度を無料診断",
   description:
-    "URLを入力してWebサイトのAI検索対応度をチェック。7つの指標でGEOスコアを算出し、改善ポイントを提示します。",
+    "URLを入力してWebサイトのAI検索対応度をチェック。robots.txt、llms.txt、JSON-LD、メタタグ等の7指標でGEOスコアを算出。改善コードも自動生成。",
   alternates: { canonical: "https://ai-check.ezoai.jp/check" },
+  openGraph: {
+    title: "GEOスコアチェック - AI検索対応度を無料診断",
+    description: "URLを入力するだけでAI検索対応度を7指標でスコア化。改善コードも自動生成。",
+    url: "https://ai-check.ezoai.jp/check",
+  },
 };
 
 const breadcrumbJsonLd = {

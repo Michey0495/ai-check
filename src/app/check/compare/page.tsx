@@ -3,10 +3,15 @@ import { Suspense } from "react";
 import { CompareClient } from "./compare-client";
 
 export const metadata: Metadata = {
-  title: "GEOスコア比較",
+  title: "GEOスコア比較 - 複数サイトのAI検索対応度を比較",
   description:
-    "複数のURLのAI検索対応度を比較。GEOスコアを横並びで確認し、競合サイトとの差分を把握できます。",
+    "最大5サイトのAI検索対応度を横並びで比較。GEOスコアの差分を可視化し、競合との差を把握。無料・登録不要。",
   alternates: { canonical: "https://ai-check.ezoai.jp/check/compare" },
+  openGraph: {
+    title: "GEOスコア比較 - 複数サイトのAI検索対応度を比較",
+    description: "最大5サイトのGEOスコアを横並びで比較。競合との差を可視化。",
+    url: "https://ai-check.ezoai.jp/check/compare",
+  },
 };
 
 const breadcrumbJsonLd = {

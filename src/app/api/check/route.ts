@@ -4,6 +4,23 @@ import { getGrade } from "@/lib/check-indicators";
 
 export const maxDuration = 30;
 
+// Simple in-memory rate limiter (per IP, 10 requests per minute)
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT = 10;
+const RATE_WINDOW_MS = 60_000;
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return true;
+  }
+  if (entry.count >= RATE_LIMIT) return false;
+  entry.count++;
+  return true;
+}
+
 function isPrivateHostname(hostname: string): boolean {
   if (hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1") return true;
   if (hostname.endsWith(".local") || hostname.endsWith(".internal")) return true;
@@ -315,6 +332,14 @@ function checkSitemap(sitemapText: string | null, baseUrl: string): CheckResult 
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+    if (!checkRateLimit(ip)) {
+      return NextResponse.json(
+        { error: "リクエスト数が上限を超えました。しばらく待ってから再度お試しください。" },
+        { status: 429 }
+      );
+    }
+
     const { url } = await request.json();
 
     if (!url || typeof url !== "string") {
@@ -343,11 +368,12 @@ export async function POST(request: NextRequest) {
     const baseUrl = parsedUrl.origin;
 
     // Fetch all resources concurrently
-    const [robotsRes, llmsRes, pageRes, sitemapRes] = await Promise.all([
+    const [robotsRes, llmsRes, pageRes, sitemapRes, agentRes] = await Promise.all([
       safeFetch(`${baseUrl}/robots.txt`),
       safeFetch(`${baseUrl}/llms.txt`),
       safeFetch(url, 15000),
       safeFetch(`${baseUrl}/sitemap.xml`),
+      safeFetch(`${baseUrl}/.well-known/agent.json`),
     ]);
 
     const robotsText = robotsRes.ok ? robotsRes.text : (robotsRes.text === "" ? null : "");
@@ -355,10 +381,24 @@ export async function POST(request: NextRequest) {
     const html = pageRes.text;
     const sitemapText = sitemapRes.ok ? sitemapRes.text : (sitemapRes.text === "" ? null : "");
 
+    // Enrich structured data check with agent.json info
+    const structuredDataResult = checkStructuredData(html, baseUrl);
+    if (agentRes.ok && agentRes.text.length > 10) {
+      try {
+        JSON.parse(agentRes.text);
+        structuredDataResult.details += " agent.json（A2A Agent Card）も検出されました。";
+        if (structuredDataResult.score < structuredDataResult.maxScore) {
+          structuredDataResult.score = Math.min(structuredDataResult.score + 5, structuredDataResult.maxScore);
+        }
+      } catch {
+        // invalid JSON, ignore
+      }
+    }
+
     const results: CheckResult[] = [
       checkRobotsTxt(robotsText, baseUrl),
       checkLlmsTxt(llmsText, parsedUrl.hostname, baseUrl),
-      checkStructuredData(html, baseUrl),
+      structuredDataResult,
       checkMetaTags(html),
       checkContentStructure(html),
       checkSSR(html),
