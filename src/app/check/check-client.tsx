@@ -523,6 +523,30 @@ export function CheckPageClient() {
               複数サイトを比較する →
             </Link>
           </div>
+
+          <div className="space-y-4">
+            <h2 className="text-center text-lg font-semibold text-white/70">人気サイトで試してみる</h2>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {[
+                { url: "https://openai.com", label: "OpenAI" },
+                { url: "https://stripe.com", label: "Stripe" },
+                { url: "https://github.com", label: "GitHub" },
+                { url: "https://vercel.com", label: "Vercel" },
+                { url: "https://notion.so", label: "Notion" },
+                { url: "https://shopify.com", label: "Shopify" },
+              ].map((site) => (
+                <Link
+                  key={site.url}
+                  href={`/check?url=${encodeURIComponent(site.url)}`}
+                  className="cursor-pointer rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-center transition-all duration-200 hover:border-white/20 hover:bg-white/[0.08]"
+                >
+                  <p className="text-sm font-medium text-white/70">{site.label}</p>
+                  <p className="mt-0.5 text-xs text-white/30">{site.url}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+
           <CheckHistory currentUrl="" />
         </div>
       )}

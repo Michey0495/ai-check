@@ -63,13 +63,6 @@ const jsonLd = {
   },
   datePublished: "2026-03-06",
   dateModified: new Date().toISOString().split("T")[0],
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.8",
-    ratingCount: "78",
-    bestRating: "5",
-    worstRating: "1",
-  },
 };
 
 const faqJsonLd = {
@@ -382,36 +375,20 @@ export default function Home() {
               </tr>
             </thead>
             <tbody className="text-white/60">
-              <tr className="border-b border-white/5">
-                <td className="px-4 py-3">GEOスコア算出</td>
-                <td className="px-4 py-3 text-center">--</td>
-                <td className="px-4 py-3 text-center">--</td>
-                <td className="px-4 py-3 text-center text-primary">--</td>
-              </tr>
-              <tr className="border-b border-white/5">
-                <td className="px-4 py-3">llms.txt 生成</td>
-                <td className="px-4 py-3 text-center">--</td>
-                <td className="px-4 py-3 text-center text-white/20">-</td>
-                <td className="px-4 py-3 text-center text-primary">--</td>
-              </tr>
-              <tr className="border-b border-white/5">
-                <td className="px-4 py-3">JSON-LD 生成</td>
-                <td className="px-4 py-3 text-center text-white/20">-</td>
-                <td className="px-4 py-3 text-center text-white/20">-</td>
-                <td className="px-4 py-3 text-center text-primary">--</td>
-              </tr>
-              <tr className="border-b border-white/5">
-                <td className="px-4 py-3">agent.json 生成</td>
-                <td className="px-4 py-3 text-center text-white/20">-</td>
-                <td className="px-4 py-3 text-center text-white/20">-</td>
-                <td className="px-4 py-3 text-center text-primary">--</td>
-              </tr>
-              <tr className="border-b border-white/5">
-                <td className="px-4 py-3">日本語対応</td>
-                <td className="px-4 py-3 text-center text-white/20">-</td>
-                <td className="px-4 py-3 text-center">--</td>
-                <td className="px-4 py-3 text-center text-primary">--</td>
-              </tr>
+              {[
+                { feature: "GEOスコア算出", a: true, b: true, us: true },
+                { feature: "llms.txt 生成", a: true, b: false, us: true },
+                { feature: "JSON-LD 生成", a: false, b: false, us: true },
+                { feature: "agent.json 生成", a: false, b: false, us: true },
+                { feature: "日本語対応", a: false, b: true, us: true },
+              ].map((row) => (
+                <tr key={row.feature} className="border-b border-white/5">
+                  <td className="px-4 py-3">{row.feature}</td>
+                  <td className={`px-4 py-3 text-center ${row.a ? "text-white/60" : "text-white/20"}`}>{row.a ? "\u2713" : "\u2015"}</td>
+                  <td className={`px-4 py-3 text-center ${row.b ? "text-white/60" : "text-white/20"}`}>{row.b ? "\u2713" : "\u2015"}</td>
+                  <td className="px-4 py-3 text-center text-primary">{row.us ? "\u2713" : "\u2015"}</td>
+                </tr>
+              ))}
               <tr>
                 <td className="px-4 py-3 font-medium text-white">月額料金</td>
                 <td className="px-4 py-3 text-center text-white/40">$1,200+</td>

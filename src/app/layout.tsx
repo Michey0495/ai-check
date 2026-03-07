@@ -109,8 +109,14 @@ export default function RootLayout({
           }}
         />
         <GoogleAnalytics />
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:text-black"
+        >
+          メインコンテンツへスキップ
+        </a>
         <Header />
-        <main className="mx-auto max-w-5xl px-4">{children}</main>
+        <main id="main-content" className="mx-auto max-w-5xl px-4">{children}</main>
         <Footer />
         <FeedbackWidget repoName="web-url-a" />
       </body>

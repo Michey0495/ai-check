@@ -189,15 +189,19 @@ function checkMetaTags(html: string): CheckResult {
   const hasDescription = /<meta[^>]*name=["']description["'][^>]*content=["'][^"']+["']/i.test(html);
   const hasOgTitle = /<meta[^>]*property=["']og:title["']/i.test(html);
   const hasOgDesc = /<meta[^>]*property=["']og:description["']/i.test(html);
+  const hasOgImage = /<meta[^>]*property=["']og:image["']/i.test(html);
   const hasCanonical = /<link[^>]*rel=["']canonical["'][^>]*href=["'][^"']+["']/i.test(html);
   const hasLang = /<html[^>]*lang=["'][^"']+["']/i.test(html);
+  const hasViewport = /<meta[^>]*name=["']viewport["']/i.test(html);
 
   const coreItems = [hasTitle, hasDescription, hasOgTitle, hasOgDesc];
   const coreScore = coreItems.filter(Boolean).length;
 
   const bonusDetails: string[] = [];
+  if (hasOgImage) bonusDetails.push("og:image設定済み");
   if (hasCanonical) bonusDetails.push("canonical URL設定済み");
   if (hasLang) bonusDetails.push("lang属性設定済み");
+  if (hasViewport) bonusDetails.push("viewport設定済み");
 
   if (coreScore >= 4) {
     const bonusText = bonusDetails.length > 0 ? ` ${bonusDetails.join("、")}。` : "";
@@ -216,6 +220,7 @@ function checkMetaTags(html: string): CheckResult {
     if (!hasOgTitle) missing.push("og:title");
     if (!hasOgDesc) missing.push("og:description");
     const extras: string[] = [];
+    if (!hasOgImage) extras.push("og:image");
     if (!hasCanonical) extras.push("canonical URL");
     if (!hasLang) extras.push("lang属性");
     const extrasText = extras.length > 0 ? ` また、${extras.join("・")}の設定も推奨します。` : "";
@@ -234,7 +239,7 @@ function checkMetaTags(html: string): CheckResult {
     maxScore: 15,
     status: "fail",
     message: "メタタグ: 不足",
-    details: "基本的なメタタグ（title, description, OGP）が不足しています。canonical URL、lang属性の設定も推奨します。",
+    details: "基本的なメタタグ（title, description, OGP）が不足しています。og:image、canonical URL、lang属性の設定も推奨します。",
   };
 }
 
