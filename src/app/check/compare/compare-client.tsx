@@ -182,13 +182,13 @@ export function CompareClient() {
             {results.map((r, i) => (
               <div key={i} className="rounded-lg border border-white/10 bg-white/5 p-6 text-center">
                 {r.loading && (
-                  <div className="py-4">
+                  <div className="py-4" role="status" aria-live="polite">
                     <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-white/10 border-t-white/70" />
                     <p className="mt-2 text-sm text-white/40">チェック中...</p>
                   </div>
                 )}
                 {r.error && (
-                  <div className="py-4">
+                  <div className="py-4" role="alert">
                     <p className="text-sm text-red-400">{r.error}</p>
                   </div>
                 )}

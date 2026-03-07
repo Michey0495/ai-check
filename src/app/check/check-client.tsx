@@ -343,7 +343,7 @@ export function CheckPageClient() {
       </div>
 
       {loading && (
-        <div className="py-16 text-center">
+        <div className="py-16 text-center" role="status" aria-live="polite">
           <div className="mx-auto mb-6 h-12 w-12 animate-spin rounded-full border-2 border-white/10 border-t-white/70" />
           <div className="mb-2 text-lg text-white/70">チェック中...</div>
           <p className="text-sm text-white/40">{url} を分析しています</p>
@@ -359,8 +359,9 @@ export function CheckPageClient() {
       )}
 
       {error && (
-        <div className="mx-auto max-w-xl rounded-lg border border-red-500/30 bg-red-500/10 p-6 text-center">
+        <div role="alert" className="mx-auto max-w-xl rounded-lg border border-red-500/30 bg-red-500/10 p-6 text-center">
           <p className="text-red-400">{error}</p>
+          <p className="mt-2 text-sm text-white/40">URLを確認して再度お試しください。</p>
         </div>
       )}
 
