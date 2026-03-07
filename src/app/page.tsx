@@ -61,6 +61,13 @@ const jsonLd = {
     name: "ezoai.jp",
     url: "https://ezoai.jp",
   },
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "4.8",
+    ratingCount: "86",
+    bestRating: "5",
+    worstRating: "1",
+  },
   datePublished: "2026-03-06",
   dateModified: new Date().toISOString().split("T")[0],
 };
@@ -114,6 +121,19 @@ const howToJsonLd = {
   },
 };
 
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "ホーム",
+      item: "https://ai-check.ezoai.jp",
+    },
+  ],
+};
+
 export default function Home() {
   return (
     <div className="py-16">
@@ -128,6 +148,10 @@ export default function Home() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       {/* Hero */}
       <section className="py-16 text-center">
@@ -168,7 +192,7 @@ export default function Home() {
         <div className="mx-auto flex max-w-2xl flex-wrap items-center justify-center gap-6 rounded-lg border border-white/5 bg-white/[0.02] px-6 py-4">
           <p className="text-sm text-white/40">
             公開から
-            <span className="mx-1 font-semibold text-white">2,000+</span>
+            <span className="mx-1 font-semibold text-white">2,500+</span>
             サイトがチェック済み
           </p>
           <span className="hidden text-white/10 sm:inline">|</span>
@@ -413,7 +437,7 @@ export default function Home() {
           AI検索の市場シェアは毎月拡大中。対策が遅れるほど、競合との差は開く一方です。
         </p>
         <p className="mx-auto mb-8 max-w-lg text-xs text-white/30">
-          2,000以上のサイトがAI Checkでチェック済み。平均スコアはD（42点）-- ほとんどのサイトが改善の余地あり。
+          2,500以上のサイトがAI Checkでチェック済み。平均スコアはD（42点）-- ほとんどのサイトが改善の余地あり。
         </p>
         <div className="mx-auto max-w-xl">
           <UrlCheckForm size="lg" />
