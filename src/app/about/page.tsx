@@ -115,7 +115,7 @@ export default function AboutPage() {
           <h2 className="mb-4 text-2xl font-bold text-white">技術スタック</h2>
           <div className="grid gap-3 sm:grid-cols-2">
             {[
-              "Next.js 15 (App Router)",
+              "Next.js 16 (App Router)",
               "TypeScript (strict)",
               "Tailwind CSS",
               "shadcn/ui",

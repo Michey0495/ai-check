@@ -1,6 +1,6 @@
 # QA Report - web-url-a (AI Check)
 
-Date: 2026-03-08 (QA Pass 8)
+Date: 2026-03-08 (QA Pass 9)
 
 ## Build & Lint
 
@@ -10,6 +10,14 @@ Date: 2026-03-08 (QA Pass 8)
 | `npm run lint` | PASS (0 errors, 0 warnings) |
 
 ## Issues Found & Fixed (This Pass)
+
+### 1. About Page Tech Stack Version (FIXED)
+- **File**: `src/app/about/page.tsx`
+- **Severity**: Low
+- **Issue**: Tech stack listed "Next.js 15 (App Router)" but actual version is 16.1.6
+- **Fix**: Updated to "Next.js 16 (App Router)"
+
+## Issues Found & Fixed (Pass 8)
 
 ### 1. Unused Variables - Lint Warnings (FIXED)
 - **File**: `src/app/api/check/route.ts`
@@ -140,4 +148,4 @@ Date: 2026-03-08 (QA Pass 8)
 
 ## Conclusion
 
-Project is production-ready. 2 lint warnings found and fixed in this pass (unused variables). No blocking issues remain. Total fixes across all QA passes: 24+.
+Project is production-ready. 1 text error fixed in pass 9 (About page version). No blocking issues remain. Total fixes across all QA passes: 25+.
