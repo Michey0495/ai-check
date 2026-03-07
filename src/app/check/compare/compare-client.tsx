@@ -221,7 +221,7 @@ export function CompareClient() {
                       return (
                         <div key={i} className="flex items-center gap-3">
                           <span className="w-32 truncate text-xs text-white/40">
-                            {new URL(cr.report!.url).hostname}
+                            {(() => { try { return new URL(cr.report!.url).hostname; } catch { return cr.report!.url; } })()}
                           </span>
                           <div className="flex-1">
                             <ScoreBar score={item.score} maxScore={item.maxScore} status={item.status} />
