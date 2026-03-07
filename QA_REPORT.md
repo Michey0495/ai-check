@@ -1,43 +1,36 @@
 # QA Report - web-url-a (AI Check)
 
-Date: 2026-03-08 (QA Pass 6)
+Date: 2026-03-08 (QA Pass 7)
 
 ## Build & Lint
 
 | Check | Result |
 |-------|--------|
-| `npm run build` | PASS (20 routes, 0 errors) |
+| `npm run build` | PASS (21 routes, 0 errors) |
 | `npm run lint` | PASS (0 errors, 0 warnings) |
 
 ## Issues Found & Fixed (This Pass)
 
-### 1. Fabricated aggregateRating in JSON-LD (FIXED)
-- **File**: `src/app/page.tsx`
+### 1. Design System Violation - Green Colors in Checklist (FIXED)
+- **File**: `src/app/guides/checklist/checklist-client.tsx`
 - **Severity**: Medium
-- **Issue**: Homepage JSON-LD contained `aggregateRating` with fabricated data (4.8 rating, 47 reviews). Google may flag this as misleading structured data.
-- **Fix**: Removed `aggregateRating` from WebApplication JSON-LD.
-
-### 2. Generator Empty State Text Not Responsive-Friendly (FIXED)
-- **File**: `src/app/generate/llms-txt/generator-client.tsx`
-- **Severity**: Low
-- **Issue**: Empty state text said "left form" which is incorrect on mobile where forms stack vertically.
-- **Fix**: Changed to layout-agnostic wording.
-
-### 3. Unused Default Next.js Files (FIXED)
-- **Files**: `public/file.svg`, `public/globe.svg`, `public/next.svg`, `public/vercel.svg`, `public/window.svg`
-- **Severity**: Low
-- **Issue**: Leftover default Next.js scaffold files, unused anywhere in the project.
-- **Fix**: Deleted all 5 files.
+- **Issue**: Checklist used `text-green-400`, `border-green-500/20 bg-green-500/5`, `border-green-500 bg-green-500` for completed states. Design system requires primary accent color only.
+- **Fix**: Changed to `text-primary`, `border-primary/20 bg-primary/5`, `border-primary bg-primary text-primary-foreground`
 
 ### Not Fixed (Low Priority / By Design)
 
 | # | Issue | Notes |
 |---|-------|-------|
-| 1 | Social proof "500+" hardcoded | Acceptable for MVP |
+| 1 | Social proof numbers hardcoded | Acceptable for MVP |
 | 2 | In-memory rate limiter resets on cold start | Acceptable for Vercel serverless |
+| 3 | Score visualization uses colored grades (green/yellow/red) | Functional data indicators, not decorative - acceptable |
+| 4 | geo-vs-seo uses `bg-primary/5` for one card | Intentional design differentiation |
 
-## Previously Fixed (QA Pass 1-5)
+## Previously Fixed (QA Pass 1-6)
 
+- Fabricated aggregateRating in JSON-LD (removed)
+- Generator empty state text not responsive-friendly (fixed wording)
+- Unused default Next.js SVG files (deleted)
 - Compare page mobile responsiveness (responsive grid classes)
 - setState in useEffect pattern (replaced with useSyncExternalStore)
 - Unused imports (GENERATOR_TYPES, API route imports)
@@ -106,6 +99,7 @@ Date: 2026-03-08 (QA Pass 6)
 | Cards: bg-white/5 border border-white/10 | PASS |
 | Hover: cursor-pointer, transition-all duration-200 | PASS |
 | UI language: Japanese | PASS |
+| Accent color: primary only (checklist fixed) | PASS |
 
 ## SEO & AI-First
 
@@ -127,14 +121,16 @@ Date: 2026-03-08 (QA Pass 6)
 
 ## Performance
 
-- All content pages statically generated (13 static, 7 dynamic)
+- All content pages statically generated (13 static, 8 dynamic)
 - API check route uses `Promise.all` for parallel fetches
 - Client components use `useCallback`/`useMemo` appropriately
 - `useSyncExternalStore` for hydration-safe localStorage
 - `maxDuration: 30` for Vercel serverless timeout
 - No unnecessary re-renders identified
 - next/font/google with variable fonts (no FOUT)
+- API responses cached: `Cache-Control: public, s-maxage=300, stale-while-revalidate=600`
+- Bundle size: ~17MB .next directory (normal for Next.js 16)
 
 ## Conclusion
 
-Project is production-ready. 3 issues found and fixed in this pass (fabricated aggregateRating, generator text, unused files). No blocking issues remain. Total fixes across all QA passes: 18+.
+Project is production-ready. 1 design system violation found and fixed in this pass (green colors in checklist). No blocking issues remain. Total fixes across all QA passes: 22+.

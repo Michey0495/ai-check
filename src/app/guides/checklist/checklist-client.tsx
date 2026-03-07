@@ -232,7 +232,7 @@ export function ChecklistClient() {
           <div key={cat.id} className="space-y-3">
             <div className="flex items-center gap-3">
               <h2 className="text-xl font-bold text-white">{cat.title}</h2>
-              <span className={`text-xs ${allDone ? "text-green-400" : "text-white/30"}`}>
+              <span className={`text-xs ${allDone ? "text-primary" : "text-white/30"}`}>
                 {catCompleted}/{cat.items.length}
               </span>
             </div>
@@ -244,7 +244,7 @@ export function ChecklistClient() {
                     key={item.id}
                     className={`rounded-lg border p-4 transition-all duration-200 ${
                       isDone
-                        ? "border-green-500/20 bg-green-500/5"
+                        ? "border-primary/20 bg-primary/5"
                         : "border-white/10 bg-white/5"
                     }`}
                   >
@@ -256,7 +256,7 @@ export function ChecklistClient() {
                       <span
                         className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-all duration-200 ${
                           isDone
-                            ? "border-green-500 bg-green-500 text-black"
+                            ? "border-primary bg-primary text-primary-foreground"
                             : "border-white/30 bg-transparent"
                         }`}
                       >
