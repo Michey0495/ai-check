@@ -94,6 +94,20 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-black text-white antialiased`}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "AI Check",
+              url: "https://ai-check.ezoai.jp",
+              description:
+                "AI検索対応度チェッカー & GEO対策ツール。URLを入力するだけでAI検索最適化を実現。",
+              sameAs: ["https://github.com/Michey0495/web-url-a"],
+            }),
+          }}
+        />
         <GoogleAnalytics />
         <Header />
         <main className="mx-auto max-w-5xl px-4">{children}</main>

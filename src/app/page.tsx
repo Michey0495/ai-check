@@ -49,6 +49,8 @@ const jsonLd = {
     name: "ezoai.jp",
     url: "https://ezoai.jp",
   },
+  datePublished: "2026-03-06",
+  dateModified: "2026-03-08",
 };
 
 const faqJsonLd = {
@@ -306,6 +308,36 @@ export default function Home() {
               <p className="text-sm leading-relaxed text-white/50">{faq.a}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Before / After */}
+      <section className="py-16">
+        <h2 className="mb-2 text-center text-2xl font-bold text-white">
+          GEO対策 Before / After
+        </h2>
+        <p className="mb-10 text-center text-white/50">
+          AI検索であなたのサイトがどう扱われるかが変わる
+        </p>
+        <div className="grid gap-6 sm:grid-cols-2">
+          <div className="rounded-lg border border-red-500/20 bg-red-500/5 p-6">
+            <p className="mb-3 text-sm font-semibold text-red-400">GEO対策なし</p>
+            <ul className="space-y-2 text-sm text-white/50">
+              <li>AI検索結果に表示されない</li>
+              <li>競合サイトだけが引用される</li>
+              <li>AIクローラーにブロックされている可能性</li>
+              <li>構造化データなしで情報が正確に伝わらない</li>
+            </ul>
+          </div>
+          <div className="rounded-lg border border-green-500/20 bg-green-500/5 p-6">
+            <p className="mb-3 text-sm font-semibold text-green-400">GEO対策あり</p>
+            <ul className="space-y-2 text-sm text-white/50">
+              <li>ChatGPT・Perplexityで引用される</li>
+              <li>AI経由の新規トラフィックを獲得</li>
+              <li>llms.txtでAIに正確な情報を提供</li>
+              <li>JSON-LDでリッチな検索表示を実現</li>
+            </ul>
+          </div>
         </div>
       </section>
 
