@@ -105,3 +105,10 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - 全サブページにBreadcrumbList構造化データ（JSON-LD）追加
 - GEO対策ガイドにHowTo構造化データ追加
 - AI公開チャネル更新（llms.txt, agent.json に比較機能追記）
+
+### Night 5 (完了)
+- セキュリティ: チェックAPIにSSRF保護追加（プライベートIP/ホスト名ブロック）
+- SEO: 全サブページにcanonical URL追加
+- SEO: チェック、比較、About、llms.txtガイドにBreadcrumbList JSON-LD追加
+- SEO: AboutページにSoftwareApplication構造化データ追加
+- UX: 比較ページのURL入力スロットを動的に追加/削除可能に（2〜5サイト）
