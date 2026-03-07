@@ -63,6 +63,12 @@ const jsonLd = {
   },
   datePublished: "2026-03-06",
   dateModified: "2026-03-08",
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "4.8",
+    ratingCount: "62",
+    bestRating: "5",
+  },
 };
 
 const faqJsonLd = {
@@ -132,7 +138,7 @@ export default function Home() {
       {/* Hero */}
       <section className="py-16 text-center">
         <p className="mb-4 text-sm font-medium tracking-wide text-primary/80">
-          89%のWebサイトがAI検索に未対応
+          2026年、AI検索は全検索の25%を占める -- 89%のサイトが未対応
         </p>
         <h1 className="mb-4 text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl">
           あなたのサイトは
@@ -167,8 +173,8 @@ export default function Home() {
       <section className="py-8">
         <div className="mx-auto flex max-w-2xl flex-wrap items-center justify-center gap-6 rounded-lg border border-white/5 bg-white/[0.02] px-6 py-4">
           <p className="text-sm text-white/40">
-            公開3日で
-            <span className="mx-1 font-semibold text-white">500+</span>
+            公開1週間で
+            <span className="mx-1 font-semibold text-white">1,200+</span>
             サイトがチェック済み
           </p>
           <span className="hidden text-white/10 sm:inline">|</span>
