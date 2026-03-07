@@ -33,7 +33,7 @@
 - POST /api/mcp: MCP Server (JSON-RPC 2.0)
 
 ## 技術スタック
-- Next.js 15, TypeScript, Tailwind CSS, shadcn/ui, Vercel
+- Next.js 16, TypeScript, Tailwind CSS, shadcn/ui, Vercel
 
 ## 連絡先
 - サイト: https://ai-check.ezoai.jp

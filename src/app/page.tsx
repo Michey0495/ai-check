@@ -166,7 +166,7 @@ export default function Home() {
         <p className="mt-4 text-sm text-white/40">
           無料 / 登録不要 / 30秒で結果表示
         </p>
-        <div className="mx-auto mt-12 grid max-w-2xl grid-cols-3 gap-4">
+        <div className="mx-auto mt-12 grid max-w-2xl grid-cols-1 gap-4 sm:grid-cols-3">
           {[
             { stat: "25%", label: "AI検索の市場シェア（2026年）" },
             { stat: "89%", label: "AI検索に未対応のWebサイト" },

@@ -39,7 +39,7 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
   }
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="フィードバック" className="fixed bottom-4 right-4 w-80 bg-black/90 border border-white/10 rounded-xl shadow-2xl p-4 z-50 backdrop-blur-md">
+    <div role="dialog" aria-modal="true" aria-label="フィードバック" className="fixed bottom-4 right-4 w-72 max-w-[calc(100vw-2rem)] bg-black/90 border border-white/10 rounded-xl shadow-2xl p-4 z-50 backdrop-blur-md sm:w-80">
       <div className="flex justify-between items-center mb-3">
         <h3 className="font-bold text-white text-sm">フィードバック</h3>
         <button onClick={() => setOpen(false)} aria-label="閉じる" className="text-white/40 hover:text-white/70 transition-colors cursor-pointer">&times;</button>

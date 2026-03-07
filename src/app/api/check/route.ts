@@ -360,7 +360,7 @@ export async function POST(request: NextRequest) {
 
     const { url } = await request.json();
 
-    if (!url || typeof url !== "string") {
+    if (!url || typeof url !== "string" || !url.trim()) {
       return NextResponse.json({ error: "URLを入力してください。" }, { status: 400 });
     }
 

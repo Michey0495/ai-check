@@ -1,6 +1,6 @@
 # QA Report - web-url-a (AI Check)
 
-Date: 2026-03-08 (QA Pass 9)
+Date: 2026-03-08 (QA Pass 10)
 
 ## Build & Lint
 
@@ -10,6 +10,50 @@ Date: 2026-03-08 (QA Pass 9)
 | `npm run lint` | PASS (0 errors, 0 warnings) |
 
 ## Issues Found & Fixed (This Pass)
+
+### 1. [CRITICAL] Mobile Responsive Grid - Stats Section (FIXED)
+- **File**: `src/app/page.tsx:169`
+- **Severity**: High
+- **Issue**: `grid-cols-3` applied without mobile breakpoint, causing cramped layout on small screens
+- **Fix**: Changed to `grid-cols-1 sm:grid-cols-3`
+
+### 2. Feedback Widget Overflow on Small Screens (FIXED)
+- **File**: `src/components/feedback-widget.tsx:42`
+- **Severity**: Medium
+- **Issue**: Fixed `w-80` (320px) could exceed viewport on small phones
+- **Fix**: Changed to `w-72 max-w-[calc(100vw-2rem)] sm:w-80`
+
+### 3. Progress Bar Missing ARIA Attributes (FIXED)
+- **File**: `src/app/check/check-client.tsx:483`
+- **Severity**: Medium
+- **Issue**: Progress bars lacked `role="progressbar"` and aria attributes
+- **Fix**: Added `role="progressbar"`, `aria-valuenow`, `aria-valuemin`, `aria-valuemax`, `aria-label`
+
+### 4. llms.txt Version Mismatch (FIXED)
+- **File**: `public/llms.txt:36`
+- **Severity**: Low
+- **Issue**: Referenced "Next.js 15" but project uses Next.js 16.1.6
+- **Fix**: Updated to "Next.js 16"
+
+### 5. API Input Validation - Whitespace-only URLs (FIXED)
+- **File**: `src/app/api/check/route.ts:363`
+- **Severity**: Low
+- **Issue**: Whitespace-only strings passed URL validation
+- **Fix**: Added `!url.trim()` check
+
+### 6. Hardcoded dateModified in Guide Pages (FIXED)
+- **Files**: `src/app/guides/geo-vs-seo/page.tsx:28`, `src/app/guides/industry/page.tsx:39`
+- **Severity**: Low
+- **Issue**: `dateModified` hardcoded instead of dynamic
+- **Fix**: Changed to `new Date().toISOString().split("T")[0]`
+
+### 7. Footer Links Missing Focus Styles (FIXED)
+- **File**: `src/components/footer.tsx`
+- **Severity**: Low
+- **Issue**: No visible focus indicator for keyboard navigation
+- **Fix**: Added `focus:text-white/70 focus:outline-none`
+
+## Issues Found & Fixed (Pass 9)
 
 ### 1. About Page Tech Stack Version (FIXED)
 - **File**: `src/app/about/page.tsx`
@@ -148,4 +192,4 @@ Date: 2026-03-08 (QA Pass 9)
 
 ## Conclusion
 
-Project is production-ready. 1 text error fixed in pass 9 (About page version). No blocking issues remain. Total fixes across all QA passes: 25+.
+Project is production-ready. 7 issues fixed in pass 10 (1 critical mobile layout, 2 a11y, 1 SEO, 1 security, 2 low). No blocking issues remain. Total fixes across all QA passes: 30+.
