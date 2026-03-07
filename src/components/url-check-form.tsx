@@ -24,7 +24,7 @@ export function UrlCheckForm({ size = "lg" }: { size?: "lg" | "sm" }) {
   return (
     <form onSubmit={handleSubmit} className="flex w-full gap-3">
       <Input
-        type="url"
+        type="text"
         placeholder="https://example.com"
         value={url}
         onChange={(e) => setUrl(e.target.value)}

@@ -126,10 +126,12 @@ export function CompareClient() {
               サイト{i + 1}
             </span>
             <Input
-              type="url"
+              type="text"
               placeholder="https://example.com"
               value={url}
               onChange={(e) => handleUrlChange(i, e.target.value)}
+              maxLength={2048}
+              aria-label={`サイト${i + 1}のURL`}
               className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
               disabled={running}
             />
