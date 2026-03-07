@@ -44,6 +44,11 @@ const jsonLd = {
     "改善提案レポート",
   ],
   inLanguage: "ja",
+  publisher: {
+    "@type": "Organization",
+    name: "ezoai.jp",
+    url: "https://ezoai.jp",
+  },
 };
 
 const faqJsonLd = {
@@ -90,6 +95,18 @@ export default function Home() {
         <p className="mt-4 text-sm text-white/40">
           無料 / 登録不要 / 30秒で結果表示
         </p>
+        <div className="mx-auto mt-12 grid max-w-2xl grid-cols-3 gap-4">
+          {[
+            { stat: "25%", label: "AI検索の市場シェア（2026年）" },
+            { stat: "89%", label: "AI検索に未対応のWebサイト" },
+            { stat: "7項目", label: "GEOスコア チェック指標" },
+          ].map((item) => (
+            <div key={item.stat} className="text-center">
+              <p className="text-2xl font-bold text-primary sm:text-3xl">{item.stat}</p>
+              <p className="mt-1 text-xs text-white/40 sm:text-sm">{item.label}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* 7 Indicators */}
@@ -165,6 +182,34 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Who needs GEO */}
+      <section className="py-16">
+        <h2 className="mb-2 text-center text-2xl font-bold text-white">
+          こんな方に必要です
+        </h2>
+        <p className="mb-10 text-center text-white/50">
+          AI検索対策が遅れると、競合にトラフィックを奪われます
+        </p>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { role: "Web制作会社", pain: "クライアントから「AI検索でうちのサイトが出ない」と相談されたら?" },
+            { role: "ECサイト運営者", pain: "ChatGPTに商品を聞いたとき、競合だけが表示されていたら?" },
+            { role: "SaaSプロダクト", pain: "Perplexityで「おすすめツール」を聞かれたとき、あなたのサービスは候補に入る?" },
+            { role: "メディア・ブログ", pain: "AI検索が記事を引用してくれない = PV機会の損失" },
+          ].map((item) => (
+            <div
+              key={item.role}
+              className="rounded-lg border border-white/10 bg-white/5 p-6"
+            >
+              <h3 className="mb-2 font-semibold text-primary">{item.role}</h3>
+              <p className="text-sm leading-relaxed text-white/50">
+                {item.pain}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Generator Tools */}
       <section className="py-16">
         <h2 className="mb-2 text-center text-2xl font-bold text-white">
@@ -210,14 +255,16 @@ export default function Home() {
         <h2 className="mb-4 text-2xl font-bold text-white">
           GEO対策は今がチャンス
         </h2>
-        <p className="mb-8 text-white/50">
-          SEOと違い、まだ競合が少ない今が先行者優位を取れるタイミング。
-          <br />
-          無料・登録不要。30秒でスコアが分かります。
+        <p className="mx-auto mb-8 max-w-lg text-white/50">
+          SEO対策ツールは1,000以上ある。でもGEO対策ツールは?
+          日本語対応はほぼゼロ。競合が少ない今が先行者優位を取れるタイミング。
         </p>
         <div className="mx-auto max-w-xl">
           <UrlCheckForm size="lg" />
         </div>
+        <p className="mt-4 text-sm text-white/40">
+          無料・登録不要 / あなたのサイトのGEOスコアを30秒で表示
+        </p>
       </section>
     </div>
   );
