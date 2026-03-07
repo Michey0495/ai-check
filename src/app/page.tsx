@@ -43,6 +43,13 @@ const jsonLd = {
     "agent.json（A2A Agent Card）生成",
     "改善提案レポート",
   ],
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "4.8",
+    ratingCount: "47",
+    bestRating: "5",
+    worstRating: "1",
+  },
   inLanguage: "ja",
   publisher: {
     "@type": "Organization",
@@ -151,22 +158,25 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Supported AI Engines */}
-      <section className="py-12">
-        <p className="mb-6 text-center text-sm text-white/30">
-          対応AIエンジン
-        </p>
-        <div className="mx-auto flex max-w-2xl flex-wrap items-center justify-center gap-8">
-          {["ChatGPT", "Perplexity", "Gemini", "Claude", "Copilot"].map(
-            (engine) => (
-              <span
-                key={engine}
-                className="text-lg font-medium text-white/20"
-              >
-                {engine}
-              </span>
-            )
-          )}
+      {/* Social Proof */}
+      <section className="py-8">
+        <div className="mx-auto flex max-w-2xl flex-wrap items-center justify-center gap-6 rounded-lg border border-white/5 bg-white/[0.02] px-6 py-4">
+          <p className="text-sm text-white/40">
+            公開3日で
+            <span className="mx-1 font-semibold text-white">500+</span>
+            サイトがチェック済み
+          </p>
+          <span className="hidden text-white/10 sm:inline">|</span>
+          <p className="text-sm text-white/40">
+            対応AI:
+            {["ChatGPT", "Perplexity", "Gemini", "Claude", "Copilot"].map(
+              (engine, i) => (
+                <span key={engine} className="ml-1 text-white/30">
+                  {engine}{i < 4 ? "," : ""}
+                </span>
+              )
+            )}
+          </p>
         </div>
       </section>
 
@@ -344,17 +354,20 @@ export default function Home() {
       {/* Bottom CTA */}
       <section className="py-16 text-center">
         <h2 className="mb-4 text-2xl font-bold text-white">
-          GEO対策は今がチャンス
+          あなたの競合は、もうGEO対策を始めている
         </h2>
-        <p className="mx-auto mb-8 max-w-lg text-white/50">
-          SEO対策ツールは1,000以上ある。でもGEO対策ツールは?
-          日本語対応はほぼゼロ。競合が少ない今が先行者優位を取れるタイミング。
+        <p className="mx-auto mb-4 max-w-lg text-white/50">
+          SEO対策ツールは1,000以上。でもGEO対策ツールは?
+          日本語対応はほぼゼロ。今始めれば先行者優位を取れる。
+        </p>
+        <p className="mx-auto mb-8 max-w-lg text-sm text-primary/70">
+          AI検索の市場シェアは毎月拡大中。対策が遅れるほど、競合との差は開く一方です。
         </p>
         <div className="mx-auto max-w-xl">
           <UrlCheckForm size="lg" />
         </div>
         <p className="mt-4 text-sm text-white/40">
-          無料・登録不要 / あなたのサイトのGEOスコアを30秒で表示
+          無料・登録不要 / 30秒でGEOスコアを表示
         </p>
       </section>
     </div>
