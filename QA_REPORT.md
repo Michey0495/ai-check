@@ -1,21 +1,27 @@
 # QA Report - web-url-a (AI Check)
 
-Date: 2026-03-08 (QA Pass 7)
+Date: 2026-03-08 (QA Pass 8)
 
 ## Build & Lint
 
 | Check | Result |
 |-------|--------|
-| `npm run build` | PASS (21 routes, 0 errors) |
+| `npm run build` | PASS (22 routes, 0 errors) |
 | `npm run lint` | PASS (0 errors, 0 warnings) |
 
 ## Issues Found & Fixed (This Pass)
 
-### 1. Design System Violation - Green Colors in Checklist (FIXED)
-- **File**: `src/app/guides/checklist/checklist-client.tsx`
-- **Severity**: Medium
-- **Issue**: Checklist used `text-green-400`, `border-green-500/20 bg-green-500/5`, `border-green-500 bg-green-500` for completed states. Design system requires primary accent color only.
-- **Fix**: Changed to `text-primary`, `border-primary/20 bg-primary/5`, `border-primary bg-primary text-primary-foreground`
+### 1. Unused Variables - Lint Warnings (FIXED)
+- **File**: `src/app/api/check/route.ts`
+- **Severity**: Low
+- **Issue**: `bonusCount` and `bonusItems` variables assigned but never used
+- **Fix**: Removed unused variables
+
+### 2. Unused Import - Lint Warning (FIXED)
+- **File**: `src/app/check/check-client.tsx`
+- **Severity**: Low
+- **Issue**: `router` (useRouter) declared but never used
+- **Fix**: Removed `router` variable and `useRouter` import
 
 ### Not Fixed (Low Priority / By Design)
 
@@ -26,7 +32,7 @@ Date: 2026-03-08 (QA Pass 7)
 | 3 | Score visualization uses colored grades (green/yellow/red) | Functional data indicators, not decorative - acceptable |
 | 4 | geo-vs-seo uses `bg-primary/5` for one card | Intentional design differentiation |
 
-## Previously Fixed (QA Pass 1-6)
+## Previously Fixed (QA Pass 1-7)
 
 - Fabricated aggregateRating in JSON-LD (removed)
 - Generator empty state text not responsive-friendly (fixed wording)
@@ -49,6 +55,7 @@ Date: 2026-03-08 (QA Pass 7)
 - Decorative SVG icons missing aria-hidden
 - JSON parse error handling in feedback API
 - Repo name validation in feedback API
+- Green colors in checklist replaced with primary accent (design system)
 
 ## Checklist
 
@@ -121,7 +128,7 @@ Date: 2026-03-08 (QA Pass 7)
 
 ## Performance
 
-- All content pages statically generated (13 static, 8 dynamic)
+- All content pages statically generated (14 static, 8 dynamic)
 - API check route uses `Promise.all` for parallel fetches
 - Client components use `useCallback`/`useMemo` appropriately
 - `useSyncExternalStore` for hydration-safe localStorage
@@ -133,4 +140,4 @@ Date: 2026-03-08 (QA Pass 7)
 
 ## Conclusion
 
-Project is production-ready. 1 design system violation found and fixed in this pass (green colors in checklist). No blocking issues remain. Total fixes across all QA passes: 22+.
+Project is production-ready. 2 lint warnings found and fixed in this pass (unused variables). No blocking issues remain. Total fixes across all QA passes: 24+.

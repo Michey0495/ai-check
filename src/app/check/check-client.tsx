@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo, useSyncExternalStore } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { UrlCheckForm } from "@/components/url-check-form";
 import { Badge } from "@/components/ui/badge";
@@ -279,7 +279,6 @@ const indicatorTips: Record<string, { tip: string; guide?: string }> = {
 
 export function CheckPageClient() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const url = searchParams.get("url") ?? "";
   const [report, setReport] = useState<CheckReport | null>(null);
   const [loading, setLoading] = useState(false);

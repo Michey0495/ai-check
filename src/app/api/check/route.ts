@@ -194,8 +194,6 @@ function checkMetaTags(html: string): CheckResult {
 
   const coreItems = [hasTitle, hasDescription, hasOgTitle, hasOgDesc];
   const coreScore = coreItems.filter(Boolean).length;
-  const bonusItems = [hasCanonical, hasLang];
-  const bonusCount = bonusItems.filter(Boolean).length;
 
   const bonusDetails: string[] = [];
   if (hasCanonical) bonusDetails.push("canonical URL設定済み");
