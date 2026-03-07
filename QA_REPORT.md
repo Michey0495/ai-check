@@ -1,6 +1,6 @@
 # QA Report - web-url-a (AI Check)
 
-Date: 2026-03-08 (QA Pass 3)
+Date: 2026-03-08 (QA Pass 4)
 
 ## Build & Lint
 
@@ -11,40 +11,25 @@ Date: 2026-03-08 (QA Pass 3)
 
 ## Issues Found & Fixed (This Pass)
 
-### 1. Missing viewport export (FIXED)
-- **File**: `src/app/layout.tsx`
-- **Severity**: Low
-- **Issue**: `export const viewport` was not defined. Next.js 15+ best practice requires explicit viewport configuration.
-- **Fix**: Added `Viewport` type import and explicit viewport export with `width: "device-width"`, `initialScale: 1`, `maximumScale: 5`.
-
-### 2. Unused `lucide-react` dependency (FIXED)
-- **File**: `package.json`
-- **Severity**: Low
-- **Issue**: `lucide-react` was listed in dependencies but never imported. Design system forbids icon libraries.
-- **Fix**: Removed with `npm uninstall lucide-react`.
-
-### 3. ScoreCircle SVG missing a11y attributes (FIXED)
-- **File**: `src/app/check/check-client.tsx`
+### 1. Compare page mobile responsiveness (FIXED)
+- **File**: `src/app/check/compare/compare-client.tsx`
 - **Severity**: Medium
-- **Issue**: Score visualization SVG had no `role` or `aria-label`, invisible to screen readers.
-- **Fix**: Added `role="img"` and dynamic `aria-label` with grade and score.
+- **Issue**: Results grid used inline `gridTemplateColumns: repeat(N, minmax(0, 1fr))` which squeezed columns to unusable widths on mobile devices.
+- **Fix**: Replaced with responsive Tailwind classes `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5`.
 
-### 4. Feedback widget missing dialog semantics (FIXED)
-- **File**: `src/components/feedback-widget.tsx`
-- **Severity**: Medium
-- **Issue**: Feedback modal lacked `role="dialog"` and `aria-modal="true"`.
-- **Fix**: Added `role="dialog"`, `aria-modal="true"`, and `aria-label="フィードバック"`.
-
-## Previously Fixed (QA Pass 1-2)
+## Previously Fixed (QA Pass 1-3)
 
 - setState in useEffect pattern in check-client.tsx (replaced with useSyncExternalStore)
 - Unused imports (GENERATOR_TYPES, API route imports)
 - Missing 404/error/loading pages (created)
 - Missing OGP image route (created)
 - URL input validation (maxLength, type="url", aria-label)
-- Feedback close button aria-label
-- Feedback textarea aria-label
+- Feedback close/textarea aria-labels
 - JSON-LD generator select aria-label
+- Missing viewport export (added)
+- Unused lucide-react dependency (removed)
+- ScoreCircle SVG missing a11y attributes (added role="img", aria-label)
+- Feedback widget missing dialog semantics (added role="dialog", aria-modal)
 
 ## Checklist
 
@@ -61,14 +46,24 @@ Date: 2026-03-08 (QA Pass 3)
 - [x] llms.txt (`public/llms.txt`)
 - [x] sitemap.xml (dynamic route, 10 URLs)
 - [x] agent.json (`public/.well-known/agent.json`)
-- [x] JSON-LD structured data (WebApplication + FAQPage on homepage)
+- [x] JSON-LD structured data (WebApplication, FAQPage, HowTo, BreadcrumbList, SoftwareApplication)
 - [x] Design system compliance (black bg, white text, no emojis, no icon libraries)
-- [x] No lucide-react or icon library imports (dependency removed)
 - [x] Interactive elements have cursor-pointer + transitions
 - [x] Form inputs have accessible labels
 - [x] Semantic HTML structure (header, main, footer, nav, section, h1-h3)
 - [x] Dialog/modal a11y (role, aria-modal)
 - [x] SVG a11y (role="img", aria-label)
+
+## Edge Case Handling
+
+| Case | Status | Implementation |
+|------|--------|----------------|
+| Empty URL input | PASS | `if (!url.trim()) return;` in form |
+| Long URL input | PASS | `maxLength={2048}` + API validation |
+| Invalid URL | PASS | `new URL()` parse error catch in API |
+| Private/internal IPs | PASS | `isPrivateHostname()` SSRF protection |
+| Non-http protocols | PASS | Protocol whitelist in API |
+| Compare: min/max sites | PASS | 2-5 site limit enforced |
 
 ## Design System Compliance
 
@@ -90,8 +85,8 @@ Date: 2026-03-08 (QA Pass 3)
 | Open Graph | PASS |
 | Twitter Card | PASS |
 | Viewport | PASS |
-| Canonical URL | PASS |
-| Sitemap | PASS |
+| Canonical URL (all pages) | PASS |
+| Sitemap (10 pages) | PASS |
 | robots.txt (AI crawlers) | PASS |
 | llms.txt | PASS |
 | /.well-known/agent.json | PASS |
@@ -99,12 +94,14 @@ Date: 2026-03-08 (QA Pass 3)
 | JSON-LD structured data | PASS |
 | OGP image (1200x630) | PASS |
 
-## Notes
+## Performance
 
-- `text-sm` (14px) used in secondary UI elements (badges, labels, footer). Acceptable for auxiliary text.
-- Mobile menu header lacks focus trap but has proper aria attributes.
-- All 18 routes build successfully (11 static, 7 dynamic).
+- All content pages statically generated (11 static, 7 dynamic)
+- API check route uses `Promise.all` for parallel fetches
+- Client components use `useCallback`/`useMemo` appropriately
+- `useSyncExternalStore` for hydration-safe localStorage
+- `maxDuration: 30` for Vercel serverless timeout
 
 ## Conclusion
 
-Project is production-ready. 4 new issues found and fixed in this pass, building on 8 fixes from previous passes. No blocking issues remain.
+Project is production-ready. 1 new issue found and fixed in this pass (compare page mobile responsiveness), building on 11 fixes from previous passes. No blocking issues remain.

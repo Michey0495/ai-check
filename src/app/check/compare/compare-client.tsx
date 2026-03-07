@@ -176,7 +176,7 @@ export function CompareClient() {
       {hasResults && (
         <div className="mt-12 space-y-8">
           {/* Score overview */}
-          <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${results.length}, minmax(0, 1fr))` }}>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {results.map((r, i) => (
               <div key={i} className="rounded-lg border border-white/10 bg-white/5 p-6 text-center">
                 {r.loading && (
