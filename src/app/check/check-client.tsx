@@ -66,7 +66,7 @@ function ScoreCircle({ score, maxScore, grade }: { score: number; maxScore: numb
   return (
     <div className="flex flex-col items-center gap-2">
       <div className="relative flex h-36 w-36 items-center justify-center">
-        <svg className="absolute -rotate-90" width="144" height="144" viewBox="0 0 144 144">
+        <svg className="absolute -rotate-90" width="144" height="144" viewBox="0 0 144 144" role="img" aria-label={`スコア: ${grade}ランク ${pct}/100`}>
           <circle cx="72" cy="72" r={radius} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
           <circle
             cx="72" cy="72" r={radius} fill="none"
