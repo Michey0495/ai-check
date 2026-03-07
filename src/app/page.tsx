@@ -19,6 +19,18 @@ const faqData = [
     q: "llms.txtとは何ですか?",
     a: "llms.txtは、AIエージェントやLLM（大規模言語モデル）に対してサイトの概要・構造・API情報を伝えるためのテキストファイルです。robots.txtのAI版と考えると分かりやすいです。",
   },
+  {
+    q: "GEOスコアはどう計算されますか?",
+    a: "AIクローラーアクセス（15点）、llms.txt（15点）、構造化データ（20点）、メタタグ（15点）、コンテンツ構造（15点）、SSR（10点）、サイトマップ（10点）の7指標を重み付けスコアで合算し、A〜Fのグレードで評価します。",
+  },
+  {
+    q: "SEO対策とGEO対策の違いは?",
+    a: "SEOはGoogleなどの従来の検索エンジン向けの最適化、GEOはChatGPTやPerplexityなどのAI検索エンジン向けの最適化です。SEOの基本（構造化データ、メタタグ等）はGEOにも有効ですが、GEOにはllms.txtやAIクローラー許可など固有の施策が必要です。",
+  },
+  {
+    q: "どのAI検索エンジンに対応していますか?",
+    a: "ChatGPT（GPTBot）、Perplexity（PerplexityBot）、Claude（ClaudeBot）、Gemini（Google-Extended）、Microsoft Copilotなど、主要なAI検索エンジンのクローラー対応状況をチェックします。",
+  },
 ];
 
 const jsonLd = {

@@ -47,6 +47,27 @@ export default function LlmsTxtPage() {
           </p>
         </div>
       </section>
+
+      <section className="mt-16">
+        <h2 className="mb-4 text-2xl font-bold text-white">他の生成ツール</h2>
+        <div className="grid gap-4 sm:grid-cols-3">
+          <a href="/generate/robots-txt" className="cursor-pointer rounded-lg border border-white/10 bg-white/5 p-5 transition-all duration-200 hover:border-white/20">
+            <h3 className="mb-1 text-sm font-semibold text-white">robots.txt 生成</h3>
+            <p className="text-xs text-white/40">AIクローラー対応のrobots.txtを生成</p>
+          </a>
+          <a href="/generate/json-ld" className="cursor-pointer rounded-lg border border-white/10 bg-white/5 p-5 transition-all duration-200 hover:border-white/20">
+            <h3 className="mb-1 text-sm font-semibold text-white">JSON-LD 生成</h3>
+            <p className="text-xs text-white/40">構造化データを自動生成</p>
+          </a>
+          <a href="/generate/agent-json" className="cursor-pointer rounded-lg border border-white/10 bg-white/5 p-5 transition-all duration-200 hover:border-white/20">
+            <h3 className="mb-1 text-sm font-semibold text-white">agent.json 生成</h3>
+            <p className="text-xs text-white/40">A2A Agent Cardを自動生成</p>
+          </a>
+        </div>
+        <p className="mt-4 text-center text-sm text-white/40">
+          書き方を知りたい方は <a href="/guides/llms-txt" className="cursor-pointer text-primary/70 transition-all duration-200 hover:text-primary">llms.txt書き方ガイド</a> をご覧ください。
+        </p>
+      </section>
     </div>
   );
 }

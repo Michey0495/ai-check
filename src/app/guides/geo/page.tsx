@@ -184,6 +184,27 @@ export default function GeoGuidePage() {
             GEOスコアをチェック
           </Link>
         </section>
+
+        <section>
+          <h2 className="mb-4 text-2xl font-bold text-white">関連コンテンツ</h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {[
+              { href: "/guides/geo-vs-seo", title: "GEO vs SEO 比較ガイド", desc: "GEOとSEOの違い・共通点を整理" },
+              { href: "/guides/llms-txt", title: "llms.txt書き方ガイド", desc: "llms.txtの構成と記述のコツ" },
+              { href: "/guides/glossary", title: "GEO・AI検索 用語集", desc: "GEO関連の用語をまとめて解説" },
+              { href: "/check/compare", title: "GEOスコア比較", desc: "競合サイトとスコアを横並び比較" },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="cursor-pointer rounded-lg border border-white/10 bg-white/5 p-5 transition-all duration-200 hover:border-white/20"
+              >
+                <h3 className="mb-1 text-sm font-semibold text-white">{item.title}</h3>
+                <p className="text-xs text-white/40">{item.desc}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
       </div>
     </div>
   );

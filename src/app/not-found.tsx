@@ -13,6 +13,30 @@ export default function NotFound() {
       >
         トップに戻る
       </Link>
+
+      <div className="mt-12 grid w-full max-w-2xl gap-4 sm:grid-cols-3">
+        <Link
+          href="/check"
+          className="cursor-pointer rounded-lg border border-white/10 bg-white/5 p-5 text-left transition-all duration-200 hover:border-white/20"
+        >
+          <h2 className="mb-1 text-sm font-semibold text-white">GEOスコアチェック</h2>
+          <p className="text-xs text-white/40">URLを入力してAI検索対応度を診断</p>
+        </Link>
+        <Link
+          href="/generate/llms-txt"
+          className="cursor-pointer rounded-lg border border-white/10 bg-white/5 p-5 text-left transition-all duration-200 hover:border-white/20"
+        >
+          <h2 className="mb-1 text-sm font-semibold text-white">生成ツール</h2>
+          <p className="text-xs text-white/40">llms.txt, robots.txt, JSON-LDを生成</p>
+        </Link>
+        <Link
+          href="/guides/geo"
+          className="cursor-pointer rounded-lg border border-white/10 bg-white/5 p-5 text-left transition-all duration-200 hover:border-white/20"
+        >
+          <h2 className="mb-1 text-sm font-semibold text-white">GEO対策ガイド</h2>
+          <p className="text-xs text-white/40">AI検索最適化の基本を解説</p>
+        </Link>
+      </div>
     </div>
   );
 }

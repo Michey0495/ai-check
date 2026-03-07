@@ -108,6 +108,27 @@ export default function LlmsTxtGuidePage() {
             llms.txtを自動生成
           </Link>
         </section>
+
+        <section>
+          <h2 className="mb-4 text-2xl font-bold text-white">関連コンテンツ</h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {[
+              { href: "/guides/geo", title: "GEO対策ガイド", desc: "AI検索最適化の基本7ステップ" },
+              { href: "/guides/geo-vs-seo", title: "GEO vs SEO 比較ガイド", desc: "GEOとSEOの違いを整理" },
+              { href: "/generate/robots-txt", title: "robots.txt生成ツール", desc: "AIクローラー対応のrobots.txtを生成" },
+              { href: "/generate/agent-json", title: "agent.json生成ツール", desc: "A2A Agent Cardを自動生成" },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="cursor-pointer rounded-lg border border-white/10 bg-white/5 p-5 transition-all duration-200 hover:border-white/20"
+              >
+                <h3 className="mb-1 text-sm font-semibold text-white">{item.title}</h3>
+                <p className="text-xs text-white/40">{item.desc}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
       </div>
     </div>
   );

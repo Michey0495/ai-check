@@ -202,6 +202,27 @@ export default function GlossaryPage() {
           </Link>
         </div>
       </section>
+
+      <section className="mt-16">
+        <h2 className="mb-4 text-2xl font-bold text-white">関連コンテンツ</h2>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {[
+            { href: "/guides/geo-vs-seo", title: "GEO vs SEO 比較ガイド", desc: "GEOとSEOの違い・共通点を整理" },
+            { href: "/guides/llms-txt", title: "llms.txt書き方ガイド", desc: "llms.txtの構成と記述のコツ" },
+            { href: "/generate/json-ld", title: "JSON-LD生成ツール", desc: "構造化データを自動生成" },
+            { href: "/check", title: "GEOスコアチェック", desc: "URLを入力してAI検索対応度を診断" },
+          ].map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="cursor-pointer rounded-lg border border-white/10 bg-white/5 p-5 transition-all duration-200 hover:border-white/20"
+            >
+              <h3 className="mb-1 text-sm font-semibold text-white">{item.title}</h3>
+              <p className="text-xs text-white/40">{item.desc}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

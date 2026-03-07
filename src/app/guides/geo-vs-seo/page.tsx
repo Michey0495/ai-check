@@ -320,6 +320,27 @@ export default function GeoVsSeoPage() {
             </Link>
           </div>
         </section>
+
+        <section>
+          <h2 className="mb-4 text-2xl font-bold text-white">関連コンテンツ</h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {[
+              { href: "/guides/llms-txt", title: "llms.txt書き方ガイド", desc: "llms.txtの構成と記述のコツ" },
+              { href: "/guides/glossary", title: "GEO・AI検索 用語集", desc: "GEO関連の用語をまとめて解説" },
+              { href: "/generate/robots-txt", title: "robots.txt生成ツール", desc: "AIクローラー対応のrobots.txtを生成" },
+              { href: "/generate/llms-txt", title: "llms.txt生成ツール", desc: "AI向けサイト説明ファイルを自動生成" },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="cursor-pointer rounded-lg border border-white/10 bg-white/5 p-5 transition-all duration-200 hover:border-white/20"
+              >
+                <h3 className="mb-1 text-sm font-semibold text-white">{item.title}</h3>
+                <p className="text-xs text-white/40">{item.desc}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
       </div>
     </div>
   );
