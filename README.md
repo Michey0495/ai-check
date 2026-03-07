@@ -30,7 +30,9 @@ http://localhost:3000 で起動。
 | `/generate/json-ld` | JSON-LD構造化データ生成ツール |
 | `/generate/agent-json` | agent.json (A2A Agent Card) 生成ツール |
 | `/guides/geo` | GEO対策ガイド |
+| `/guides/geo-vs-seo` | GEO vs SEO比較ガイド |
 | `/guides/llms-txt` | llms.txt書き方ガイド |
+| `/guides/glossary` | GEO・AI検索用語集 |
 | `/about` | サービス概要 |
 
 ## チェック指標（7項目）
@@ -112,3 +114,12 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - SEO: チェック、比較、About、llms.txtガイドにBreadcrumbList JSON-LD追加
 - SEO: AboutページにSoftwareApplication構造化データ追加
 - UX: 比較ページのURL入力スロットを動的に追加/削除可能に（2〜5サイト）
+
+### Night 6 (完了)
+- コンテンツ: GEO vs SEO比較ガイドページ追加（/guides/geo-vs-seo）- SEOキーワード拡大
+- コンテンツ: GEO・AI検索用語集ページ追加（/guides/glossary）- 15用語、DefinedTermSet構造化データ
+- セキュリティ: チェックAPIにレート制限追加（IP単位、10リクエスト/分）
+- チェック強化: agent.json（A2A Agent Card）の存在検出を構造化データチェックに統合
+- SEO: チェック・比較ページのメタデータ強化（OGタグ追加）
+- ナビゲーション: フッターに新ページへのリンク追加
+- AI公開チャネル: llms.txt, sitemap.xmlを新ページで更新
