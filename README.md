@@ -33,6 +33,7 @@ http://localhost:3000 で起動。
 | `/guides/geo-vs-seo` | GEO vs SEO比較ガイド |
 | `/guides/llms-txt` | llms.txt書き方ガイド |
 | `/guides/checklist` | GEO対策チェックリスト（インタラクティブ・進捗保存） |
+| `/guides/industry` | 業界別GEO対策ガイド（EC・SaaS・メディア・士業・ローカル・教育） |
 | `/guides/glossary` | GEO・AI検索用語集 |
 | `/about` | サービス概要 |
 
@@ -137,3 +138,10 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - パフォーマンス: チェックAPI レスポンスにCache-Controlヘッダー追加（s-maxage=300）
 - SEO: sitemap.xml, llms.txt, フッターにチェックリストページ追加
 - 内部リンク: GEO vs SEOページの関連コンテンツにチェックリストを追加
+
+### Night 9 (完了)
+- コンテンツ: 業界別GEO対策ガイドページ追加（/guides/industry）- EC・SaaS・メディア・士業・ローカルビジネス・教育の6業界、JSON-LD実装例付き
+- チェック強化: メタタグチェックにcanonical URL・lang属性の検出を追加
+- UX: チェック結果ページに「再チェック」ボタン追加
+- UX: チェック結果の各指標に改善ヒント（tip）とツールリンクを表示（fail/warn時）
+- SEO: sitemap.xml, llms.txt, フッター, GEO対策ガイドの関連コンテンツに業界別ガイドを追加

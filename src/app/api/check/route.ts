@@ -189,30 +189,45 @@ function checkMetaTags(html: string): CheckResult {
   const hasDescription = /<meta[^>]*name=["']description["'][^>]*content=["'][^"']+["']/i.test(html);
   const hasOgTitle = /<meta[^>]*property=["']og:title["']/i.test(html);
   const hasOgDesc = /<meta[^>]*property=["']og:description["']/i.test(html);
-  const metaScore = [hasTitle, hasDescription, hasOgTitle, hasOgDesc].filter(Boolean).length;
+  const hasCanonical = /<link[^>]*rel=["']canonical["'][^>]*href=["'][^"']+["']/i.test(html);
+  const hasLang = /<html[^>]*lang=["'][^"']+["']/i.test(html);
 
-  if (metaScore >= 4) {
+  const coreItems = [hasTitle, hasDescription, hasOgTitle, hasOgDesc];
+  const coreScore = coreItems.filter(Boolean).length;
+  const bonusItems = [hasCanonical, hasLang];
+  const bonusCount = bonusItems.filter(Boolean).length;
+
+  const bonusDetails: string[] = [];
+  if (hasCanonical) bonusDetails.push("canonical URL設定済み");
+  if (hasLang) bonusDetails.push("lang属性設定済み");
+
+  if (coreScore >= 4) {
+    const bonusText = bonusDetails.length > 0 ? ` ${bonusDetails.join("、")}。` : "";
     return {
       id: "meta-tags",
       score: 15,
       maxScore: 15,
       status: "pass",
       message: "メタタグ: 完全",
-      details: "title, description, OGPタグが適切に設定されています。",
+      details: `title, description, OGPタグが適切に設定されています。${bonusText}`,
     };
-  } else if (metaScore >= 2) {
+  } else if (coreScore >= 2) {
     const missing = [];
     if (!hasTitle) missing.push("title");
     if (!hasDescription) missing.push("meta description");
     if (!hasOgTitle) missing.push("og:title");
     if (!hasOgDesc) missing.push("og:description");
+    const extras: string[] = [];
+    if (!hasCanonical) extras.push("canonical URL");
+    if (!hasLang) extras.push("lang属性");
+    const extrasText = extras.length > 0 ? ` また、${extras.join("・")}の設定も推奨します。` : "";
     return {
       id: "meta-tags",
       score: 8,
       maxScore: 15,
       status: "warn",
       message: "メタタグ: 一部不足",
-      details: `以下のメタタグが不足しています: ${missing.join(", ")}`,
+      details: `以下のメタタグが不足しています: ${missing.join(", ")}${extrasText}`,
     };
   }
   return {
@@ -221,7 +236,7 @@ function checkMetaTags(html: string): CheckResult {
     maxScore: 15,
     status: "fail",
     message: "メタタグ: 不足",
-    details: "基本的なメタタグ（title, description, OGP）が不足しています。",
+    details: "基本的なメタタグ（title, description, OGP）が不足しています。canonical URL、lang属性の設定も推奨します。",
   };
 }
 

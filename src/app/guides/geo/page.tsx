@@ -192,6 +192,7 @@ export default function GeoGuidePage() {
               { href: "/guides/geo-vs-seo", title: "GEO vs SEO 比較ガイド", desc: "GEOとSEOの違い・共通点を整理" },
               { href: "/guides/llms-txt", title: "llms.txt書き方ガイド", desc: "llms.txtの構成と記述のコツ" },
               { href: "/guides/glossary", title: "GEO・AI検索 用語集", desc: "GEO関連の用語をまとめて解説" },
+              { href: "/guides/industry", title: "業界別GEO対策", desc: "EC・SaaS・メディア等の業界固有の対策" },
               { href: "/check/compare", title: "GEOスコア比較", desc: "競合サイトとスコアを横並び比較" },
             ].map((item) => (
               <Link

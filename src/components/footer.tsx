@@ -69,6 +69,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/guides/industry" className="transition-all duration-200 hover:text-white/70 cursor-pointer">
+                  業界別GEO対策
+                </Link>
+              </li>
+              <li>
                 <Link href="/guides/glossary" className="transition-all duration-200 hover:text-white/70 cursor-pointer">
                   用語集
                 </Link>

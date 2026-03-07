@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo, useSyncExternalStore } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { UrlCheckForm } from "@/components/url-check-form";
 import { Badge } from "@/components/ui/badge";
@@ -250,14 +250,43 @@ function CheckHistory({ currentUrl }: { currentUrl: string }) {
   );
 }
 
+const indicatorTips: Record<string, { tip: string; guide?: string }> = {
+  "robots-txt": {
+    tip: "robots.txtでGPTBot, ClaudeBot, PerplexityBot等を明示的にAllowに設定しましょう。",
+    guide: "/generate/robots-txt",
+  },
+  "llms-txt": {
+    tip: "サイト概要・主要ページ・API情報をまとめたllms.txtを設置しましょう。",
+    guide: "/generate/llms-txt",
+  },
+  "structured-data": {
+    tip: "業界に合ったJSON-LD構造化データを設置しましょう。Product, Article, FAQPage等が有効です。",
+    guide: "/generate/json-ld",
+  },
+  "meta-tags": {
+    tip: "title, meta description, OGPタグ、canonical URL、lang属性を全ページに設定しましょう。",
+  },
+  "content-structure": {
+    tip: "h1, main, nav, article, section等のセマンティックHTMLタグで文書構造を明確にしましょう。",
+  },
+  "ssr": {
+    tip: "サーバーサイドレンダリング（SSR/SSG）を使用し、HTMLにコンテンツを含めましょう。",
+  },
+  "sitemap": {
+    tip: "全主要ページを含むsitemap.xmlを設置し、robots.txtからリンクしましょう。",
+  },
+};
+
 export function CheckPageClient() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const url = searchParams.get("url") ?? "";
   const [report, setReport] = useState<CheckReport | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
   const [urlCopied, setUrlCopied] = useState(false);
+  const [recheckKey, setRecheckKey] = useState(0);
 
   useEffect(() => {
     if (!url) return;
@@ -291,7 +320,12 @@ export function CheckPageClient() {
     runCheck();
 
     return () => { cancelled = true; };
-  }, [url]);
+  }, [url, recheckKey]);
+
+  const handleRecheck = useCallback(() => {
+    if (!url || loading) return;
+    setRecheckKey((k) => k + 1);
+  }, [url, loading]);
 
   const handleCopyReport = useCallback(() => {
     if (!report) return;
@@ -410,6 +444,14 @@ export function CheckPageClient() {
               >
                 {urlCopied ? "URLコピー済み" : "URLをコピー"}
               </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="cursor-pointer border-primary/30 bg-primary/10 text-primary transition-all duration-200 hover:bg-primary/20"
+                onClick={handleRecheck}
+              >
+                再チェック
+              </Button>
             </div>
           </div>
 
@@ -450,6 +492,21 @@ export function CheckPageClient() {
                   </div>
                   <span className="text-xs text-white/30">{r.score}/{r.maxScore}</span>
                 </div>
+                {r.status !== "pass" && indicatorTips[r.id] && (
+                  <div className="mt-3 rounded border border-primary/10 bg-primary/5 px-4 py-2.5">
+                    <p className="text-xs leading-relaxed text-primary/80">
+                      {indicatorTips[r.id].tip}
+                    </p>
+                    {indicatorTips[r.id].guide && (
+                      <Link
+                        href={indicatorTips[r.id].guide!}
+                        className="mt-1 inline-block cursor-pointer text-xs text-primary/60 transition-all duration-200 hover:text-primary"
+                      >
+                        ツールで修正 →
+                      </Link>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
           </div>
