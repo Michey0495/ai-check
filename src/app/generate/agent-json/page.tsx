@@ -7,9 +7,22 @@ export const metadata: Metadata = {
     "A2A（Agent-to-Agent）プロトコル対応のagent.jsonを自動生成。AIエージェント同士が連携するための名刺ファイル。",
 };
 
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "AI Check", item: "https://ai-check.ezoai.jp" },
+    { "@type": "ListItem", position: 2, name: "agent.json 生成ツール", item: "https://ai-check.ezoai.jp/generate/agent-json" },
+  ],
+};
+
 export default function AgentJsonPage() {
   return (
     <div className="py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <h1 className="mb-2 text-3xl font-bold text-white">
         agent.json 生成ツール
       </h1>

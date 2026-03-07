@@ -13,6 +13,11 @@ export function Footer() {
                   GEOスコアチェック
                 </Link>
               </li>
+              <li>
+                <Link href="/check/compare" className="transition-all duration-200 hover:text-white/70 cursor-pointer">
+                  GEOスコア比較
+                </Link>
+              </li>
             </ul>
           </div>
           <div>

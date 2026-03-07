@@ -7,9 +7,22 @@ export const metadata: Metadata = {
     "AIクローラー（GPTBot, ClaudeBot, PerplexityBot等）対応のrobots.txtを自動生成。AI検索に対応するための第一歩。",
 };
 
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "AI Check", item: "https://ai-check.ezoai.jp" },
+    { "@type": "ListItem", position: 2, name: "robots.txt 生成ツール", item: "https://ai-check.ezoai.jp/generate/robots-txt" },
+  ],
+};
+
 export default function RobotsTxtPage() {
   return (
     <div className="py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <h1 className="mb-2 text-3xl font-bold text-white">
         robots.txt 生成ツール
       </h1>

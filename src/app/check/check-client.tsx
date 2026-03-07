@@ -257,6 +257,7 @@ export function CheckPageClient() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
+  const [urlCopied, setUrlCopied] = useState(false);
 
   useEffect(() => {
     if (!url) return;
@@ -303,12 +304,32 @@ export function CheckPageClient() {
     if (!report) return;
     const text = generateReportText(report);
     const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
+    const blobUrl = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url;
+    a.href = blobUrl;
     a.download = `ai-check-report-${new Date().toISOString().split("T")[0]}.txt`;
     a.click();
-    URL.revokeObjectURL(url);
+    URL.revokeObjectURL(blobUrl);
+  }, [report]);
+
+  const handleShareX = useCallback(() => {
+    if (!report) return;
+    const pct = Math.round((report.totalScore / report.maxScore) * 100);
+    const text = `AI検索対応度チェック結果: ${report.grade}ランク (${pct}/100)\n${report.url}\n\n#GEO対策 #AI検索`;
+    const shareUrl = `https://ai-check.ezoai.jp/check?url=${encodeURIComponent(report.url)}`;
+    window.open(
+      `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
+  }, [report]);
+
+  const handleCopyShareUrl = useCallback(() => {
+    if (!report) return;
+    const shareUrl = `https://ai-check.ezoai.jp/check?url=${encodeURIComponent(report.url)}`;
+    navigator.clipboard.writeText(shareUrl);
+    setUrlCopied(true);
+    setTimeout(() => setUrlCopied(false), 2000);
   }, [report]);
 
   return (
@@ -355,7 +376,7 @@ export function CheckPageClient() {
             <p className="mt-2 text-sm text-white/40">
               チェック日時: {new Date(report.checkedAt).toLocaleString("ja-JP")}
             </p>
-            <div className="mt-4 flex justify-center gap-3">
+            <div className="mt-4 flex flex-wrap justify-center gap-3">
               <Button
                 variant="outline"
                 size="sm"
@@ -372,8 +393,26 @@ export function CheckPageClient() {
               >
                 テキストで保存
               </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="cursor-pointer border-white/10 bg-white/5 text-white/70 transition-all duration-200 hover:bg-white/10 hover:text-white"
+                onClick={handleShareX}
+              >
+                Xでシェア
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="cursor-pointer border-white/10 bg-white/5 text-white/70 transition-all duration-200 hover:bg-white/10 hover:text-white"
+                onClick={handleCopyShareUrl}
+              >
+                {urlCopied ? "URLコピー済み" : "URLをコピー"}
+              </Button>
             </div>
           </div>
+
+          <CheckHistory currentUrl={report.url} />
 
           <PriorityActions report={report} />
 
@@ -420,6 +459,12 @@ export function CheckPageClient() {
         <div className="space-y-12">
           <div className="py-16 text-center text-white/40">
             <p className="text-lg">上のフォームにURLを入力してチェックを開始</p>
+            <Link
+              href="/check/compare"
+              className="mt-4 inline-block cursor-pointer text-sm text-primary/70 transition-all duration-200 hover:text-primary"
+            >
+              複数サイトを比較する →
+            </Link>
           </div>
           <CheckHistory currentUrl="" />
         </div>

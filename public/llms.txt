@@ -5,6 +5,7 @@
 ## 主要ページ
 - [トップ](https://ai-check.ezoai.jp/): GEOスコアチェック入力、7指標の説明、FAQ
 - [チェック](https://ai-check.ezoai.jp/check): URLを入力してAI検索対応度をチェック
+- [スコア比較](https://ai-check.ezoai.jp/check/compare): 複数サイトのGEOスコアを横並びで比較
 - [llms.txt生成](https://ai-check.ezoai.jp/generate/llms-txt): AI向けサイト説明ファイル生成ツール
 - [robots.txt生成](https://ai-check.ezoai.jp/generate/robots-txt): AIクローラー対応robots.txt生成ツール
 - [JSON-LD生成](https://ai-check.ezoai.jp/generate/json-ld): Schema.org構造化データ生成ツール

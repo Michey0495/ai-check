@@ -8,7 +8,8 @@
     "llms.txt生成",
     "robots.txt生成（AIクローラー対応）",
     "JSON-LD構造化データ生成",
-    "agent.json（A2A Agent Card）生成"
+    "agent.json（A2A Agent Card）生成",
+    "複数サイトGEOスコア比較"
   ],
   "endpoints": {
     "mcp": "https://ai-check.ezoai.jp/api/mcp",

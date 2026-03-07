@@ -7,9 +7,71 @@ export const metadata: Metadata = {
     "GEO（Generative Engine Optimization）対策の完全ガイド。ChatGPT, Perplexity, GeminiなどのAI検索エンジンに対応するための7つのステップを解説。",
 };
 
+const howToJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  name: "GEO対策の方法 - AI検索最適化7ステップ",
+  description:
+    "ChatGPT、Perplexity、GeminiなどのAI検索エンジンに自サイトの情報を正しく参照してもらうための7ステップガイド。",
+  step: [
+    {
+      "@type": "HowToStep",
+      name: "AIクローラーのアクセスを許可する",
+      text: "robots.txtでGPTBot, ClaudeBot, PerplexityBot等のAIクローラーを明示的に許可します。",
+    },
+    {
+      "@type": "HowToStep",
+      name: "llms.txtを設置する",
+      text: "AIエージェントにサイトの概要を伝えるllms.txtファイルをサイトのルートに設置します。",
+    },
+    {
+      "@type": "HowToStep",
+      name: "構造化データ（JSON-LD）を設置する",
+      text: "Schema.org準拠のJSON-LD構造化データを設置し、AIがコンテンツを正確に理解できるようにします。",
+    },
+    {
+      "@type": "HowToStep",
+      name: "メタタグを最適化する",
+      text: "title, meta description, OGPタグを適切に設定します。",
+    },
+    {
+      "@type": "HowToStep",
+      name: "セマンティックHTMLを使用する",
+      text: "h1-h6, article, section, nav, main等のセマンティックタグを正しく使用します。",
+    },
+    {
+      "@type": "HowToStep",
+      name: "サーバーサイドレンダリングを確保する",
+      text: "重要なコンテンツがHTMLに含まれるよう、SSRまたはSSGを使用します。",
+    },
+    {
+      "@type": "HowToStep",
+      name: "サイトマップを最適化する",
+      text: "sitemap.xmlを設置し、全ての重要なページを登録します。",
+    },
+  ],
+};
+
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "AI Check", item: "https://ai-check.ezoai.jp" },
+    { "@type": "ListItem", position: 2, name: "GEO対策ガイド", item: "https://ai-check.ezoai.jp/guides/geo" },
+  ],
+};
+
 export default function GeoGuidePage() {
   return (
     <div className="py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <h1 className="mb-4 text-3xl font-bold text-white">
         GEO対策ガイド - AI検索最適化の基本
       </h1>

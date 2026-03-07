@@ -24,6 +24,7 @@ http://localhost:3000 で起動。
 |------|------|
 | `/` | トップページ: URL入力、7指標説明、FAQ |
 | `/check` | GEOスコアチェック結果ページ |
+| `/check/compare` | 複数サイトGEOスコア比較 |
 | `/generate/llms-txt` | llms.txt生成ツール |
 | `/generate/robots-txt` | robots.txt生成ツール（AIクローラー対応） |
 | `/generate/json-ld` | JSON-LD構造化データ生成ツール |
@@ -95,3 +96,12 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
   - 改善アクションセクション（影響度順、生成ツールへの直リンク）
   - チェック履歴（localStorage、直近20件保存）
 - About page tech stack修正（Next.js 16 → 15）
+
+### Night 4 (完了)
+- モバイルナビゲーション（ハンバーガーメニュー）追加
+- チェック結果のソーシャルシェア機能（X/Twitter共有、URL共有）
+- 複数サイトGEOスコア比較ページ（/check/compare）追加
+- チェックAPI改善（並行フェッチ化で高速化、コード整理）
+- 全サブページにBreadcrumbList構造化データ（JSON-LD）追加
+- GEO対策ガイドにHowTo構造化データ追加
+- AI公開チャネル更新（llms.txt, agent.json に比較機能追記）

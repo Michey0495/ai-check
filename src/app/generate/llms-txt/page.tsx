@@ -7,9 +7,22 @@ export const metadata: Metadata = {
     "AI向けサイト説明ファイル（llms.txt）をフォーム入力だけで自動生成。AI検索エンジンにサイト情報を正しく伝える第一歩。",
 };
 
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "AI Check", item: "https://ai-check.ezoai.jp" },
+    { "@type": "ListItem", position: 2, name: "llms.txt 生成ツール", item: "https://ai-check.ezoai.jp/generate/llms-txt" },
+  ],
+};
+
 export default function LlmsTxtPage() {
   return (
     <div className="py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <h1 className="mb-2 text-3xl font-bold text-white">llms.txt 生成ツール</h1>
       <p className="mb-8 text-white/50">
         AI向けサイト説明ファイルをフォーム入力だけで自動生成。サイトのルートに配置してください。
