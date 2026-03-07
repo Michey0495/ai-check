@@ -150,7 +150,7 @@ export function LlmsTxtGenerator() {
         ) : (
           <div className="flex h-full items-center justify-center rounded-lg border border-dashed border-white/10 p-8">
             <p className="text-center text-sm text-white/30">
-              左のフォームに入力して
+              フォームに入力して
               <br />
               「生成」をクリック
             </p>
