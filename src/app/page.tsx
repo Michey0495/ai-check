@@ -64,6 +64,42 @@ const faqJsonLd = {
   })),
 };
 
+const howToJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  name: "GEO対策の始め方 - AI検索対応度をチェックする方法",
+  description:
+    "URLを入力するだけでWebサイトのAI検索対応度をチェックし、改善コードを自動生成する3ステップ。",
+  step: [
+    {
+      "@type": "HowToStep",
+      position: 1,
+      name: "URLを入力",
+      text: "チェックしたいWebサイトのURLを入力。登録不要で即座に分析開始。",
+      url: "https://ai-check.ezoai.jp",
+    },
+    {
+      "@type": "HowToStep",
+      position: 2,
+      name: "スコアを確認",
+      text: "7つの指標でAI検索対応度をスコア化。問題点と改善ポイントを表示。",
+      url: "https://ai-check.ezoai.jp/check",
+    },
+    {
+      "@type": "HowToStep",
+      position: 3,
+      name: "コードを生成",
+      text: "llms.txt, robots.txt, JSON-LD等の修正コードをワンクリックで自動生成・ダウンロード。",
+      url: "https://ai-check.ezoai.jp/generate/llms-txt",
+    },
+  ],
+  totalTime: "PT30S",
+  tool: {
+    "@type": "HowToTool",
+    name: "AI Check - GEO対策ツール",
+  },
+};
+
 export default function Home() {
   return (
     <div className="py-16">
@@ -74,6 +110,10 @@ export default function Home() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
       />
       {/* Hero */}
       <section className="py-16 text-center">
@@ -106,6 +146,25 @@ export default function Home() {
               <p className="mt-1 text-xs text-white/40 sm:text-sm">{item.label}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Supported AI Engines */}
+      <section className="py-12">
+        <p className="mb-6 text-center text-sm text-white/30">
+          対応AIエンジン
+        </p>
+        <div className="mx-auto flex max-w-2xl flex-wrap items-center justify-center gap-8">
+          {["ChatGPT", "Perplexity", "Gemini", "Claude", "Copilot"].map(
+            (engine) => (
+              <span
+                key={engine}
+                className="text-lg font-medium text-white/20"
+              >
+                {engine}
+              </span>
+            )
+          )}
         </div>
       </section>
 
