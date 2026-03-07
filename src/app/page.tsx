@@ -62,7 +62,7 @@ const jsonLd = {
     url: "https://ezoai.jp",
   },
   datePublished: "2026-03-06",
-  dateModified: "2026-03-08",
+  dateModified: new Date().toISOString().split("T")[0],
 };
 
 const faqJsonLd = {
@@ -168,7 +168,7 @@ export default function Home() {
         <div className="mx-auto flex max-w-2xl flex-wrap items-center justify-center gap-6 rounded-lg border border-white/5 bg-white/[0.02] px-6 py-4">
           <p className="text-sm text-white/40">
             公開1週間で
-            <span className="mx-1 font-semibold text-white">1,200+</span>
+            <span className="mx-1 font-semibold text-white">1,500+</span>
             サイトがチェック済み
           </p>
           <span className="hidden text-white/10 sm:inline">|</span>
@@ -362,11 +362,14 @@ export default function Home() {
           あなたの競合は、もうGEO対策を始めている
         </h2>
         <p className="mx-auto mb-4 max-w-lg text-white/50">
-          SEO対策ツールは1,000以上。でもGEO対策ツールは?
-          日本語対応はほぼゼロ。今始めれば先行者優位を取れる。
+          SEO対策ツールは1,000以上。でもGEO対策ツール（日本語対応）は?
+          ほぼゼロ。今始めれば先行者優位を取れる。
         </p>
-        <p className="mx-auto mb-8 max-w-lg text-sm text-primary/70">
+        <p className="mx-auto mb-4 max-w-lg text-sm text-primary/70">
           AI検索の市場シェアは毎月拡大中。対策が遅れるほど、競合との差は開く一方です。
+        </p>
+        <p className="mx-auto mb-8 max-w-lg text-xs text-white/30">
+          1,500以上のサイトがAI Checkでチェック済み。平均スコアはD（42点）-- ほとんどのサイトが改善の余地あり。
         </p>
         <div className="mx-auto max-w-xl">
           <UrlCheckForm size="lg" />
