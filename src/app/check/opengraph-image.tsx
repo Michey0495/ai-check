@@ -1,18 +1,9 @@
 import { ImageResponse } from "next/og";
-import { NextRequest } from "next/server";
 
 export const runtime = "edge";
 export const alt = "GEOスコアチェック結果 - AI Check";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-
-const gradeColors: Record<string, string> = {
-  A: "#4ade80",
-  B: "#60a5fa",
-  C: "#facc15",
-  D: "#fb923c",
-  F: "#f87171",
-};
 
 export default function Image({ searchParams }: { searchParams: { url?: string } }) {
   const url = searchParams?.url;
