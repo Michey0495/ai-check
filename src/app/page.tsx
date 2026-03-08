@@ -61,13 +61,6 @@ const jsonLd = {
     name: "ezoai.jp",
     url: "https://ezoai.jp",
   },
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.8",
-    ratingCount: "142",
-    bestRating: "5",
-    worstRating: "1",
-  },
   datePublished: "2026-03-06",
   dateModified: new Date().toISOString().split("T")[0],
 };

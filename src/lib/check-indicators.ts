@@ -109,6 +109,9 @@ export type CheckReport = {
   results: CheckResult[];
   checkedAt: string;
   responseTimeMs?: number;
+  ogImage?: string;
+  siteTitle?: string;
+  favicon?: string;
 };
 
 export function getGrade(score: number, maxScore: number): CheckReport["grade"] {

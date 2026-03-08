@@ -15,6 +15,7 @@ type HistoryEntry = {
   maxScore: number;
   grade: string;
   checkedAt: string;
+  previousScore?: number;
 };
 
 const HISTORY_KEY = "aicheck-history";
@@ -29,14 +30,22 @@ function getHistory(): HistoryEntry[] {
   }
 }
 
+function getPreviousScore(url: string): number | undefined {
+  const history = getHistory();
+  const prev = history.find((h) => h.url === url);
+  return prev ? Math.round((prev.totalScore / prev.maxScore) * 100) : undefined;
+}
+
 function saveToHistory(report: CheckReport) {
   const history = getHistory();
+  const previous = history.find((h) => h.url === report.url);
   const entry: HistoryEntry = {
     url: report.url,
     totalScore: report.totalScore,
     maxScore: report.maxScore,
     grade: report.grade,
     checkedAt: report.checkedAt,
+    previousScore: previous ? Math.round((previous.totalScore / previous.maxScore) * 100) : undefined,
   };
   const filtered = history.filter((h) => h.url !== entry.url);
   filtered.unshift(entry);
@@ -287,6 +296,13 @@ export function CheckPageClient() {
   const [copied, setCopied] = useState(false);
   const [urlCopied, setUrlCopied] = useState(false);
   const [recheckKey, setRecheckKey] = useState(0);
+  const [prevScore, setPrevScore] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    if (url) {
+      setPrevScore(getPreviousScore(url));
+    }
+  }, [url]);
 
   useEffect(() => {
     if (!url) return;
@@ -429,13 +445,62 @@ export function CheckPageClient() {
 
       {report && (
         <div className="space-y-8">
+          {/* Site preview with OG image */}
+          {(report.ogImage || report.siteTitle) && (
+            <div className="mx-auto max-w-xl overflow-hidden rounded-lg border border-white/10 bg-white/5">
+              {report.ogImage && (
+                <div className="aspect-[1200/630] w-full overflow-hidden bg-black/30">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={report.ogImage}
+                    alt={report.siteTitle || "Site preview"}
+                    className="h-full w-full object-cover"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                  />
+                </div>
+              )}
+              <div className="flex items-center gap-3 px-4 py-3">
+                {report.favicon && (
+                  <div className="h-5 w-5 shrink-0">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={report.favicon}
+                      alt=""
+                      className="h-5 w-5 rounded"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                    />
+                  </div>
+                )}
+                <div className="min-w-0">
+                  {report.siteTitle && (
+                    <p className="truncate text-sm font-medium text-white/80">{report.siteTitle}</p>
+                  )}
+                  <p className="mt-0.5 truncate text-xs text-white/40">{report.url}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="text-center">
-            <p className="mb-4 text-sm text-white/50">{report.url}</p>
+            {!report.ogImage && !report.siteTitle && (
+              <p className="mb-4 text-sm text-white/50">{report.url}</p>
+            )}
             <ScoreCircle
               score={report.totalScore}
               maxScore={report.maxScore}
               grade={report.grade}
             />
+            {/* Score trend */}
+            {prevScore !== undefined && (() => {
+              const currentPct = Math.round((report.totalScore / report.maxScore) * 100);
+              const diff = currentPct - prevScore;
+              if (diff === 0) return <p className="mt-1 text-xs text-white/40">前回と同じスコアです</p>;
+              return (
+                <p className={`mt-1 text-xs ${diff > 0 ? "text-green-400" : "text-red-400"}`}>
+                  前回比 {diff > 0 ? "+" : ""}{diff}pt {diff > 0 ? "改善" : "低下"}
+                </p>
+              );
+            })()}
             <p className="mt-2 text-sm text-white/40">
               チェック日時: {new Date(report.checkedAt).toLocaleString("ja-JP")}
               {report.responseTimeMs != null && (
@@ -508,7 +573,12 @@ export function CheckPageClient() {
                 className="rounded-lg border border-white/10 bg-white/5 p-6"
               >
                 <div className="mb-2 flex items-center justify-between">
-                  <h3 className="font-semibold text-white">{r.message}</h3>
+                  <Link
+                    href={`/check/${r.id}`}
+                    className="cursor-pointer font-semibold text-white transition-all duration-200 hover:text-primary"
+                  >
+                    {r.message}
+                  </Link>
                   <StatusBadge status={r.status} />
                 </div>
                 {r.details && (
@@ -552,25 +622,36 @@ export function CheckPageClient() {
             ))}
           </div>
 
-          <div className="rounded-lg border border-white/10 bg-white/5 p-6">
-            <h2 className="mb-2 text-lg font-semibold text-white">GEOスコアバッジ</h2>
-            <p className="mb-4 text-sm text-white/50">
-              このスコアをREADMEやサイトに埋め込めます。
-            </p>
-            <div className="flex items-center gap-4">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={`/api/badge?url=${encodeURIComponent(report.url)}&style=flat`}
-                alt="GEO Score Badge"
-                className="h-5"
-              />
-              <Link
-                href={`/generate/badge?url=${encodeURIComponent(report.url)}`}
-                className="cursor-pointer text-sm text-primary/70 transition-all duration-200 hover:text-primary"
-              >
-                埋め込みコードを取得 →
-              </Link>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+              <h2 className="mb-2 text-lg font-semibold text-white">GEOスコアバッジ</h2>
+              <p className="mb-4 text-sm text-white/50">
+                このスコアをREADMEやサイトに埋め込めます。
+              </p>
+              <div className="flex items-center gap-4">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`/api/badge?url=${encodeURIComponent(report.url)}&style=flat`}
+                  alt="GEO Score Badge"
+                  className="h-5"
+                />
+                <Link
+                  href={`/generate/badge?url=${encodeURIComponent(report.url)}`}
+                  className="cursor-pointer text-sm text-primary/70 transition-all duration-200 hover:text-primary"
+                >
+                  埋め込みコードを取得 →
+                </Link>
+              </div>
             </div>
+            <Link
+              href={`/check/compare?url1=${encodeURIComponent(report.url)}`}
+              className="flex cursor-pointer flex-col justify-center rounded-lg border border-primary/20 bg-primary/5 p-6 transition-all duration-200 hover:border-primary/30 hover:bg-primary/10"
+            >
+              <h2 className="mb-2 text-lg font-semibold text-white">競合と比較</h2>
+              <p className="text-sm text-white/50">
+                このサイトと競合サイトのGEOスコアを並べて比較します。
+              </p>
+            </Link>
           </div>
         </div>
       )}

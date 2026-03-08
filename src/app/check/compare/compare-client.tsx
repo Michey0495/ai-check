@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,7 +41,9 @@ const gradeColors: Record<string, string> = {
 const MAX_URLS = 5;
 
 export function CompareClient() {
-  const [urls, setUrls] = useState(["", ""]);
+  const searchParams = useSearchParams();
+  const initialUrl1 = searchParams.get("url1") ?? "";
+  const [urls, setUrls] = useState([initialUrl1, ""]);
   const [results, setResults] = useState<CompareResult[]>([]);
   const [running, setRunning] = useState(false);
 

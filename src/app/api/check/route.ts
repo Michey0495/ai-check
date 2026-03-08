@@ -466,6 +466,16 @@ export async function POST(request: NextRequest) {
 
     const responseTimeMs = Date.now() - startTime;
 
+    // Extract og:image, title, and favicon for preview
+    const ogImageMatch = html.match(/<meta[^>]*property=["']og:image["'][^>]*content=["']([^"']+)["']/i)
+      ?? html.match(/<meta[^>]*content=["']([^"']+)["'][^>]*property=["']og:image["']/i);
+    const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+    const faviconMatch = html.match(/<link[^>]*rel=["'](?:icon|shortcut icon)["'][^>]*href=["']([^"']+)["']/i);
+    let faviconUrl = faviconMatch?.[1];
+    if (faviconUrl && !faviconUrl.startsWith("http")) {
+      faviconUrl = faviconUrl.startsWith("/") ? `${baseUrl}${faviconUrl}` : `${baseUrl}/${faviconUrl}`;
+    }
+
     const report: CheckReport = {
       url,
       totalScore,
@@ -474,6 +484,9 @@ export async function POST(request: NextRequest) {
       results,
       checkedAt: new Date().toISOString(),
       responseTimeMs,
+      ogImage: ogImageMatch?.[1] || undefined,
+      siteTitle: titleMatch?.[1]?.trim() || undefined,
+      favicon: faviconUrl || `${baseUrl}/favicon.ico`,
     };
 
     return NextResponse.json(report, {
