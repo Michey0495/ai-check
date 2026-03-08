@@ -567,7 +567,7 @@ export function CheckPageClient() {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={report.favicon}
-                      alt=""
+                      alt="Favicon"
                       className="h-5 w-5 rounded"
                       onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                     />

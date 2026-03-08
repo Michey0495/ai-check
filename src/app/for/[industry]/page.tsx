@@ -1518,7 +1518,7 @@ export default async function IndustryPage({
       </section>
 
       {/* CTA: check form */}
-      <section className="mb-16 rounded-lg border border-cyan-400/20 bg-white/5 p-6 sm:p-8">
+      <section className="mb-16 rounded-lg border border-primary/20 bg-white/5 p-6 sm:p-8">
         <h2 className="mb-2 text-lg font-bold text-white">
           まずは現状をチェック
         </h2>
@@ -1565,7 +1565,7 @@ export default async function IndustryPage({
               className="rounded-lg border border-white/10 bg-white/5 p-6"
             >
               <div className="mb-3 flex items-center gap-3">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-cyan-400/10 text-sm font-bold text-cyan-400">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
                   {i + 1}
                 </span>
                 <h3 className="text-lg font-semibold text-white">{r.title}</h3>
@@ -1597,7 +1597,7 @@ export default async function IndustryPage({
           {data.schemaSection.types.map((t) => (
             <span
               key={t}
-              className="rounded border border-cyan-400/20 bg-cyan-400/5 px-3 py-1 text-sm text-cyan-400/80"
+              className="rounded border border-primary/20 bg-primary/5 px-3 py-1 text-sm text-primary/80"
             >
               {t}
             </span>
