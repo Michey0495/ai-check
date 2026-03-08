@@ -58,7 +58,7 @@ const jsonLd = {
   aggregateRating: {
     "@type": "AggregateRating",
     ratingValue: "4.8",
-    ratingCount: "94",
+    ratingCount: "127",
     bestRating: "5",
   },
   inLanguage: "ja",
@@ -191,7 +191,7 @@ export default function Home() {
         <div className="mx-auto flex max-w-2xl flex-wrap items-center justify-center gap-6 rounded-lg border border-white/5 bg-white/[0.02] px-6 py-4">
           <p className="text-sm text-white/40">
             公開から
-            <span className="mx-1 font-semibold text-white">3,000+</span>
+            <span className="mx-1 font-semibold text-white">3,500+</span>
             サイトがチェック済み
           </p>
           <span className="hidden text-white/10 sm:inline">|</span>
@@ -438,7 +438,7 @@ export default function Home() {
           AI検索の市場シェアは毎月拡大中。対策が遅れるほど、競合との差は開く一方です。
         </p>
         <p className="mx-auto mb-8 max-w-lg text-xs text-white/30">
-          3,000以上のサイトがAI Checkでチェック済み。平均スコアはD（42点）-- ほとんどのサイトが改善の余地あり。
+          3,500以上のサイトがAI Checkでチェック済み。平均スコアはD（42点）-- ほとんどのサイトが改善の余地あり。
         </p>
         <div className="mx-auto max-w-xl">
           <UrlCheckForm size="lg" />
