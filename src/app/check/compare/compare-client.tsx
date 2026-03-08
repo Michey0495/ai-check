@@ -7,6 +7,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { CheckReport } from "@/lib/check-indicators";
 
+function generateCSV(results: { url: string; report: CheckReport | null; error: string }[]): string {
+  const reports = results.filter((r) => r.report !== null);
+  if (reports.length === 0) return "";
+
+  const indicators = reports[0].report!.results.map((r) => r.message.split(":")[0]);
+  const header = ["URL", "グレード", "スコア", ...indicators].join(",");
+  const rows = reports.map((r) => {
+    const rpt = r.report!;
+    const pct = Math.round((rpt.totalScore / rpt.maxScore) * 100);
+    const scores = rpt.results.map((item) => `${item.score}/${item.maxScore}`);
+    return [`"${rpt.url}"`, rpt.grade, `${pct}/100`, ...scores].join(",");
+  });
+  return [header, ...rows].join("\n");
+}
+
 type CompareResult = {
   url: string;
   report: CheckReport | null;
@@ -111,6 +126,18 @@ export function CompareClient() {
     setRunning(false);
   }, [urls]);
 
+  const handleExportCSV = useCallback(() => {
+    const csv = generateCSV(results);
+    if (!csv) return;
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = blobUrl;
+    a.download = `geo-score-compare-${new Date().toISOString().split("T")[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(blobUrl);
+  }, [results]);
+
   const hasResults = results.length > 0;
   const reports = results.filter((r) => r.report !== null);
 
@@ -210,6 +237,20 @@ export function CompareClient() {
               </div>
             ))}
           </div>
+
+          {/* Export */}
+          {reports.length >= 2 && (
+            <div className="flex justify-end">
+              <Button
+                variant="outline"
+                size="sm"
+                className="cursor-pointer border-white/10 bg-white/5 text-white/70 transition-all duration-200 hover:bg-white/10 hover:text-white"
+                onClick={handleExportCSV}
+              >
+                CSVでエクスポート
+              </Button>
+            </div>
+          )}
 
           {/* Detail comparison */}
           {reports.length >= 2 && (

@@ -218,6 +218,8 @@ function checkMetaTags(html: string): CheckResult {
   const hasOgTitle = /<meta[^>]*property=["']og:title["']/i.test(html);
   const hasOgDesc = /<meta[^>]*property=["']og:description["']/i.test(html);
   const hasOgImage = /<meta[^>]*property=["']og:image["']/i.test(html);
+  const hasOgType = /<meta[^>]*property=["']og:type["']/i.test(html);
+  const hasTwitterCard = /<meta[^>]*name=["']twitter:card["']/i.test(html);
   const hasCanonical = /<link[^>]*rel=["']canonical["'][^>]*href=["'][^"']+["']/i.test(html);
   const hasLang = /<html[^>]*lang=["'][^"']+["']/i.test(html);
   const hasViewport = /<meta[^>]*name=["']viewport["']/i.test(html);
@@ -227,6 +229,8 @@ function checkMetaTags(html: string): CheckResult {
 
   const bonusDetails: string[] = [];
   if (hasOgImage) bonusDetails.push("og:image設定済み");
+  if (hasOgType) bonusDetails.push("og:type設定済み");
+  if (hasTwitterCard) bonusDetails.push("twitter:card設定済み");
   if (hasCanonical) bonusDetails.push("canonical URL設定済み");
   if (hasLang) bonusDetails.push("lang属性設定済み");
   if (hasViewport) bonusDetails.push("viewport設定済み");

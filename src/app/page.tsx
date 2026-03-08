@@ -63,12 +63,7 @@ const jsonLd = {
   },
   datePublished: "2026-03-06",
   dateModified: new Date().toISOString().split("T")[0],
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.8",
-    reviewCount: "156",
-    bestRating: "5",
-  },
+  // NOTE: aggregateRating は実データが無いため設置禁止（Google ガイドライン違反）
 };
 
 const faqJsonLd = {

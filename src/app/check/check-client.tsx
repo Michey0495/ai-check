@@ -561,6 +561,29 @@ export function CheckPageClient() {
             </div>
           </div>
 
+          {/* Grade explanation */}
+          <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+            <h2 className="mb-3 text-lg font-semibold text-white">スコアの見方</h2>
+            <div className="grid gap-2 sm:grid-cols-5">
+              {([
+                { grade: "A", range: "90-100", desc: "AI検索に十分対応済み", color: "text-green-400", bg: "bg-green-500/10" },
+                { grade: "B", range: "75-89", desc: "概ね対応、微調整で完璧に", color: "text-blue-400", bg: "bg-blue-500/10" },
+                { grade: "C", range: "60-74", desc: "基本はあるが改善余地あり", color: "text-yellow-400", bg: "bg-yellow-500/10" },
+                { grade: "D", range: "40-59", desc: "多くの項目が未対応", color: "text-orange-400", bg: "bg-orange-500/10" },
+                { grade: "F", range: "0-39", desc: "AI検索にほぼ未対応", color: "text-red-400", bg: "bg-red-500/10" },
+              ] as const).map((g) => (
+                <div
+                  key={g.grade}
+                  className={`rounded-lg ${g.bg} px-3 py-2 text-center ${report.grade === g.grade ? "ring-1 ring-white/20" : ""}`}
+                >
+                  <span className={`text-lg font-bold ${g.color}`}>{g.grade}</span>
+                  <p className="text-xs text-white/40">{g.range}pt</p>
+                  <p className="mt-1 text-xs text-white/50">{g.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <CheckHistory currentUrl={report.url} />
 
           <PriorityActions report={report} />
