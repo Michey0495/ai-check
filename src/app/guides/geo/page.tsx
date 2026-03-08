@@ -190,6 +190,7 @@ export default function GeoGuidePage() {
           <h2 className="mb-4 text-2xl font-bold text-white">関連コンテンツ</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             {[
+              { href: "/guides/quick-start", title: "5分で始めるGEO対策", desc: "3ファイル設定するだけのクイックスタート" },
               { href: "/guides/geo-vs-seo", title: "GEO vs SEO 比較ガイド", desc: "GEOとSEOの違い・共通点を整理" },
               { href: "/guides/llms-txt", title: "llms.txt書き方ガイド", desc: "llms.txtの構成と記述のコツ" },
               { href: "/guides/glossary", title: "GEO・AI検索 用語集", desc: "GEO関連の用語をまとめて解説" },

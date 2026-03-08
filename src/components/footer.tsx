@@ -94,6 +94,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/guides/quick-start" className="transition-all duration-200 hover:text-white/70 focus:text-white/70 focus:outline-none cursor-pointer">
+                  5分で始めるGEO対策
+                </Link>
+              </li>
+              <li>
                 <Link href="/guides/glossary" className="transition-all duration-200 hover:text-white/70 focus:text-white/70 focus:outline-none cursor-pointer">
                   用語集
                 </Link>

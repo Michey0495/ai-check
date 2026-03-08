@@ -17,6 +17,7 @@
 - [用語集](https://ai-check.ezoai.jp/guides/glossary): GEO・AI検索に関する用語解説
 - [GEO対策チェックリスト](https://ai-check.ezoai.jp/guides/checklist): AI検索対応の全20項目チェックリスト（進捗保存機能付き）
 - [業界別GEO対策](https://ai-check.ezoai.jp/guides/industry): EC・SaaS・メディア・士業など業界別のGEO対策ガイド
+- [5分で始めるGEO対策](https://ai-check.ezoai.jp/guides/quick-start): robots.txt・llms.txt・JSON-LDの3ファイルを設定するだけのクイックスタートガイド
 - [API / 開発者向け](https://ai-check.ezoai.jp/developers): REST API・MCP Serverリファレンス
 - [About](https://ai-check.ezoai.jp/about): サービス概要
 

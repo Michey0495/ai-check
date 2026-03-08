@@ -224,6 +224,13 @@ function checkMetaTags(html: string): CheckResult {
   const hasLang = /<html[^>]*lang=["'][^"']+["']/i.test(html);
   const hasViewport = /<meta[^>]*name=["']viewport["']/i.test(html);
 
+  // Extract actual values for display
+  const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+  const titleText = titleMatch?.[1]?.trim() ?? "";
+  const descMatch = html.match(/<meta[^>]*name=["']description["'][^>]*content=["']([^"']+)["']/i)
+    ?? html.match(/<meta[^>]*content=["']([^"']+)["'][^>]*name=["']description["']/i);
+  const descText = descMatch?.[1]?.trim() ?? "";
+
   const coreItems = [hasTitle, hasDescription, hasOgTitle, hasOgDesc];
   const coreScore = coreItems.filter(Boolean).length;
 
@@ -235,6 +242,12 @@ function checkMetaTags(html: string): CheckResult {
   if (hasLang) bonusDetails.push("lang属性設定済み");
   if (hasViewport) bonusDetails.push("viewport設定済み");
 
+  // Build extracted values summary
+  const extractedParts: string[] = [];
+  if (titleText) extractedParts.push(`title: 「${titleText.slice(0, 60)}${titleText.length > 60 ? "..." : ""}」(${titleText.length}文字)`);
+  if (descText) extractedParts.push(`description: 「${descText.slice(0, 80)}${descText.length > 80 ? "..." : ""}」(${descText.length}文字)`);
+  const extractedText = extractedParts.length > 0 ? ` 検出値: ${extractedParts.join("、")}。` : "";
+
   if (coreScore >= 4) {
     const bonusText = bonusDetails.length > 0 ? ` ${bonusDetails.join("、")}。` : "";
     return {
@@ -243,7 +256,7 @@ function checkMetaTags(html: string): CheckResult {
       maxScore: 15,
       status: "pass",
       message: "メタタグ: 完全",
-      details: `title, description, OGPタグが適切に設定されています。${bonusText}`,
+      details: `title, description, OGPタグが適切に設定されています。${bonusText}${extractedText}`,
     };
   } else if (coreScore >= 2) {
     const missing = [];
@@ -262,7 +275,7 @@ function checkMetaTags(html: string): CheckResult {
       maxScore: 15,
       status: "warn",
       message: "メタタグ: 一部不足",
-      details: `以下のメタタグが不足しています: ${missing.join(", ")}${extrasText}`,
+      details: `以下のメタタグが不足しています: ${missing.join(", ")}${extrasText}${extractedText}`,
     };
   }
   return {
@@ -271,7 +284,7 @@ function checkMetaTags(html: string): CheckResult {
     maxScore: 15,
     status: "fail",
     message: "メタタグ: 不足",
-    details: "基本的なメタタグ（title, description, OGP）が不足しています。og:image、canonical URL、lang属性の設定も推奨します。",
+    details: `基本的なメタタグ（title, description, OGP）が不足しています。og:image、canonical URL、lang属性の設定も推奨します。${extractedText}`,
   };
 }
 
@@ -283,14 +296,60 @@ function checkContentStructure(html: string): CheckResult {
   const hasMain = /<main[^>]*>/i.test(html);
   const structScore = [hasH1, hasArticle || hasSection, hasNav, hasMain].filter(Boolean).length;
 
+  // Heading hierarchy analysis
+  const h1Count = (html.match(/<h1[^>]*>/gi) ?? []).length;
+  const headingMatches = html.match(/<h[1-6][^>]*>/gi) ?? [];
+  const headingLevels = headingMatches.map((m) => parseInt(m.charAt(2)));
+
+  let hierarchyOk = true;
+  let hierarchyNote = "";
+  if (h1Count > 1) {
+    hierarchyNote = ` h1タグが${h1Count}個検出されました（推奨: 1個）。`;
+    hierarchyOk = false;
+  }
+  if (headingLevels.length > 1) {
+    // Check for heading level skips (e.g., h1 -> h3 without h2)
+    let hasSkip = false;
+    for (let i = 1; i < headingLevels.length; i++) {
+      if (headingLevels[i] > headingLevels[i - 1] + 1) {
+        hasSkip = true;
+        break;
+      }
+    }
+    if (hasSkip) {
+      hierarchyNote += " 見出しレベルの飛び（例: h1→h3）が検出されました。h1→h2→h3の順に使用することを推奨します。";
+      hierarchyOk = false;
+    }
+  }
+
+  // Extract h1 text for display
+  const h1TextMatch = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
+  const h1Text = h1TextMatch?.[1]?.replace(/<[^>]+>/g, "").trim().slice(0, 80) ?? "";
+  const h1Info = h1Text ? ` h1: 「${h1Text}${h1Text.length >= 80 ? "..." : ""}」。` : "";
+
+  const headingSummary = headingLevels.length > 0
+    ? ` 見出し構成: ${[...new Set(headingLevels)].sort().map((l) => `h${l}`).join(", ")}（計${headingLevels.length}個）。`
+    : "";
+
   if (structScore >= 3) {
+    const warnNote = !hierarchyOk ? hierarchyNote : "";
+    if (!hierarchyOk) {
+      return {
+        id: "content-structure",
+        score: 12,
+        maxScore: 15,
+        status: "warn",
+        message: "コンテンツ構造: セマンティックHTML使用（見出し階層に改善余地）",
+        details: `h1, article/section, nav, main等のセマンティックHTMLタグが使用されています。${h1Info}${headingSummary}${warnNote}`,
+      };
+    }
     return {
       id: "content-structure",
       score: 15,
       maxScore: 15,
       status: "pass",
       message: "コンテンツ構造: セマンティックHTML使用",
-      details: "h1, article/section, nav, main等のセマンティックHTMLタグが適切に使用されています。",
+      details: `h1, article/section, nav, main等のセマンティックHTMLタグが適切に使用されています。${h1Info}${headingSummary}`,
     };
   } else if (structScore >= 1) {
     return {
@@ -299,7 +358,7 @@ function checkContentStructure(html: string): CheckResult {
       maxScore: 15,
       status: "warn",
       message: "コンテンツ構造: 改善の余地あり",
-      details: "一部のセマンティックHTMLタグが使用されていますが、article, section, nav, main等の追加を推奨します。",
+      details: `一部のセマンティックHTMLタグが使用されていますが、article, section, nav, main等の追加を推奨します。${h1Info}${headingSummary}${hierarchyNote}`,
     };
   }
   return {
@@ -308,7 +367,7 @@ function checkContentStructure(html: string): CheckResult {
     maxScore: 15,
     status: "fail",
     message: "コンテンツ構造: セマンティックHTML未使用",
-    details: "セマンティックHTMLタグが見つかりません。AIが文書構造を理解しにくい状態です。",
+    details: `セマンティックHTMLタグが見つかりません。AIが文書構造を理解しにくい状態です。${headingSummary}`,
   };
 }
 

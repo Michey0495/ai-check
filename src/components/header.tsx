@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const guideLinks = [
+  { href: "/guides/quick-start", label: "5分で始めるGEO対策" },
   { href: "/guides/geo", label: "GEO対策ガイド" },
   { href: "/guides/geo-vs-seo", label: "GEO vs SEO" },
   { href: "/guides/checklist", label: "チェックリスト" },

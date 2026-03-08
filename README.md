@@ -35,6 +35,7 @@ http://localhost:3000 で起動。
 | `/guides/llms-txt` | llms.txt書き方ガイド |
 | `/guides/checklist` | GEO対策チェックリスト（インタラクティブ・進捗保存） |
 | `/guides/industry` | 業界別GEO対策ガイド（EC・SaaS・メディア・士業・ローカル・教育） |
+| `/guides/quick-start` | 5分で始めるGEO対策（クイックスタートガイド） |
 | `/guides/glossary` | GEO・AI検索用語集 |
 | `/developers` | API / 開発者向けドキュメント |
 | `/about` | サービス概要 |
@@ -214,3 +215,11 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - UX: チェック結果に「関連ガイド」セクション追加（GEO対策ガイド、チェックリスト、GEO vs SEOへの導線）
 - ナビゲーション: ヘッダーにアクティブ状態ハイライト追加（デスクトップ+モバイル、usePathname対応）
 - メタデータ: Twitter Card・OG descriptionから fabricated 数値を削除
+
+### Night 17 (完了)
+- コンテンツ: 5分で始めるGEO対策クイックスタートガイド追加（/guides/quick-start）- robots.txt・llms.txt・JSON-LDの3ファイル設定ステップバイステップ、HowTo構造化データ付き
+- チェック強化: コンテンツ構造チェックに見出し階層バリデーション追加（複数h1検出、見出しレベル飛び検出、h1テキスト・見出し構成の表示）
+- チェック強化: メタタグチェックに抽出値表示追加（title・descriptionの実際の値と文字数を表示）
+- ナビゲーション: ヘッダーガイドドロップダウン・フッターにクイックスタートガイドへのリンク追加
+- SEO: sitemap.xml, llms.txt, GEO対策ガイドの関連コンテンツにクイックスタートページを追加
+- AI公開チャネル: agent.json v1.5.0に更新（新機能反映）
