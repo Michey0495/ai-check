@@ -40,6 +40,11 @@ export async function POST(request: NextRequest) {
 
   const { type, message, repo } = parsed;
 
+  const ALLOWED_TYPES = ["bug", "feature", "other"];
+  if (!type || !ALLOWED_TYPES.includes(type)) {
+    return NextResponse.json({ error: "Invalid feedback type" }, { status: 400 });
+  }
+
   if (!message?.trim()) {
     return NextResponse.json({ error: "Message required" }, { status: 400 });
   }
