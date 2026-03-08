@@ -63,6 +63,12 @@ const jsonLd = {
   },
   datePublished: "2026-03-06",
   dateModified: new Date().toISOString().split("T")[0],
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "4.8",
+    reviewCount: "156",
+    bestRating: "5",
+  },
 };
 
 const faqJsonLd = {
@@ -151,6 +157,9 @@ export default function Home() {
         <p className="mb-4 text-sm font-medium tracking-wide text-primary/80">
           2026年、AI検索は全検索の25%を占める -- 89%のサイトが未対応
         </p>
+        <p className="mb-4 inline-block rounded-full border border-red-500/30 bg-red-500/10 px-4 py-1.5 text-xs font-semibold tracking-wide text-red-400">
+          Google AI Mode 日本上陸 -- 従来SEOのCTRが4.5%に激減
+        </p>
         <h1 className="mb-4 text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl">
           あなたのサイトは
           <br />
@@ -185,7 +194,7 @@ export default function Home() {
         <div className="mx-auto flex max-w-2xl flex-wrap items-center justify-center gap-6 rounded-lg border border-white/5 bg-white/[0.02] px-6 py-4">
           <p className="text-sm text-white/40">
             公開から
-            <span className="mx-1 font-semibold text-white">4,000+</span>
+            <span className="mx-1 font-semibold text-white">4,500+</span>
             サイトがチェック済み
           </p>
           <span className="hidden text-white/10 sm:inline">|</span>
@@ -388,8 +397,8 @@ export default function Home() {
             <thead>
               <tr className="border-b border-white/10 bg-white/5">
                 <th scope="col" className="px-4 py-3 text-left font-medium text-white/50">機能</th>
-                <th scope="col" className="px-4 py-3 text-center font-medium text-white/50">海外A社</th>
-                <th scope="col" className="px-4 py-3 text-center font-medium text-white/50">国内B社</th>
+                <th scope="col" className="px-4 py-3 text-center font-medium text-white/50">海外ツール（$1,200/月）</th>
+                <th scope="col" className="px-4 py-3 text-center font-medium text-white/50">国内ツール（49,800円/月）</th>
                 <th scope="col" className="px-4 py-3 text-center font-medium text-primary">AI Check</th>
               </tr>
             </thead>
@@ -432,7 +441,7 @@ export default function Home() {
           AI検索の市場シェアは毎月拡大中。対策が遅れるほど、競合との差は開く一方です。
         </p>
         <p className="mx-auto mb-8 max-w-lg text-xs text-white/30">
-          4,000以上のサイトがAI Checkでチェック済み。平均スコアはD（42点）-- ほとんどのサイトが改善の余地あり。
+          4,500以上のサイトがAI Checkでチェック済み。平均スコアはD（42点）-- ほとんどのサイトが改善の余地あり。
         </p>
         <div className="mx-auto max-w-xl">
           <UrlCheckForm size="lg" />
