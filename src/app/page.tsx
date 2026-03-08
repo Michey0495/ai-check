@@ -393,7 +393,7 @@ export default function Home() {
               <tr className="border-b border-white/10 bg-white/5">
                 <th scope="col" className="px-4 py-3 text-left font-medium text-white/50">機能</th>
                 <th scope="col" className="px-4 py-3 text-center font-medium text-white/50">海外ツール（$1,200/月）</th>
-                <th scope="col" className="px-4 py-3 text-center font-medium text-white/50">国内ツール（49,800円/月）</th>
+                <th scope="col" className="px-4 py-3 text-center font-medium text-white/50">国内ツール（980円/月）</th>
                 <th scope="col" className="px-4 py-3 text-center font-medium text-primary">AI Check</th>
               </tr>
             </thead>
