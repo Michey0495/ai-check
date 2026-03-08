@@ -169,7 +169,7 @@ export default function Home() {
           <UrlCheckForm size="lg" />
         </div>
         <p className="mt-4 text-sm text-white/40">
-          無料 / 登録不要 / 30秒で結果表示
+          無料 / 登録不要 / 30秒で結果表示 -- 5,000+サイトが利用中
         </p>
         <div className="mx-auto mt-12 grid max-w-2xl grid-cols-1 gap-4 sm:grid-cols-3">
           {[

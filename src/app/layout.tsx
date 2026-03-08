@@ -72,17 +72,26 @@ export const metadata: Metadata = {
   openGraph: {
     title: "AI Check - AI検索対応度チェッカー & GEO対策ツール",
     description:
-      "URLを入力するだけでAI検索対応度を7指標でスコア化。llms.txt・robots.txt・JSON-LD・agent.jsonを自動生成。無料・登録不要。",
+      "URLを入力するだけでAI検索対応度を7指標でスコア化。llms.txt・robots.txt・JSON-LD・agent.jsonを自動生成。無料・登録不要。Google AI Mode対策に。",
     url: "https://ai-check.ezoai.jp",
     siteName: "AI Check",
     locale: "ja_JP",
     type: "website",
+    images: [
+      {
+        url: "https://ai-check.ezoai.jp/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "AI Check - AI検索対応度チェッカー & GEO対策ツール",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "AI Check - AI検索対応度チェッカー & GEO対策ツール",
     description:
       "URLを入力するだけでGEOスコアを算出し、llms.txt・JSON-LDを自動生成。無料・登録不要のGEO対策ツール。",
+    images: ["https://ai-check.ezoai.jp/opengraph-image"],
   },
   robots: {
     index: true,

@@ -26,12 +26,32 @@ export default function Image() {
             position: "absolute",
             top: 40,
             left: 60,
-            fontSize: 18,
-            color: "rgba(255,255,255,0.3)",
-            letterSpacing: "0.15em",
+            display: "flex",
+            alignItems: "center",
+            gap: 24,
           }}
         >
-          GEO READINESS TOOL
+          <div
+            style={{
+              fontSize: 18,
+              color: "rgba(255,255,255,0.3)",
+              letterSpacing: "0.15em",
+            }}
+          >
+            GEO READINESS TOOL
+          </div>
+          <div
+            style={{
+              fontSize: 14,
+              color: "#f87171",
+              border: "1px solid rgba(248,113,113,0.3)",
+              borderRadius: 20,
+              padding: "4px 16px",
+              background: "rgba(248,113,113,0.1)",
+            }}
+          >
+            Google AI Mode 日本上陸
+          </div>
         </div>
         <div
           style={{
