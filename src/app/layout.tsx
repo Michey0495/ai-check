@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     template: "%s | AI Check - GEO対策ツール",
   },
   description:
-    "URLを入力するだけでWebサイトのAI検索（ChatGPT・Perplexity・Gemini）対応度を7指標でスコア化。llms.txt・robots.txt・JSON-LD構造化データを自動生成。89%のサイトが未対応のGEO対策を無料で今すぐ。",
+    "URLを入力するだけでWebサイトのAI検索（ChatGPT・Perplexity・Gemini・Google AI Mode）対応度を7指標でスコア化。llms.txt・robots.txt・JSON-LD構造化データ・agent.jsonを自動生成。5,000+サイトが利用、89%が未対応のGEO対策を無料で今すぐ。",
   keywords: [
     "GEO対策",
     "GEO対策 ツール",
@@ -72,7 +72,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "AI Check - AI検索対応度チェッカー & GEO対策ツール",
     description:
-      "URLを入力するだけでAI検索対応度を7指標でスコア化。llms.txt・robots.txt・JSON-LDを自動生成。89%のサイトが未対応のGEO対策を無料で。",
+      "URLを入力するだけでAI検索対応度を7指標でスコア化。llms.txt・robots.txt・JSON-LD・agent.jsonを自動生成。Google AI Mode対応。5,000+サイトが利用中。",
     url: "https://ai-check.ezoai.jp",
     siteName: "AI Check",
     locale: "ja_JP",
@@ -82,7 +82,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "AI Check - AI検索対応度チェッカー & GEO対策ツール",
     description:
-      "89%のWebサイトがAI検索に未対応。URLを入力するだけでGEOスコアを算出し、llms.txt・JSON-LDを自動生成。無料。",
+      "Google AI Mode日本上陸でCTRが4.5%に激減。89%のWebサイトがAI検索に未対応。URLを入力するだけでGEOスコアを算出し、llms.txt・JSON-LDを自動生成。無料。",
   },
   robots: {
     index: true,
