@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const guideLinks = [
   { href: "/guides/geo", label: "GEO対策ガイド" },
@@ -20,9 +21,13 @@ const navLinks = [
 ];
 
 export function Header() {
+  const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [guidesOpen, setGuidesOpen] = useState(false);
   const guidesRef = useRef<HTMLDivElement>(null);
+
+  const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
+  const isGuideActive = guideLinks.some((link) => isActive(link.href));
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -49,7 +54,9 @@ export function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="cursor-pointer text-white/70 transition-all duration-200 hover:text-white"
+              className={`cursor-pointer transition-all duration-200 hover:text-white ${
+                isActive(link.href) ? "text-white font-medium" : "text-white/70"
+              }`}
             >
               {link.label}
             </Link>
@@ -57,7 +64,9 @@ export function Header() {
           <div ref={guidesRef} className="relative">
             <button
               type="button"
-              className="flex cursor-pointer items-center gap-1 text-white/70 transition-all duration-200 hover:text-white"
+              className={`flex cursor-pointer items-center gap-1 transition-all duration-200 hover:text-white ${
+                isGuideActive ? "text-white font-medium" : "text-white/70"
+              }`}
               onClick={() => setGuidesOpen(!guidesOpen)}
               aria-expanded={guidesOpen}
               aria-haspopup="true"
@@ -126,7 +135,9 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="block cursor-pointer rounded-lg px-3 py-2 text-sm text-white/70 transition-all duration-200 hover:bg-white/5 hover:text-white"
+                className={`block cursor-pointer rounded-lg px-3 py-2 text-sm transition-all duration-200 hover:bg-white/5 hover:text-white ${
+                  isActive(link.href) ? "bg-white/5 text-white font-medium" : "text-white/70"
+                }`}
                 onClick={() => setMobileOpen(false)}
               >
                 {link.label}

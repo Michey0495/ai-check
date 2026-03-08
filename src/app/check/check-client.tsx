@@ -260,6 +260,108 @@ function CheckHistory({ currentUrl }: { currentUrl: string }) {
   );
 }
 
+function QuickFixGuide({ report }: { report: CheckReport }) {
+  const pct = Math.round((report.totalScore / report.maxScore) * 100);
+  const failItems = report.results.filter((r) => r.status === "fail");
+  const warnItems = report.results.filter((r) => r.status === "warn");
+
+  if (failItems.length === 0 && warnItems.length === 0) return null;
+
+  // Generate personalized steps based on what's failing
+  const steps: { time: string; action: string; link: string; linkLabel: string }[] = [];
+
+  const hasRobotsFail = report.results.find((r) => r.id === "robots-txt" && r.status !== "pass");
+  const hasLlmsFail = report.results.find((r) => r.id === "llms-txt" && r.status !== "pass");
+  const hasStructuredFail = report.results.find((r) => r.id === "structured-data" && r.status !== "pass");
+  const hasMetaFail = report.results.find((r) => r.id === "meta-tags" && r.status !== "pass");
+  const hasSitemapFail = report.results.find((r) => r.id === "sitemap" && r.status !== "pass");
+
+  if (hasRobotsFail) {
+    steps.push({
+      time: "1分",
+      action: "robots.txtでAIクローラーを許可する",
+      link: "/generate/robots-txt",
+      linkLabel: "robots.txt生成ツール",
+    });
+  }
+  if (hasLlmsFail) {
+    steps.push({
+      time: "3分",
+      action: "llms.txtを作成してサイト情報をAIに伝える",
+      link: "/generate/llms-txt",
+      linkLabel: "llms.txt生成ツール",
+    });
+  }
+  if (hasStructuredFail) {
+    steps.push({
+      time: "5分",
+      action: "JSON-LD構造化データを設置する",
+      link: "/generate/json-ld",
+      linkLabel: "JSON-LD生成ツール",
+    });
+  }
+  if (hasMetaFail) {
+    steps.push({
+      time: "5分",
+      action: "title, description, OGPタグを設定する",
+      link: "/guides/geo",
+      linkLabel: "GEO対策ガイド",
+    });
+  }
+  if (hasSitemapFail) {
+    steps.push({
+      time: "2分",
+      action: "sitemap.xmlを作成・更新する",
+      link: "/guides/geo",
+      linkLabel: "GEO対策ガイド",
+    });
+  }
+
+  if (steps.length === 0) return null;
+
+  const totalMinutes = steps.reduce((sum, s) => sum + parseInt(s.time), 0);
+  const potentialScore = report.results
+    .filter((r) => r.status !== "pass")
+    .reduce((sum, r) => sum + (r.maxScore - r.score), 0);
+
+  return (
+    <div className="rounded-lg border border-primary/20 bg-primary/5 p-6">
+      <h2 className="mb-1 text-xl font-bold text-white">クイック改善ガイド</h2>
+      <p className="mb-4 text-sm text-white/50">
+        約{totalMinutes}分の作業で最大+{potentialScore}ptの改善が見込めます
+      </p>
+      <div className="space-y-3">
+        {steps.map((step, i) => (
+          <div key={step.action} className="flex items-start gap-3">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/20 text-xs font-bold text-primary">
+              {i + 1}
+            </span>
+            <div className="flex-1">
+              <div className="flex items-baseline gap-2">
+                <p className="text-sm font-medium text-white">{step.action}</p>
+                <span className="shrink-0 text-xs text-white/30">~{step.time}</span>
+              </div>
+              <Link
+                href={step.link}
+                className="mt-0.5 inline-block cursor-pointer text-xs text-primary/70 transition-all duration-200 hover:text-primary"
+              >
+                {step.linkLabel} →
+              </Link>
+            </div>
+          </div>
+        ))}
+      </div>
+      {pct < 60 && (
+        <div className="mt-4 rounded border border-white/5 bg-black/20 px-4 py-3">
+          <p className="text-xs leading-relaxed text-white/40">
+            まずはステップ1から順に対応するのがおすすめです。上から3つを実施するだけでも、多くのサイトでCランク以上に改善できます。
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 const indicatorTips: Record<string, { tip: string; guide?: string }> = {
   "robots-txt": {
     tip: "robots.txtでGPTBot, ClaudeBot, PerplexityBot等を明示的にAllowに設定しましょう。",
@@ -584,6 +686,8 @@ export function CheckPageClient() {
             </div>
           </div>
 
+          <QuickFixGuide report={report} />
+
           <CheckHistory currentUrl={report.url} />
 
           <PriorityActions report={report} />
@@ -675,6 +779,27 @@ export function CheckPageClient() {
                 このサイトと競合サイトのGEOスコアを並べて比較します。
               </p>
             </Link>
+          </div>
+
+          {/* Related guides based on grade */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold text-white">関連ガイド</h2>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {[
+                { href: "/guides/geo", title: "GEO対策ガイド", desc: "AI検索最適化の基本と実践" },
+                { href: "/guides/checklist", title: "GEO対策チェックリスト", desc: "20項目のインタラクティブリスト" },
+                { href: "/guides/geo-vs-seo", title: "GEO vs SEO比較", desc: "何が同じで何が違うのか" },
+              ].map((guide) => (
+                <Link
+                  key={guide.href}
+                  href={guide.href}
+                  className="cursor-pointer rounded-lg border border-white/10 bg-white/5 p-4 transition-all duration-200 hover:border-white/20 hover:bg-white/[0.08]"
+                >
+                  <p className="text-sm font-medium text-white">{guide.title}</p>
+                  <p className="mt-1 text-xs text-white/40">{guide.desc}</p>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       )}
