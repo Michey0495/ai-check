@@ -384,13 +384,13 @@ export default function Home() {
           同じ機能が、なぜ200倍の価格差になるのか
         </p>
         <div className="mx-auto max-w-2xl overflow-hidden rounded-lg border border-white/10">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm" aria-label="GEO対策ツール価格比較">
             <thead>
               <tr className="border-b border-white/10 bg-white/5">
-                <th className="px-4 py-3 text-left font-medium text-white/50">機能</th>
-                <th className="px-4 py-3 text-center font-medium text-white/50">海外A社</th>
-                <th className="px-4 py-3 text-center font-medium text-white/50">国内B社</th>
-                <th className="px-4 py-3 text-center font-medium text-primary">AI Check</th>
+                <th scope="col" className="px-4 py-3 text-left font-medium text-white/50">機能</th>
+                <th scope="col" className="px-4 py-3 text-center font-medium text-white/50">海外A社</th>
+                <th scope="col" className="px-4 py-3 text-center font-medium text-white/50">国内B社</th>
+                <th scope="col" className="px-4 py-3 text-center font-medium text-primary">AI Check</th>
               </tr>
             </thead>
             <tbody className="text-white/60">
