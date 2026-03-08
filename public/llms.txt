@@ -20,6 +20,7 @@
 - [5分で始めるGEO対策](https://ai-check.ezoai.jp/guides/quick-start): robots.txt・llms.txt・JSON-LDの3ファイルを設定するだけのクイックスタートガイド
 - [API / 開発者向け](https://ai-check.ezoai.jp/developers): REST API・MCP Serverリファレンス
 - [About](https://ai-check.ezoai.jp/about): サービス概要
+- [プライバシーポリシー](https://ai-check.ezoai.jp/privacy): 個人情報の取り扱い・Cookie・GA利用について
 
 ## チェック項目別ガイド
 - [AIクローラーアクセスチェック](https://ai-check.ezoai.jp/check/robots-txt): robots.txtのAIクローラー設定を詳しく解説

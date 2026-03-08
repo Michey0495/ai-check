@@ -113,6 +113,11 @@ export function Footer() {
                   AI Checkについて
                 </Link>
               </li>
+              <li>
+                <Link href="/privacy" className="transition-all duration-200 hover:text-white/70 focus:text-white/70 focus:outline-none cursor-pointer">
+                  プライバシーポリシー
+                </Link>
+              </li>
             </ul>
           </div>
           <div>
@@ -151,8 +156,16 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        <div className="mt-8 border-t border-white/10 pt-8 text-center text-xs text-white/30">
-          &copy; 2026 AI Check - ezoai.jp
+        <div className="mt-8 flex flex-col items-center gap-2 border-t border-white/10 pt-8 text-xs text-white/30">
+          <div className="flex gap-4">
+            <Link href="/privacy" className="transition-all duration-200 hover:text-white/50 cursor-pointer">
+              プライバシーポリシー
+            </Link>
+            <Link href="/about" className="transition-all duration-200 hover:text-white/50 cursor-pointer">
+              AI Checkについて
+            </Link>
+          </div>
+          <p>&copy; 2026 AI Check - ezoai.jp</p>
         </div>
       </div>
     </footer>

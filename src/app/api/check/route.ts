@@ -510,6 +510,14 @@ export async function POST(request: NextRequest) {
       safeFetch(`${baseUrl}/.well-known/agent.json`),
     ]);
 
+    // If main page is unreachable, return a clear error
+    if (!pageRes.ok && pageRes.text === "") {
+      return NextResponse.json(
+        { error: "対象サイトに接続できませんでした。URLが正しいか、サイトが稼働中かご確認ください。" },
+        { status: 422, headers: corsHeaders() }
+      );
+    }
+
     // ok=true: file found, use text. ok=false: fetch failed (null = unreachable, "" = not found)
     const robotsText = robotsRes.ok ? robotsRes.text : null;
     const llmsText = llmsRes.ok ? llmsRes.text : null;
