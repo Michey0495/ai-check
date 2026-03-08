@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/generate/robots-txt`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${baseUrl}/generate/json-ld`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${baseUrl}/generate/agent-json`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${baseUrl}/generate/badge`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/guides/geo`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/guides/geo-vs-seo`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/guides/llms-txt`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },

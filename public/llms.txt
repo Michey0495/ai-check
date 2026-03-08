@@ -10,6 +10,7 @@
 - [robots.txt生成](https://ai-check.ezoai.jp/generate/robots-txt): AIクローラー対応robots.txt生成ツール
 - [JSON-LD生成](https://ai-check.ezoai.jp/generate/json-ld): Schema.org構造化データ生成ツール
 - [agent.json生成](https://ai-check.ezoai.jp/generate/agent-json): A2A Agent Card生成ツール
+- [GEOスコアバッジ](https://ai-check.ezoai.jp/generate/badge): READMEやサイトに埋め込めるスコアバッジ生成
 - [GEO対策ガイド](https://ai-check.ezoai.jp/guides/geo): AI検索最適化の基本ガイド
 - [GEO vs SEO](https://ai-check.ezoai.jp/guides/geo-vs-seo): GEO対策とSEO対策の違いと両立方法
 - [llms.txt書き方ガイド](https://ai-check.ezoai.jp/guides/llms-txt): llms.txtのフォーマットと設置方法
@@ -32,6 +33,7 @@
 - POST /api/check: URLのGEOスコアチェック（パラメータ: url）。レスポンスにresponseTimeMsを含む
 - POST /api/generate: ファイル生成（パラメータ: type, data）
 - POST /api/mcp: MCP Server (JSON-RPC 2.0) - 5ツール: check_geo_score, generate_llms_txt, generate_robots_txt, generate_json_ld, generate_agent_json
+- GET /api/badge?url=URL&style=flat|card: GEOスコアバッジ（SVG画像）
 
 ## 技術スタック
 - Next.js 15, TypeScript, Tailwind CSS, shadcn/ui, Vercel

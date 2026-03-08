@@ -83,6 +83,12 @@ export const GENERATOR_TYPES = [
     description: "A2A Agent Card（AIエージェント名刺）を生成",
     path: "/generate/agent-json",
   },
+  {
+    id: "badge",
+    name: "GEOスコアバッジ",
+    description: "READMEやサイトに埋め込めるスコアバッジを生成",
+    path: "/generate/badge",
+  },
 ] as const;
 
 export type CheckResult = {

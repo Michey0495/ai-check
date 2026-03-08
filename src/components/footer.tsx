@@ -43,6 +43,11 @@ export function Footer() {
                   agent.json 生成
                 </Link>
               </li>
+              <li>
+                <Link href="/generate/badge" className="transition-all duration-200 hover:text-white/70 focus:text-white/70 focus:outline-none cursor-pointer">
+                  GEOスコアバッジ
+                </Link>
+              </li>
             </ul>
           </div>
           <div>

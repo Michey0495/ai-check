@@ -55,12 +55,6 @@ const jsonLd = {
     "agent.json（A2A Agent Card）生成",
     "改善提案レポート",
   ],
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.8",
-    ratingCount: "127",
-    bestRating: "5",
-  },
   inLanguage: "ja",
   publisher: {
     "@type": "Organization",

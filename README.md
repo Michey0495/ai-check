@@ -29,6 +29,7 @@ http://localhost:3000 で起動。
 | `/generate/robots-txt` | robots.txt生成ツール（AIクローラー対応） |
 | `/generate/json-ld` | JSON-LD構造化データ生成ツール |
 | `/generate/agent-json` | agent.json (A2A Agent Card) 生成ツール |
+| `/generate/badge` | GEOスコアバッジ生成（SVG、Markdown/HTML埋め込み） |
 | `/guides/geo` | GEO対策ガイド |
 | `/guides/geo-vs-seo` | GEO vs SEO比較ガイド |
 | `/guides/llms-txt` | llms.txt書き方ガイド |

@@ -512,6 +512,27 @@ export function CheckPageClient() {
               </div>
             ))}
           </div>
+
+          <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+            <h2 className="mb-2 text-lg font-semibold text-white">GEOスコアバッジ</h2>
+            <p className="mb-4 text-sm text-white/50">
+              このスコアをREADMEやサイトに埋め込めます。
+            </p>
+            <div className="flex items-center gap-4">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/api/badge?url=${encodeURIComponent(report.url)}&style=flat`}
+                alt="GEO Score Badge"
+                className="h-5"
+              />
+              <Link
+                href={`/generate/badge?url=${encodeURIComponent(report.url)}`}
+                className="cursor-pointer text-sm text-primary/70 transition-all duration-200 hover:text-primary"
+              >
+                埋め込みコードを取得 →
+              </Link>
+            </div>
+          </div>
         </div>
       )}
 

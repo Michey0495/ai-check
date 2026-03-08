@@ -75,6 +75,25 @@ const endpoints = [
 }`,
     notes: null,
   },
+  {
+    method: "GET",
+    path: "/api/badge",
+    description: "GEOスコアバッジ（SVG画像）を生成。READMEやサイトに埋め込み可能。",
+    request: `// クエリパラメータ
+?url=https://example.com   // 必須: チェック対象URL
+&style=flat                 // 任意: flat（デフォルト）/ card`,
+    response: `<!-- SVG画像が返されます -->
+<!-- Content-Type: image/svg+xml -->
+
+<!-- Markdown埋め込み例 -->
+[![GEO Score](https://ai-check.ezoai.jp/api/badge?url=https://example.com)](https://ai-check.ezoai.jp/check?url=https://example.com)
+
+<!-- HTML埋め込み例 -->
+<a href="https://ai-check.ezoai.jp/check?url=https://example.com">
+  <img src="https://ai-check.ezoai.jp/api/badge?url=https://example.com" alt="GEO Score" />
+</a>`,
+    notes: "結果は1時間キャッシュされます。",
+  },
 ];
 
 const mcpTools = [
