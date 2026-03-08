@@ -11,6 +11,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Guard against oversized payloads
+    const dataStr = JSON.stringify(data);
+    if (dataStr.length > 50_000) {
+      return NextResponse.json(
+        { error: "入力データが大きすぎます。" },
+        { status: 400 }
+      );
+    }
+
     switch (type) {
       case "llms-txt": {
         const { siteName, siteUrl, description, pages, apiInfo } = data;
@@ -29,7 +38,7 @@ export async function POST(request: NextRequest) {
         }
         if (pages) {
           lines.push("## 主要ページ");
-          (Array.isArray(pages) ? pages : pages.split("\n"))
+          (Array.isArray(pages) ? pages : pages.split(/\r?\n/))
             .filter((p: string) => p.trim())
             .forEach((p: string) => lines.push(`- ${p.trim()}`));
           lines.push("");

@@ -1,10 +1,36 @@
 import { NextRequest, NextResponse } from "next/server";
 
+const feedbackRateMap = new Map<string, { count: number; resetAt: number }>();
+const FEEDBACK_RATE_LIMIT = 5;
+const FEEDBACK_RATE_WINDOW_MS = 300_000;
+
+function checkFeedbackRate(ip: string): boolean {
+  const now = Date.now();
+  if (feedbackRateMap.size > 5_000) {
+    for (const [key, val] of feedbackRateMap) {
+      if (now > val.resetAt) feedbackRateMap.delete(key);
+    }
+  }
+  const entry = feedbackRateMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    feedbackRateMap.set(ip, { count: 1, resetAt: now + FEEDBACK_RATE_WINDOW_MS });
+    return true;
+  }
+  if (entry.count >= FEEDBACK_RATE_LIMIT) return false;
+  entry.count++;
+  return true;
+}
+
 /**
  * POST /api/feedback
  * フィードバックを受け取り GitHub Issue として自動作成
  */
 export async function POST(request: NextRequest) {
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  if (!checkFeedbackRate(ip)) {
+    return NextResponse.json({ error: "送信回数の上限に達しました。しばらくお待ちください。" }, { status: 429 });
+  }
+
   let parsed;
   try {
     parsed = await request.json();
@@ -16,6 +42,10 @@ export async function POST(request: NextRequest) {
 
   if (!message?.trim()) {
     return NextResponse.json({ error: "Message required" }, { status: 400 });
+  }
+
+  if (message.length > 5_000) {
+    return NextResponse.json({ error: "Message too long" }, { status: 400 });
   }
 
   if (repo && !/^[a-zA-Z0-9_.-]+$/.test(repo)) {

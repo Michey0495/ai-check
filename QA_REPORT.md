@@ -190,6 +190,62 @@ Date: 2026-03-08 (QA Pass 10)
 - API responses cached: `Cache-Control: public, s-maxage=300, stale-while-revalidate=600`
 - Bundle size: ~17MB .next directory (normal for Next.js 16)
 
+## Issues Found & Fixed (Pass 11)
+
+### 1. Rate Limiter Memory Leak (FIXED)
+- **File**: `src/app/api/check/route.ts`
+- **Severity**: Medium
+- **Issue**: In-memory rate limit Map grows unbounded under sustained traffic
+- **Fix**: Added size-based purge - when entries exceed 10K, expired entries are cleaned up
+
+### 2. Regex Partial Crawler Name Match (FIXED)
+- **File**: `src/app/api/check/route.ts`
+- **Severity**: Medium
+- **Issue**: Pattern `User-agent:\s*GPTBot` could match `MyGPTBot`; special chars in crawler names not escaped
+- **Fix**: Added regex escaping + newline boundary after User-agent value
+
+### 3. Confusing Fetch Result Ternary (FIXED)
+- **File**: `src/app/api/check/route.ts`
+- **Severity**: Low
+- **Issue**: `robotsRes.text === "" ? null : ""` was always evaluating to `null` since safeFetch returns `""` on failure
+- **Fix**: Simplified to `ok ? text : null`
+
+### 4. No Rate Limiting on Feedback API (FIXED)
+- **File**: `src/app/api/feedback/route.ts`
+- **Severity**: Medium
+- **Issue**: Feedback endpoint could be abused to spam GitHub Issues
+- **Fix**: Added 5 req/5min per-IP rate limiter with memory cleanup
+
+### 5. Feedback Message Length Unlimited (FIXED)
+- **File**: `src/app/api/feedback/route.ts`
+- **Severity**: Low
+- **Issue**: No limit on message length for feedback submissions
+- **Fix**: Added 5,000 character limit
+
+### 6. Feedback Dialog Missing aria-labelledby (FIXED)
+- **File**: `src/components/feedback-widget.tsx`
+- **Severity**: Low
+- **Issue**: Dialog had `aria-label` but not linked to heading via `aria-labelledby`
+- **Fix**: Added `id="feedback-title"` + `aria-labelledby="feedback-title"`
+
+### 7. CRLF Line Endings Break Generators (FIXED)
+- **Files**: 4 generator files + API generate route
+- **Severity**: Low
+- **Issue**: `split("\n")` fails for Windows CRLF line endings in textarea input
+- **Fix**: Changed to `split(/\r?\n/)`
+
+### 8. Generic Error in Compare Tool (FIXED)
+- **File**: `src/app/check/compare/compare-client.tsx`
+- **Severity**: Low
+- **Issue**: All fetch errors show generic "failed" message
+- **Fix**: Detect TypeError for network-specific error message
+
+### 9. No Input Size Validation on Generate API (FIXED)
+- **File**: `src/app/api/generate/route.ts`
+- **Severity**: Low
+- **Issue**: Large payloads accepted without limit
+- **Fix**: Added 50KB payload size guard
+
 ## Conclusion
 
-Project is production-ready. 7 issues fixed in pass 10 (1 critical mobile layout, 2 a11y, 1 SEO, 1 security, 2 low). No blocking issues remain. Total fixes across all QA passes: 30+.
+Project is production-ready. 9 issues fixed in pass 11 (3 medium security/reliability, 6 low). Total fixes across all QA passes: 39+. No blocking issues remain.

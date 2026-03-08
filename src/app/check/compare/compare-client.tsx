@@ -94,10 +94,11 @@ export function CompareClient() {
           }
           return next;
         });
-      } catch {
+      } catch (err) {
+        const msg = err instanceof TypeError ? "ネットワークエラー: サーバーに接続できません" : "チェックに失敗しました";
         setResults((prev) => {
           const next = [...prev];
-          next[i] = { ...next[i], error: "チェックに失敗しました", loading: false };
+          next[i] = { ...next[i], error: msg, loading: false };
           return next;
         });
       }

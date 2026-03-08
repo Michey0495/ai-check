@@ -53,7 +53,7 @@ export function JsonLdGenerator() {
           ...jsonLd,
           mainEntity: extra
             .trim()
-            .split("\n")
+            .split(/\r?\n/)
             .filter((l) => l.includes("|"))
             .map((l) => {
               const [q, a] = l.split("|").map((s) => s.trim());

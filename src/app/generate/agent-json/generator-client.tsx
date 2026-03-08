@@ -25,7 +25,7 @@ export function AgentJsonGenerator() {
       version: "1.0.0",
       capabilities: capabilities
         .trim()
-        .split("\n")
+        .split(/\r?\n/)
         .map((c) => c.trim())
         .filter(Boolean),
       endpoints: {

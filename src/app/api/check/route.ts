@@ -8,9 +8,18 @@ export const maxDuration = 30;
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT = 10;
 const RATE_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX_ENTRIES = 10_000;
 
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
+
+  // Prevent unbounded memory growth: purge expired entries periodically
+  if (rateLimitMap.size > RATE_LIMIT_MAX_ENTRIES) {
+    for (const [key, val] of rateLimitMap) {
+      if (now > val.resetAt) rateLimitMap.delete(key);
+    }
+  }
+
   const entry = rateLimitMap.get(ip);
   if (!entry || now > entry.resetAt) {
     rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
@@ -79,7 +88,8 @@ function checkRobotsTxt(robotsText: string | null, baseUrl: string): CheckResult
 
   const aiCrawlers = ["GPTBot", "ClaudeBot", "PerplexityBot", "Google-Extended", "Anthropic"];
   const blocked = aiCrawlers.filter((c) => {
-    const pattern = new RegExp(`User-agent:\\s*${c}[\\s\\S]*?Disallow:\\s*/`, "i");
+    const escaped = c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const pattern = new RegExp(`User-agent:\\s*${escaped}\\s*\\n[\\s\\S]*?Disallow:\\s*/`, "i");
     return pattern.test(robotsText);
   });
   const allowed = aiCrawlers.length - blocked.length;
@@ -414,11 +424,12 @@ export async function POST(request: NextRequest) {
       safeFetch(`${baseUrl}/.well-known/agent.json`),
     ]);
 
-    const robotsText = robotsRes.ok ? robotsRes.text : (robotsRes.text === "" ? null : "");
-    const llmsText = llmsRes.ok ? llmsRes.text : (llmsRes.text === "" ? null : "");
+    // ok=true: file found, use text. ok=false: fetch failed (null = unreachable, "" = not found)
+    const robotsText = robotsRes.ok ? robotsRes.text : null;
+    const llmsText = llmsRes.ok ? llmsRes.text : null;
     const hasLlmsFull = llmsFullRes.ok && llmsFullRes.text.length > 50;
     const html = pageRes.text;
-    const sitemapText = sitemapRes.ok ? sitemapRes.text : (sitemapRes.text === "" ? null : "");
+    const sitemapText = sitemapRes.ok ? sitemapRes.text : null;
 
     // Enrich llms.txt check with llms-full.txt info
     const llmsResult = checkLlmsTxt(llmsText, parsedUrl.hostname, baseUrl);

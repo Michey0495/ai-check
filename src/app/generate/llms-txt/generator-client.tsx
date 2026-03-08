@@ -28,7 +28,7 @@ export function LlmsTxtGenerator() {
       lines.push("## 主要ページ");
       pages
         .trim()
-        .split("\n")
+        .split(/\r?\n/)
         .forEach((p) => {
           const trimmed = p.trim();
           if (trimmed) lines.push(`- ${trimmed}`);
