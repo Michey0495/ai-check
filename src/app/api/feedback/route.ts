@@ -48,7 +48,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Message too long" }, { status: 400 });
   }
 
-  if (repo && !/^[a-zA-Z0-9_.-]+$/.test(repo)) {
+  const ALLOWED_REPOS = ["web-url-a"];
+  if (repo && (!ALLOWED_REPOS.includes(repo) || !/^[a-zA-Z0-9_.-]+$/.test(repo))) {
     return NextResponse.json({ error: "Invalid repo name" }, { status: 400 });
   }
 

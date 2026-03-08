@@ -105,7 +105,11 @@ export function BadgeGenerator() {
             <h2 className="mb-3 text-lg font-semibold text-white">プレビュー</h2>
             <div className="flex items-center justify-center rounded-lg border border-white/10 bg-white/5 p-8">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={badgeUrl} alt="GEO Score Badge" />
+              <img
+                src={badgeUrl}
+                alt="GEO Score Badge"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+              />
             </div>
             <p className="mt-2 text-xs text-white/30">
               バッジはリアルタイムでGEOスコアを取得して表示します。スコアは1時間キャッシュされます。

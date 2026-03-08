@@ -1,68 +1,86 @@
 # QA Report - web-url-a (AI Check)
 
-**Date:** 2026-03-09
+**Date:** 2026-03-09 (Night 20)
 **Tester:** Claude Code (自動QA)
 
 ## チェックリスト
 
-- [x] `npm run build` 成功
-- [x] `npm run lint` エラーなし (警告0)
-- [x] レスポンシブ対応 (モバイル・デスクトップ) - 全ページでsm/lg breakpoint確認済み
-- [x] favicon, OGP設定 - icon.tsx, apple-icon.tsx, opengraph-image.tsx 実装済み
-- [x] 404ページ - not-found.tsx 実装済み (ナビゲーションカード付き)
-- [x] ローディング状態の表示 - loading.tsx + check-client内のloading state
-- [x] エラー状態の表示 - error.tsx, global-error.tsx, API error handling
+- [x] `npm run build` 成功 (40ページ, ~8秒)
+- [x] `npm run lint` エラーなし
+- [x] レスポンシブ対応 (モバイル・デスクトップ)
+- [x] favicon, OGP設定
+- [x] 404ページ
+- [x] ローディング状態の表示
+- [x] エラー状態の表示
 
-## 発見した問題と対応
+## 修正済み (Night 20)
 
-### 修正済み
+### Security
 
-| # | 問題 | ファイル | 対応 |
-|---|------|---------|------|
-| 1 | 未使用の`corsHeaders`インポート (lint警告) | `src/app/api/generate/route.ts:2` | インポートから削除 |
-| 2 | ヒーローバッジのtext-xs (12px) がデザインルール違反 | `src/app/page.tsx:156` | text-smに変更 |
-| 3 | 統計ラベルのtext-xs | `src/app/page.tsx:182` | text-smに統一 |
-| 4 | ユースケースCTAのtext-xs | `src/app/page.tsx:301` | text-smに変更 |
-| 5 | 404ページ説明文のtext-xs | `src/app/not-found.tsx:23,30,37` | text-smに変更 |
+| Issue | File | Fix |
+|-------|------|-----|
+| Feedback API: 任意リポジトリへのIssue作成が可能 | `api/feedback/route.ts` | ALLOWED_REPOS allowlistで制限 |
+| safeFetch: レスポンスボディサイズ無制限（DoS） | `api/check/route.ts` | 5MBストリーミング制限を追加 |
+| Badge API: レート制限なし（増幅攻撃ベクター） | `api/badge/route.ts` | 30req/min/IPのレート制限を追加 |
 
-### 許容とした項目
+### Bugs
 
-| # | 項目 | 理由 |
-|---|------|------|
-| 1 | `<pre>`コードブロック内のtext-xs | コードブロックは等幅フォントで小さいサイズが標準的 |
-| 2 | shadcn/ui コンポーネント(badge, button)のtext-xs | UIコンポーネントライブラリの標準仕様 |
-| 3 | 補足的なラベル/注釈のtext-xs (スコア表示、時間表示等) | UIクローム要素として許容範囲 |
+| Issue | File | Fix |
+|-------|------|-----|
+| robots.txt判定の正規表現がUser-agentブロックを跨いで誤検出 | `api/check/route.ts` | 次のUser-agentブロックで停止する正規表現に修正 |
+| `getGrade` でmaxScore=0時にNaN | `lib/check-indicators.ts` | ゼロ除算ガード追加 |
+| `handleDownloadZip` で不正URLが例外発生 | `check/check-client.tsx` | try/catchでデフォルトhostnameを使用 |
+
+### UX/Accessibility
+
+| Issue | File | Fix |
+|-------|------|-----|
+| フィードバック送信失敗時にalert()使用 | `feedback-widget.tsx` | インラインエラーメッセージに変更 |
+| フィードバックタイプボタンのaria-pressed欠如 | `feedback-widget.tsx` | aria-pressed属性を追加 |
+| ガイドドロップダウンのEscapeキー非対応 | `header.tsx` | onKeyDownでEscapeハンドリング追加 |
+| バッジプレビューのonError未設定 | `badge/generator-client.tsx` | onErrorで非表示化を追加 |
+
+### 過去修正済み (Night 19以前)
+
+- lint警告修正、フォントサイズ違反修正
+- スキップリンク、ARIA属性、フォームaria-label実装
+- デザインシステム準拠確認
+
+## 未修正（低優先度）
+
+| Issue | Severity | Reason |
+|-------|----------|--------|
+| SSRF: DNS rebinding攻撃 | LOW | Vercelエッジランタイムで実質リスク低 |
+| IPv6プライベートアドレスの不完全チェック | LOW | 主要ケースはカバー済み |
+| sitemap.tsのlastModifiedが常に現在時刻 | LOW | 機能的には問題なし |
+| 一部ページでopenGraph.url未設定 | LOW | Next.jsがデフォルトマージで対応 |
+| モバイルナビのフォーカストラップ未実装 | LOW | 基本的なナビゲーションは動作 |
+| check-client.tsx (~850行) の分割 | LOW | 機能的に問題なし |
+| gradeColors定数の重複定義 (3箇所) | LOW | メンテナンス性の問題のみ |
 
 ## 品質評価
 
 ### SEO (5/5)
 - メタデータ完備 (title, description, keywords, OGP, Twitter Cards)
-- 構造化データ4種 (WebApplication, FAQPage, HowTo, BreadcrumbList)
-- サイトマップ 27ルート
+- 構造化データ (Organization JSON-LD)
+- サイトマップ 41ルート
 - robots.txt, llms.txt, agent.json 実装済み
 
-### アクセシビリティ (4/5)
-- スキップリンク実装済み
-- ARIA属性適切 (role="alert", aria-live="polite", aria-expanded等)
-- フォーム要素にaria-label
-- テーブルにaria-label + scope
-- 見出し階層 H1>H2>H3 正しい
+### Security (4/5)
+- レート制限: check, feedback, badge API
+- 入力バリデーション: URL長, プロトコル, プライベートIP
+- レスポンスサイズ制限: 5MB
+- CORS: パブリックAPI用に全オリジン許可（意図的）
 
-### デザインシステム準拠 (5/5)
-- 背景: #000000 (bg-black)
-- テキスト: 白ベース (text-white, text-white/70等)
-- 絵文字: なし
-- アイコンライブラリ: 未使用
-- カード: bg-white/5 border border-white/10 統一
-- ホバー: cursor-pointer + transition-all duration-200
+### Accessibility (4/5)
+- ARIA属性適切 (role, aria-live, aria-expanded, aria-pressed)
+- フォーム要素にlabel/aria-label
+- 見出し階層正しい
+- キーボードナビゲーション基本対応
 
-### エッジケース (5/5)
+### Edge Cases (5/5)
 - 空入力: trim()チェック
 - 長文入力: maxLength=2048
 - プロトコルなしURL: https://自動付与
 - 特殊文字: encodeURIComponent処理
 - ペイロードサイズ制限: API側でガード
-
-## 結論
-
-重大な問題なし。lint警告1件と主要ページのフォントサイズ違反5箇所を修正。

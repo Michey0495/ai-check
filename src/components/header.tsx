@@ -69,6 +69,7 @@ export function Header() {
                 isGuideActive ? "text-white font-medium" : "text-white/70"
               }`}
               onClick={() => setGuidesOpen(!guidesOpen)}
+              onKeyDown={(e) => { if (e.key === "Escape") setGuidesOpen(false); }}
               aria-expanded={guidesOpen}
               aria-haspopup="true"
             >

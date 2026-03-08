@@ -115,6 +115,7 @@ export type CheckReport = {
 };
 
 export function getGrade(score: number, maxScore: number): CheckReport["grade"] {
+  if (maxScore === 0) return "F";
   const pct = (score / maxScore) * 100;
   if (pct >= 90) return "A";
   if (pct >= 75) return "B";

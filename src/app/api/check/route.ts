@@ -60,7 +60,25 @@ async function safeFetch(url: string, timeoutMs = 10000): Promise<{ ok: boolean;
       headers: { "User-Agent": "AI-Check-Bot/1.0" },
     });
     if (!res.ok) return { ok: false, text: "" };
-    const text = await res.text();
+    const reader = res.body?.getReader();
+    if (!reader) return { ok: false, text: "" };
+    const chunks: Uint8Array<ArrayBuffer>[] = [];
+    let totalSize = 0;
+    const MAX_BODY_SIZE = 5 * 1024 * 1024; // 5MB
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      totalSize += value.byteLength;
+      if (totalSize > MAX_BODY_SIZE) {
+        reader.cancel();
+        return { ok: false, text: "" };
+      }
+      chunks.push(value);
+    }
+    const merged = chunks.length === 1
+      ? chunks[0]
+      : new Uint8Array(await new Blob(chunks).arrayBuffer());
+    const text = new TextDecoder().decode(merged);
     return { ok: true, text };
   } catch {
     return { ok: false, text: "" };
@@ -94,7 +112,8 @@ function checkRobotsTxt(robotsText: string | null, baseUrl: string): CheckResult
   const aiCrawlers = ["GPTBot", "ChatGPT-User", "ClaudeBot", "anthropic-ai", "PerplexityBot", "Google-Extended", "Bytespider", "CCBot", "Applebot-Extended", "cohere-ai"];
   const blocked = aiCrawlers.filter((c) => {
     const escaped = c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const pattern = new RegExp(`User-agent:\\s*${escaped}\\s*\\n[\\s\\S]*?Disallow:\\s*/`, "i");
+    // Match User-agent block: only look at directives until the next User-agent or end of text
+    const pattern = new RegExp(`User-agent:\\s*${escaped}\\s*\\n(?:(?!User-agent:)[^\\n]*\\n)*?\\s*Disallow:\\s*/`, "i");
     return pattern.test(robotsText);
   });
   const allowed = aiCrawlers.length - blocked.length;

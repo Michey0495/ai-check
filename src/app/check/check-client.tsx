@@ -487,7 +487,9 @@ export function CheckPageClient() {
     const blobUrl = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = blobUrl;
-    a.download = `ai-check-${new URL(report.url).hostname}-${new Date().toISOString().split("T")[0]}.zip`;
+    let hostname = "site";
+    try { hostname = new URL(report.url).hostname; } catch { /* use default */ }
+    a.download = `ai-check-${hostname}-${new Date().toISOString().split("T")[0]}.zip`;
     a.click();
     URL.revokeObjectURL(blobUrl);
   }, [report]);

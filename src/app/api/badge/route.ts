@@ -2,6 +2,27 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const maxDuration = 30;
 
+const badgeRateMap = new Map<string, { count: number; resetAt: number }>();
+const BADGE_RATE_LIMIT = 30;
+const BADGE_RATE_WINDOW_MS = 60_000;
+
+function checkBadgeRate(ip: string): boolean {
+  const now = Date.now();
+  if (badgeRateMap.size > 5_000) {
+    for (const [key, val] of badgeRateMap) {
+      if (now > val.resetAt) badgeRateMap.delete(key);
+    }
+  }
+  const entry = badgeRateMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    badgeRateMap.set(ip, { count: 1, resetAt: now + BADGE_RATE_WINDOW_MS });
+    return true;
+  }
+  if (entry.count >= BADGE_RATE_LIMIT) return false;
+  entry.count++;
+  return true;
+}
+
 const gradeColors: Record<string, string> = {
   A: "#4ade80",
   B: "#60a5fa",
@@ -51,6 +72,11 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const url = searchParams.get("url");
   const style = searchParams.get("style") ?? "flat";
+
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  if (!checkBadgeRate(ip)) {
+    return new NextResponse("Rate limited", { status: 429 });
+  }
 
   if (!url) {
     return new NextResponse(

@@ -7,9 +7,11 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
   const [type, setType] = useState<"bug" | "feature" | "other">("bug");
   const [message, setMessage] = useState("");
   const [sent, setSent] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
 
   const submit = async () => {
     if (!message.trim()) return;
+    setSubmitError(false);
     try {
       await fetch("/api/feedback", {
         method: "POST",
@@ -23,7 +25,7 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
         setMessage("");
       }, 2000);
     } catch {
-      alert("送信に失敗しました");
+      setSubmitError(true);
     }
   };
 
@@ -53,6 +55,7 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
               <button
                 key={t}
                 onClick={() => setType(t)}
+                aria-pressed={type === t}
                 className={`px-3 py-1 rounded-full text-xs transition-colors cursor-pointer ${
                   type === t ? "bg-white/20 text-white" : "bg-white/5 text-white/50 hover:bg-white/10"
                 }`}
@@ -68,6 +71,9 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
             placeholder="ご意見をお聞かせください..."
             className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-white placeholder:text-white/30 h-24 resize-none mb-3 focus:outline-none focus:border-white/20"
           />
+          {submitError && (
+            <p className="text-red-400 text-xs mb-2">送信に失敗しました。もう一度お試しください。</p>
+          )}
           <button
             onClick={submit}
             className="w-full bg-white/10 text-white py-2 rounded-lg text-sm hover:bg-white/20 transition-colors cursor-pointer"
