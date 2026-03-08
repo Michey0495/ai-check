@@ -7,6 +7,7 @@ import { UrlCheckForm } from "@/components/url-check-form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { CheckReport } from "@/lib/check-indicators";
+import { createZip } from "@/lib/zip";
 
 type HistoryEntry = {
   url: string;
@@ -345,6 +346,34 @@ export function CheckPageClient() {
     URL.revokeObjectURL(blobUrl);
   }, [report]);
 
+  const handleDownloadZip = useCallback(() => {
+    if (!report) return;
+    const files: { name: string; content: string }[] = [];
+    for (const r of report.results) {
+      if (r.code) {
+        const nameMap: Record<string, string> = {
+          "robots-txt": "robots.txt",
+          "llms-txt": "llms.txt",
+          "structured-data": "schema.jsonld",
+          "meta-tags": "meta-tags.html",
+          "content-structure": "content-structure.html",
+          "ssr": "ssr-guide.txt",
+          "sitemap": "sitemap.xml",
+        };
+        files.push({ name: nameMap[r.id] ?? `${r.id}.txt`, content: r.code });
+      }
+    }
+    files.push({ name: "report.txt", content: generateReportText(report) });
+    if (files.length <= 1) return;
+    const blob = createZip(files);
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = blobUrl;
+    a.download = `ai-check-${new URL(report.url).hostname}-${new Date().toISOString().split("T")[0]}.zip`;
+    a.click();
+    URL.revokeObjectURL(blobUrl);
+  }, [report]);
+
   const handleShareX = useCallback(() => {
     if (!report) return;
     const pct = Math.round((report.totalScore / report.maxScore) * 100);
@@ -430,6 +459,16 @@ export function CheckPageClient() {
               >
                 テキストで保存
               </Button>
+              {report.results.some((r) => r.code) && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="cursor-pointer border-primary/30 bg-primary/10 text-primary transition-all duration-200 hover:bg-primary/20"
+                  onClick={handleDownloadZip}
+                >
+                  ZIPで一括保存
+                </Button>
+              )}
               <Button
                 variant="outline"
                 size="sm"

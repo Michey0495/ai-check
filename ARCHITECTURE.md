@@ -33,6 +33,8 @@ src/
 │   │   ├── robots-txt/         # robots.txt生成ツール
 │   │   ├── json-ld/            # JSON-LD生成ツール
 │   │   └── agent-json/         # agent.json生成ツール
+│   ├── check/[indicator]/page.tsx # チェック項目別SEOランディング（7ページ）
+│   ├── for/[industry]/page.tsx   # 業界別SEOランディング（6ページ）
 │   ├── guides/
 │   │   ├── geo/page.tsx        # GEO対策ガイド
 │   │   └── llms-txt/page.tsx   # llms.txt書き方ガイド
@@ -48,6 +50,7 @@ src/
 │   └── ui/                     # shadcn/ui
 ├── lib/
 │   ├── check-indicators.ts     # 7指標定義、型定義、スコア計算
+│   ├── zip.ts                  # クライアントサイドZIPファイル生成
 │   └── utils.ts                # shadcn/ui ユーティリティ
 public/
 ├── llms.txt                    # AI向けサイト説明
@@ -157,6 +160,19 @@ JSON-RPC 2.0 プロトコル。3つのツールを提供:
 - /generate/agent-json: 「agent.json 作り方」
 - /guides/geo: 「GEO対策 ガイド」「AI検索 最適化」
 - /guides/llms-txt: 「llms.txt 書き方」
+- /check/robots-txt: 「robots.txt チェック」「AIクローラー 許可」
+- /check/llms-txt: 「llms.txt チェック」「llms.txt 確認」
+- /check/structured-data: 「構造化データ チェック」「JSON-LD チェック」
+- /check/meta-tags: 「メタタグ チェック」「OGP チェック」
+- /check/content-structure: 「セマンティックHTML チェック」
+- /check/ssr: 「SSR チェック」「サーバーサイドレンダリング」
+- /check/sitemap: 「サイトマップ チェック」「sitemap.xml」
+- /for/ec: 「ECサイト GEO対策」「ネットショップ AI検索」
+- /for/saas: 「SaaS GEO対策」「Webサービス AI検索」
+- /for/media: 「メディア GEO対策」「ブログ AI検索」
+- /for/professional: 「士業 GEO対策」「コンサル AI検索」
+- /for/local: 「ローカルビジネス GEO対策」「店舗 AI検索」
+- /for/education: 「教育 GEO対策」「スクール AI検索」
 
 ## デプロイ
 

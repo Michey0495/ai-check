@@ -20,6 +20,23 @@
 - [API / 開発者向け](https://ai-check.ezoai.jp/developers): REST API・MCP Serverリファレンス
 - [About](https://ai-check.ezoai.jp/about): サービス概要
 
+## チェック項目別ガイド
+- [AIクローラーアクセスチェック](https://ai-check.ezoai.jp/check/robots-txt): robots.txtのAIクローラー設定を詳しく解説
+- [llms.txtチェック](https://ai-check.ezoai.jp/check/llms-txt): llms.txtの設置状況と最適な書き方
+- [構造化データチェック](https://ai-check.ezoai.jp/check/structured-data): JSON-LD構造化データの設置と検証
+- [メタタグチェック](https://ai-check.ezoai.jp/check/meta-tags): title, description, OGP等のメタタグ最適化
+- [コンテンツ構造チェック](https://ai-check.ezoai.jp/check/content-structure): セマンティックHTMLの正しい使い方
+- [SSRチェック](https://ai-check.ezoai.jp/check/ssr): サーバーサイドレンダリングの確認方法
+- [サイトマップチェック](https://ai-check.ezoai.jp/check/sitemap): sitemap.xmlの設置と最適化
+
+## 業界別GEO対策
+- [ECサイト向け](https://ai-check.ezoai.jp/for/ec): ECサイト・ネットショップのAI検索対策
+- [SaaS向け](https://ai-check.ezoai.jp/for/saas): SaaS・WebサービスのAI検索対策
+- [メディア向け](https://ai-check.ezoai.jp/for/media): メディア・ブログのAI検索対策
+- [士業向け](https://ai-check.ezoai.jp/for/professional): 士業・コンサルティングのAI検索対策
+- [ローカルビジネス向け](https://ai-check.ezoai.jp/for/local): 店舗・ローカルビジネスのAI検索対策
+- [教育向け](https://ai-check.ezoai.jp/for/education): 教育・スクールのAI検索対策
+
 ## チェック指標
 1. AIクローラーアクセス (robots.txt)
 2. llms.txt Presence

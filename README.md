@@ -38,6 +38,19 @@ http://localhost:3000 で起動。
 | `/guides/glossary` | GEO・AI検索用語集 |
 | `/developers` | API / 開発者向けドキュメント |
 | `/about` | サービス概要 |
+| `/check/robots-txt` | AIクローラーアクセスチェック解説 |
+| `/check/llms-txt` | llms.txtチェック解説 |
+| `/check/structured-data` | 構造化データチェック解説 |
+| `/check/meta-tags` | メタタグチェック解説 |
+| `/check/content-structure` | コンテンツ構造チェック解説 |
+| `/check/ssr` | SSRチェック解説 |
+| `/check/sitemap` | サイトマップチェック解説 |
+| `/for/ec` | ECサイト向けGEO対策 |
+| `/for/saas` | SaaS向けGEO対策 |
+| `/for/media` | メディア向けGEO対策 |
+| `/for/professional` | 士業向けGEO対策 |
+| `/for/local` | ローカルビジネス向けGEO対策 |
+| `/for/education` | 教育向けGEO対策 |
 
 ## チェック指標（7項目）
 
@@ -171,3 +184,11 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - ナビゲーション: ヘッダーに「API」リンク、フッターに「API / 開発者向け」リンク追加
 - AI公開チャネル: agent.json v1.2.0、llms.txt・sitemap.xmlに開発者ページ追記
 - 修正: About技術スタック Next.js 16→15、llms.txt技術スタック Next.js 16→15
+
+### Night 13 (完了)
+- プログラマティックSEO: チェック項目別SEOランディングページ7ページ追加（/check/[indicator]）- robots-txt, llms-txt, structured-data, meta-tags, content-structure, ssr, sitemap
+- プログラマティックSEO: 業界別SEOランディングページ6ページ追加（/for/[industry]）- ec, saas, media, professional, local, education
+- UX: チェック結果ページにZIP一括ダウンロード機能追加（改善コード+レポートをZIPでまとめてDL）
+- SEO: sitemap.xmlに13ページ追加（チェック項目別7 + 業界別6）
+- ナビゲーション: フッターにチェック項目別・業界別リンク追加（4カラムレイアウト）
+- AI公開チャネル: llms.txtにチェック項目別・業界別セクション追加、agent.json v1.4.0に更新
