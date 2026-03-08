@@ -164,13 +164,31 @@ function checkLlmsTxt(llmsText: string | null, hostname: string, baseUrl: string
 function checkStructuredData(html: string, baseUrl: string): CheckResult {
   const jsonLdMatches = html.match(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi);
   if (jsonLdMatches && jsonLdMatches.length > 0) {
+    // Extract schema types
+    const schemaTypes: string[] = [];
+    for (const match of jsonLdMatches) {
+      const content = match.replace(/<script[^>]*>|<\/script>/gi, "");
+      try {
+        const parsed = JSON.parse(content);
+        const items = Array.isArray(parsed) ? parsed : [parsed];
+        for (const item of items) {
+          if (item["@type"]) {
+            const t = Array.isArray(item["@type"]) ? item["@type"].join(", ") : item["@type"];
+            schemaTypes.push(t);
+          }
+        }
+      } catch {
+        // invalid JSON-LD, still count it
+      }
+    }
+    const typesText = schemaTypes.length > 0 ? ` 検出スキーマ: ${schemaTypes.join(", ")}。` : "";
     return {
       id: "structured-data",
       score: 20,
       maxScore: 20,
       status: "pass",
       message: `構造化データ: ${jsonLdMatches.length}件のJSON-LDを検出`,
-      details: "JSON-LD構造化データが適切に設置されています。AI検索エンジンがコンテンツを正確に理解できます。",
+      details: `JSON-LD構造化データが適切に設置されています。${typesText}AI検索エンジンがコンテンツを正確に理解できます。`,
     };
   }
   return {
@@ -384,6 +402,7 @@ export async function POST(request: NextRequest) {
     }
 
     const baseUrl = parsedUrl.origin;
+    const startTime = Date.now();
 
     // Fetch all resources concurrently
     const [robotsRes, llmsRes, llmsFullRes, pageRes, sitemapRes, agentRes] = await Promise.all([
@@ -434,6 +453,8 @@ export async function POST(request: NextRequest) {
     const totalScore = results.reduce((sum, r) => sum + r.score, 0);
     const maxScore = results.reduce((sum, r) => sum + r.maxScore, 0);
 
+    const responseTimeMs = Date.now() - startTime;
+
     const report: CheckReport = {
       url,
       totalScore,
@@ -441,6 +462,7 @@ export async function POST(request: NextRequest) {
       grade: getGrade(totalScore, maxScore),
       results,
       checkedAt: new Date().toISOString(),
+      responseTimeMs,
     };
 
     return NextResponse.json(report, {

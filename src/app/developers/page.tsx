@@ -1,0 +1,283 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "API / 開発者向けドキュメント",
+  description:
+    "AI Check REST API・MCP Serverの使い方。GEOスコアチェック、llms.txt生成、robots.txt生成、JSON-LD生成、agent.json生成のAPIリファレンス。",
+  alternates: { canonical: "https://ai-check.ezoai.jp/developers" },
+};
+
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "AI Check", item: "https://ai-check.ezoai.jp" },
+    { "@type": "ListItem", position: 2, name: "開発者向けドキュメント", item: "https://ai-check.ezoai.jp/developers" },
+  ],
+};
+
+const endpoints = [
+  {
+    method: "POST",
+    path: "/api/check",
+    description: "URLのGEOスコアをチェック",
+    request: `{
+  "url": "https://example.com"
+}`,
+    response: `{
+  "url": "https://example.com",
+  "totalScore": 65,
+  "maxScore": 100,
+  "grade": "C",
+  "results": [
+    {
+      "id": "robots-txt",
+      "score": 15,
+      "maxScore": 15,
+      "status": "pass",
+      "message": "AIクローラーアクセス: 全て許可",
+      "details": "...",
+      "code": null
+    }
+  ],
+  "checkedAt": "2026-03-09T00:00:00.000Z"
+}`,
+    notes: "レート制限: 10リクエスト/分（IP単位）",
+  },
+  {
+    method: "POST",
+    path: "/api/generate",
+    description: "llms.txt / robots.txt を生成",
+    request: `// llms.txt生成
+{
+  "type": "llms-txt",
+  "data": {
+    "siteName": "My Site",
+    "siteUrl": "https://example.com",
+    "description": "サイト説明",
+    "pages": [
+      { "path": "/", "title": "トップ", "description": "概要" }
+    ]
+  }
+}
+
+// robots.txt生成
+{
+  "type": "robots-txt",
+  "data": {
+    "sitemapUrl": "https://example.com/sitemap.xml"
+  }
+}`,
+    response: `{
+  "content": "生成されたファイル内容",
+  "filename": "llms.txt"
+}`,
+    notes: null,
+  },
+];
+
+const mcpTools = [
+  {
+    name: "check_geo_score",
+    description: "GEOスコアチェック",
+    params: "url: string (必須)",
+  },
+  {
+    name: "generate_llms_txt",
+    description: "llms.txt生成",
+    params: "siteName: string (必須), siteUrl: string (必須), description?: string, pages?: string[]",
+  },
+  {
+    name: "generate_robots_txt",
+    description: "robots.txt生成",
+    params: "sitemapUrl?: string, allowedCrawlers?: string[]",
+  },
+  {
+    name: "generate_json_ld",
+    description: "JSON-LD構造化データ生成",
+    params: "type: string (必須), name: string (必須), url: string (必須), description?: string, data?: object",
+  },
+  {
+    name: "generate_agent_json",
+    description: "agent.json生成",
+    params: "name: string (必須), url: string (必須), description?: string, capabilities?: string[], apiEndpoints?: string[]",
+  },
+];
+
+export default function DevelopersPage() {
+  return (
+    <div className="py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <h1 className="mb-4 text-3xl font-bold text-white">
+        API / 開発者向けドキュメント
+      </h1>
+      <p className="mb-12 text-lg leading-relaxed text-white/60">
+        AI CheckのREST APIとMCP Serverを使って、GEOスコアチェックやファイル生成を自動化できます。
+      </p>
+
+      <div className="space-y-16">
+        {/* REST API */}
+        <section>
+          <h2 className="mb-6 text-2xl font-bold text-white">REST API</h2>
+          <p className="mb-6 text-sm text-white/60">
+            ベースURL: <code className="rounded bg-white/10 px-1.5 py-0.5 text-white/80">https://ai-check.ezoai.jp</code>
+          </p>
+
+          <div className="space-y-8">
+            {endpoints.map((ep) => (
+              <div
+                key={ep.path}
+                className="rounded-lg border border-white/10 bg-white/5 p-6"
+              >
+                <div className="mb-3 flex items-center gap-3">
+                  <span className="rounded bg-primary/20 px-2 py-0.5 text-xs font-bold text-primary">
+                    {ep.method}
+                  </span>
+                  <code className="text-sm font-semibold text-white">
+                    {ep.path}
+                  </code>
+                </div>
+                <p className="mb-4 text-sm text-white/60">{ep.description}</p>
+
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-white/40">
+                      Request Body
+                    </h4>
+                    <pre className="overflow-x-auto rounded-lg bg-black/50 border border-white/10 p-4 text-xs leading-relaxed text-white/70">
+                      {ep.request}
+                    </pre>
+                  </div>
+                  <div>
+                    <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-white/40">
+                      Response
+                    </h4>
+                    <pre className="overflow-x-auto rounded-lg bg-black/50 border border-white/10 p-4 text-xs leading-relaxed text-white/70">
+                      {ep.response}
+                    </pre>
+                  </div>
+                  {ep.notes && (
+                    <p className="text-xs text-white/40">{ep.notes}</p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* MCP Server */}
+        <section>
+          <h2 className="mb-6 text-2xl font-bold text-white">
+            MCP Server
+          </h2>
+          <p className="mb-4 text-sm text-white/60">
+            AI CheckはMCP（Model Context Protocol）に対応しています。AIエージェント（Claude等）からツールとして直接利用できます。
+          </p>
+          <div className="mb-6 rounded-lg border border-white/10 bg-white/5 p-4">
+            <p className="text-sm text-white/60">
+              エンドポイント: <code className="rounded bg-white/10 px-1.5 py-0.5 text-white/80">POST /api/mcp</code>
+            </p>
+            <p className="mt-1 text-sm text-white/60">
+              プロトコル: <code className="rounded bg-white/10 px-1.5 py-0.5 text-white/80">JSON-RPC 2.0</code>
+            </p>
+          </div>
+
+          <h3 className="mb-4 text-lg font-semibold text-white">利用可能なツール</h3>
+          <div className="space-y-3">
+            {mcpTools.map((tool) => (
+              <div
+                key={tool.name}
+                className="rounded-lg border border-white/10 bg-white/5 p-4"
+              >
+                <div className="mb-1 flex items-baseline gap-2">
+                  <code className="text-sm font-semibold text-primary">
+                    {tool.name}
+                  </code>
+                  <span className="text-xs text-white/40">
+                    {tool.description}
+                  </span>
+                </div>
+                <p className="text-xs text-white/50">
+                  パラメータ: {tool.params}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-6">
+            <h3 className="mb-3 text-lg font-semibold text-white">使用例</h3>
+            <pre className="overflow-x-auto rounded-lg bg-black/50 border border-white/10 p-4 text-xs leading-relaxed text-white/70">
+{`// GEOスコアチェック
+curl -X POST https://ai-check.ezoai.jp/api/mcp \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+      "name": "check_geo_score",
+      "arguments": { "url": "https://example.com" }
+    },
+    "id": 1
+  }'`}
+            </pre>
+          </div>
+        </section>
+
+        {/* AI Public Channels */}
+        <section>
+          <h2 className="mb-6 text-2xl font-bold text-white">
+            AI公開チャネル
+          </h2>
+          <p className="mb-4 text-sm text-white/60">
+            AI Check自身もAI検索に完全対応しています。以下のエンドポイントからサービス情報を取得できます。
+          </p>
+          <div className="space-y-3">
+            {[
+              { path: "/llms.txt", desc: "AI向けサイト説明（マークダウン）" },
+              { path: "/.well-known/agent.json", desc: "A2A Agent Card" },
+              { path: "/robots.txt", desc: "AIクローラー許可設定" },
+              { path: "/sitemap.xml", desc: "サイトマップ" },
+              { path: "/api/mcp", desc: "MCP Server（JSON-RPC 2.0）" },
+            ].map((ch) => (
+              <div
+                key={ch.path}
+                className="flex items-center gap-4 rounded-lg border border-white/10 bg-white/5 px-4 py-3"
+              >
+                <code className="text-sm font-semibold text-white/80">
+                  {ch.path}
+                </code>
+                <span className="text-xs text-white/40">{ch.desc}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Related */}
+        <section>
+          <h2 className="mb-4 text-xl font-bold text-white">関連コンテンツ</h2>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {[
+              { href: "/check", label: "GEOスコアチェック", desc: "URLを入力してAI検索対応度を診断" },
+              { href: "/guides/geo", label: "GEO対策ガイド", desc: "AI検索最適化の基本から実践まで" },
+              { href: "/about", label: "AI Checkについて", desc: "サービス概要・機能一覧" },
+              { href: "/guides/glossary", label: "用語集", desc: "GEO・AI検索の用語を解説" },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="cursor-pointer rounded-lg border border-white/10 bg-white/5 p-4 transition-all duration-200 hover:border-primary/30"
+              >
+                <p className="font-semibold text-white">{item.label}</p>
+                <p className="mt-1 text-xs text-white/50">{item.desc}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}

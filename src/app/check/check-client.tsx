@@ -409,6 +409,9 @@ export function CheckPageClient() {
             />
             <p className="mt-2 text-sm text-white/40">
               チェック日時: {new Date(report.checkedAt).toLocaleString("ja-JP")}
+              {report.responseTimeMs != null && (
+                <span className="ml-2">({(report.responseTimeMs / 1000).toFixed(1)}秒)</span>
+              )}
             </p>
             <div className="mt-4 flex flex-wrap justify-center gap-3">
               <Button

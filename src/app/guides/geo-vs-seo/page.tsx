@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { CtaBanner } from "@/components/cta-banner";
 
 export const metadata: Metadata = {
   title: "GEO対策 vs SEO対策 - 違いと両立する方法",
@@ -341,6 +342,8 @@ export default function GeoVsSeoPage() {
             ))}
           </div>
         </section>
+
+        <CtaBanner />
       </div>
     </div>
   );

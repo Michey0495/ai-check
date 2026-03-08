@@ -16,6 +16,7 @@
 - [用語集](https://ai-check.ezoai.jp/guides/glossary): GEO・AI検索に関する用語解説
 - [GEO対策チェックリスト](https://ai-check.ezoai.jp/guides/checklist): AI検索対応の全20項目チェックリスト（進捗保存機能付き）
 - [業界別GEO対策](https://ai-check.ezoai.jp/guides/industry): EC・SaaS・メディア・士業など業界別のGEO対策ガイド
+- [API / 開発者向け](https://ai-check.ezoai.jp/developers): REST API・MCP Serverリファレンス
 - [About](https://ai-check.ezoai.jp/about): サービス概要
 
 ## チェック指標
@@ -28,12 +29,12 @@
 7. サイトマップ品質
 
 ## API
-- POST /api/check: URLのGEOスコアチェック（パラメータ: url）
+- POST /api/check: URLのGEOスコアチェック（パラメータ: url）。レスポンスにresponseTimeMsを含む
 - POST /api/generate: ファイル生成（パラメータ: type, data）
-- POST /api/mcp: MCP Server (JSON-RPC 2.0)
+- POST /api/mcp: MCP Server (JSON-RPC 2.0) - 5ツール: check_geo_score, generate_llms_txt, generate_robots_txt, generate_json_ld, generate_agent_json
 
 ## 技術スタック
-- Next.js 16, TypeScript, Tailwind CSS, shadcn/ui, Vercel
+- Next.js 15, TypeScript, Tailwind CSS, shadcn/ui, Vercel
 
 ## 連絡先
 - サイト: https://ai-check.ezoai.jp

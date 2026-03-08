@@ -46,6 +46,52 @@ const TOOLS = [
       required: [],
     },
   },
+  {
+    name: "generate_json_ld",
+    description: "JSON-LD構造化データを生成します。WebSite、Organization、FAQPage、HowToなど複数のスキーマタイプに対応。",
+    inputSchema: {
+      type: "object",
+      properties: {
+        type: {
+          type: "string",
+          enum: ["WebSite", "Organization", "FAQPage", "HowTo", "Product", "Article"],
+          description: "構造化データのスキーマタイプ",
+        },
+        name: { type: "string", description: "名前（サイト名、組織名、記事タイトル等）" },
+        url: { type: "string", description: "対象URL" },
+        description: { type: "string", description: "説明文" },
+        data: {
+          type: "object",
+          description: "スキーマタイプ固有の追加データ（FAQのquestions配列、HowToのsteps配列等）",
+        },
+      },
+      required: ["type", "name", "url"],
+    },
+  },
+  {
+    name: "generate_agent_json",
+    description: "A2A Agent Card（agent.json）を生成します。Google A2A Protocolに準拠したAIエージェント能力宣言ファイル。",
+    inputSchema: {
+      type: "object",
+      properties: {
+        name: { type: "string", description: "サービス名" },
+        description: { type: "string", description: "サービス説明" },
+        url: { type: "string", description: "サービスURL" },
+        version: { type: "string", description: "バージョン（デフォルト: 1.0.0）" },
+        capabilities: {
+          type: "array",
+          items: { type: "string" },
+          description: "サービスの機能リスト",
+        },
+        apiEndpoints: {
+          type: "array",
+          items: { type: "string" },
+          description: "APIエンドポイントのリスト",
+        },
+      },
+      required: ["name", "url"],
+    },
+  },
 ];
 
 export async function POST(request: NextRequest) {
@@ -140,6 +186,78 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({
             jsonrpc: "2.0",
             result: { content: [{ type: "text", text: lines.join("\n") }] },
+            id,
+          });
+        }
+
+        if (toolName === "generate_json_ld") {
+          const schemaType = args.type;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          let jsonLd: Record<string, any> = {
+            "@context": "https://schema.org",
+            "@type": schemaType,
+            name: args.name,
+            url: args.url,
+          };
+
+          if (args.description) {
+            jsonLd.description = args.description;
+          }
+
+          const extra = args.data ?? {};
+
+          if (schemaType === "FAQPage" && Array.isArray(extra.questions)) {
+            jsonLd.mainEntity = extra.questions.map((q: { question: string; answer: string }) => ({
+              "@type": "Question",
+              name: q.question,
+              acceptedAnswer: { "@type": "Answer", text: q.answer },
+            }));
+          } else if (schemaType === "HowTo" && Array.isArray(extra.steps)) {
+            jsonLd.step = extra.steps.map((s: { name: string; text: string }, i: number) => ({
+              "@type": "HowToStep",
+              position: i + 1,
+              name: s.name,
+              text: s.text,
+            }));
+          } else if (schemaType === "Organization") {
+            if (extra.logo) jsonLd.logo = extra.logo;
+            if (extra.sameAs) jsonLd.sameAs = extra.sameAs;
+          } else if (schemaType === "Product") {
+            if (extra.brand) jsonLd.brand = { "@type": "Brand", name: extra.brand };
+            if (extra.offers) jsonLd.offers = { "@type": "Offer", ...extra.offers };
+          } else if (schemaType === "Article") {
+            if (extra.author) jsonLd.author = { "@type": "Person", name: extra.author };
+            if (extra.datePublished) jsonLd.datePublished = extra.datePublished;
+            if (extra.image) jsonLd.image = extra.image;
+          }
+
+          if (extra.additionalProperties) {
+            jsonLd = { ...jsonLd, ...extra.additionalProperties };
+          }
+
+          const script = `<script type="application/ld+json">\n${JSON.stringify(jsonLd, null, 2)}\n</script>`;
+          return NextResponse.json({
+            jsonrpc: "2.0",
+            result: { content: [{ type: "text", text: script }] },
+            id,
+          });
+        }
+
+        if (toolName === "generate_agent_json") {
+          const agentCard = {
+            name: args.name,
+            description: args.description ?? "",
+            url: args.url,
+            version: args.version ?? "1.0.0",
+            capabilities: args.capabilities ?? [],
+            api_endpoints: args.apiEndpoints ?? [],
+            protocol: "a2a",
+            authentication: { type: "none" },
+          };
+
+          return NextResponse.json({
+            jsonrpc: "2.0",
+            result: { content: [{ type: "text", text: JSON.stringify(agentCard, null, 2) }] },
             id,
           });
         }

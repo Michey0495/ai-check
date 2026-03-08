@@ -15,6 +15,7 @@ const guideLinks = [
 const navLinks = [
   { href: "/check", label: "チェック" },
   { href: "/generate/llms-txt", label: "生成ツール" },
+  { href: "/developers", label: "API" },
   { href: "/about", label: "About" },
 ];
 

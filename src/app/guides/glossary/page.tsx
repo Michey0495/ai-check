@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { CtaBanner } from "@/components/cta-banner";
 
 export const metadata: Metadata = {
   title: "GEO・AI検索 用語集",
@@ -223,6 +224,8 @@ export default function GlossaryPage() {
           ))}
         </div>
       </section>
+
+      <CtaBanner />
     </div>
   );
 }

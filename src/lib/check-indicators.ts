@@ -102,6 +102,7 @@ export type CheckReport = {
   grade: "A" | "B" | "C" | "D" | "F";
   results: CheckResult[];
   checkedAt: string;
+  responseTimeMs?: number;
 };
 
 export function getGrade(score: number, maxScore: number): CheckReport["grade"] {

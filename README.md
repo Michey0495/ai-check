@@ -35,6 +35,7 @@ http://localhost:3000 で起動。
 | `/guides/checklist` | GEO対策チェックリスト（インタラクティブ・進捗保存） |
 | `/guides/industry` | 業界別GEO対策ガイド（EC・SaaS・メディア・士業・ローカル・教育） |
 | `/guides/glossary` | GEO・AI検索用語集 |
+| `/developers` | API / 開発者向けドキュメント |
 | `/about` | サービス概要 |
 
 ## チェック指標（7項目）
@@ -55,7 +56,7 @@ http://localhost:3000 で起動。
 |---------------|---------|------|
 | `/api/check` | POST | URLのGEOスコアチェック |
 | `/api/generate` | POST | ファイル生成（llms-txt, robots-txt） |
-| `/api/mcp` | POST | MCP Server (JSON-RPC 2.0) |
+| `/api/mcp` | POST | MCP Server (JSON-RPC 2.0) - 5ツール |
 
 ## AI公開チャネル
 
@@ -159,3 +160,13 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - 内部リンク: トップページ「こんな方に必要です」カードから業界別ガイドへリンク
 - チェック強化: llms-full.txt（詳細版）の存在検出をチェックエンジンに追加
 - AI公開チャネル: agent.json を v1.1.0 に更新（新機能・新ガイド反映）
+
+### Night 12 (完了)
+- MCP Server完全化: generate_json_ld（6スキーマタイプ対応）、generate_agent_json ツールを追加（計5ツール）
+- API / 開発者向けドキュメントページ追加（/developers）- REST API・MCP Server全ツールのリファレンス
+- チェックエンジン強化: 構造化データチェックにスキーマタイプ識別（検出したJSON-LDの@type表示）追加
+- チェックエンジン強化: レスポンスタイム計測をレポートに追加（responseTimeMs）
+- CTAバナーコンポーネント作成、GEOガイド・GEO vs SEO・用語集ページに配置
+- ナビゲーション: ヘッダーに「API」リンク、フッターに「API / 開発者向け」リンク追加
+- AI公開チャネル: agent.json v1.2.0、llms.txt・sitemap.xmlに開発者ページ追記
+- 修正: About技術スタック Next.js 16→15、llms.txt技術スタック Next.js 16→15
