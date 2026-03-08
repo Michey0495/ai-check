@@ -239,3 +239,11 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - ナビゲーション: フッターにプライバシーポリシーリンク追加（ガイドカラム + フッターバー）
 - SEO: sitemap.xml, llms.txtにプライバシーページ追加
 - AI公開チャネル: agent.json v1.8.0に更新
+
+### Night 20 (完了)
+- 修正: 業界別ページ（/for/[industry]）のJSON-LDコード例から fabricated aggregateRating を削除（Googleガイドライン違反防止）
+- 修正: ローカルビジネスのaggregateRating教示例をプレースホルダー形式に変更（実データ入力を促す表記に）
+- チェック強化: メタタグの文字数最適化チェック追加（title 30-60文字、description 70-160文字の推奨範囲から外れると警告、スコア減点）
+- チェック強化: llms.txt品質チェック追加（セクション見出し・URL・API情報の有無を評価、300文字未満または見出しなしでwarn）
+- チェック強化: サイトマップにlastmod設定状況表示を追加（lastmod設定件数・割合を表示）
+- AI公開チャネル: agent.json v1.9.0に更新、llms.txtにチェック指標の詳細説明を追記

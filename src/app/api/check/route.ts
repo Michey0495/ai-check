@@ -175,13 +175,35 @@ function checkLlmsTxt(llmsText: string | null, hostname: string, baseUrl: string
   }
 
   if (llmsText.length > 100) {
+    // Check content quality
+    const hasHeadings = /^##?\s/m.test(llmsText);
+    const hasUrls = /https?:\/\//.test(llmsText);
+    const hasApiSection = /api/i.test(llmsText);
+    const lineCount = llmsText.split("\n").filter((l) => l.trim()).length;
+    const qualityItems: string[] = [];
+    if (hasHeadings) qualityItems.push("セクション見出しあり");
+    if (hasUrls) qualityItems.push("URL記載あり");
+    if (hasApiSection) qualityItems.push("API情報あり");
+    const qualityText = qualityItems.length > 0 ? ` 品質: ${qualityItems.join("、")}。` : "";
+
+    if (llmsText.length < 300 || !hasHeadings) {
+      return {
+        id: "llms-txt",
+        score: 12,
+        maxScore: 15,
+        status: "warn",
+        message: "llms.txt: 存在（内容の充実を推奨）",
+        details: `llms.txtが存在し、${llmsText.length}文字（${lineCount}行）の内容があります。${qualityText}セクション見出し（##）、主要ページURL、API情報を含めるとAIエージェントの理解度が向上します。`,
+      };
+    }
+
     return {
       id: "llms-txt",
       score: 15,
       maxScore: 15,
       status: "pass",
-      message: "llms.txt: 存在",
-      details: `llms.txtが存在し、${llmsText.length}文字の内容があります。AIエージェントがサイト情報を理解できます。`,
+      message: "llms.txt: 充実",
+      details: `llms.txtが存在し、${llmsText.length}文字（${lineCount}行）の充実した内容があります。${qualityText}AIエージェントがサイト情報を正確に理解できます。`,
     };
   }
 
@@ -191,7 +213,7 @@ function checkLlmsTxt(llmsText: string | null, hostname: string, baseUrl: string
     maxScore: 15,
     status: "warn",
     message: "llms.txt: 内容が少ない",
-    details: "llms.txtは存在しますが、内容が少ないです。サイト概要、主要ページ、API情報等を追記することを推奨します。",
+    details: "llms.txtは存在しますが、内容が少ないです（100文字以下）。サイト概要、主要ページ、API情報等を追記することを推奨します。",
   };
 }
 
@@ -272,11 +294,21 @@ function checkMetaTags(html: string): CheckResult {
   if (hasLang) bonusDetails.push("lang属性設定済み");
   if (hasViewport) bonusDetails.push("viewport設定済み");
 
-  // Build extracted values summary
+  // Build extracted values summary with length warnings
   const extractedParts: string[] = [];
-  if (titleText) extractedParts.push(`title: 「${titleText.slice(0, 60)}${titleText.length > 60 ? "..." : ""}」(${titleText.length}文字)`);
-  if (descText) extractedParts.push(`description: 「${descText.slice(0, 80)}${descText.length > 80 ? "..." : ""}」(${descText.length}文字)`);
+  const lengthWarnings: string[] = [];
+  if (titleText) {
+    extractedParts.push(`title: 「${titleText.slice(0, 60)}${titleText.length > 60 ? "..." : ""}」(${titleText.length}文字)`);
+    if (titleText.length < 15) lengthWarnings.push("titleが短すぎます（推奨: 30〜60文字）");
+    else if (titleText.length > 60) lengthWarnings.push("titleが長すぎます（推奨: 30〜60文字、現在" + titleText.length + "文字）");
+  }
+  if (descText) {
+    extractedParts.push(`description: 「${descText.slice(0, 80)}${descText.length > 80 ? "..." : ""}」(${descText.length}文字)`);
+    if (descText.length < 50) lengthWarnings.push("descriptionが短すぎます（推奨: 70〜160文字）");
+    else if (descText.length > 160) lengthWarnings.push("descriptionが長すぎます（推奨: 70〜160文字、現在" + descText.length + "文字）");
+  }
   const extractedText = extractedParts.length > 0 ? ` 検出値: ${extractedParts.join("、")}。` : "";
+  const lengthWarningText = lengthWarnings.length > 0 ? ` 注意: ${lengthWarnings.join("。")}。` : "";
 
   if (hasNoindex) {
     // noindex overrides everything - it's a critical issue
@@ -292,6 +324,16 @@ function checkMetaTags(html: string): CheckResult {
 
   if (coreScore >= 4) {
     const bonusText = bonusDetails.length > 0 ? ` ${bonusDetails.join("、")}。` : "";
+    if (lengthWarnings.length > 0) {
+      return {
+        id: "meta-tags",
+        score: 12,
+        maxScore: 15,
+        status: "warn",
+        message: "メタタグ: 設定済み（文字数に改善余地）",
+        details: `title, description, OGPタグが設定されていますが、文字数の最適化が必要です。${bonusText}${extractedText}${lengthWarningText}`,
+      };
+    }
     return {
       id: "meta-tags",
       score: 15,
@@ -317,7 +359,7 @@ function checkMetaTags(html: string): CheckResult {
       maxScore: 15,
       status: "warn",
       message: "メタタグ: 一部不足",
-      details: `以下のメタタグが不足しています: ${missing.join(", ")}${extrasText}${extractedText}`,
+      details: `以下のメタタグが不足しています: ${missing.join(", ")}${extrasText}${extractedText}${lengthWarningText}`,
     };
   }
   return {
@@ -326,7 +368,7 @@ function checkMetaTags(html: string): CheckResult {
     maxScore: 15,
     status: "fail",
     message: "メタタグ: 不足",
-    details: `基本的なメタタグ（title, description, OGP）が不足しています。og:image、canonical URL、lang属性の設定も推奨します。${extractedText}`,
+    details: `基本的なメタタグ（title, description, OGP）が不足しています。og:image、canonical URL、lang属性の設定も推奨します。${extractedText}${lengthWarningText}`,
   };
 }
 
@@ -462,13 +504,21 @@ function checkSitemap(sitemapText: string | null, baseUrl: string): CheckResult 
 
   const urlCount = (sitemapText.match(/<url>/gi) ?? []).length;
   if (urlCount > 0) {
+    // Check for lastmod dates
+    const lastmodCount = (sitemapText.match(/<lastmod>/gi) ?? []).length;
+    const hasLastmod = lastmodCount > 0;
+    const lastmodPct = Math.round((lastmodCount / urlCount) * 100);
+    const lastmodInfo = hasLastmod
+      ? ` lastmod設定: ${lastmodCount}/${urlCount}件（${lastmodPct}%）。`
+      : " lastmod（最終更新日）が未設定です。設定するとクローラーの効率が向上します。";
+
     return {
       id: "sitemap",
       score: 10,
       maxScore: 10,
       status: "pass",
       message: `サイトマップ: ${urlCount}ページ検出`,
-      details: "sitemap.xmlが存在し、適切にページが登録されています。",
+      details: `sitemap.xmlが存在し、適切にページが登録されています。${lastmodInfo}`,
     };
   }
   return {

@@ -40,13 +40,13 @@
 - [教育向け](https://ai-check.ezoai.jp/for/education): 教育・スクールのAI検索対策
 
 ## チェック指標
-1. AIクローラーアクセス (robots.txt)
-2. llms.txt Presence
-3. 構造化データ (JSON-LD)
-4. メタタグ & 鮮度
-5. コンテンツ構造 (セマンティックHTML)
+1. AIクローラーアクセス (robots.txt) - 10種のAIクローラー検出
+2. llms.txt - 存在・文字数・品質チェック（見出し・URL・API情報の有無評価）
+3. 構造化データ (JSON-LD) - スキーマタイプ識別、agent.json検出
+4. メタタグ & 鮮度 - title/description文字数最適化判定（title: 30-60文字、description: 70-160文字推奨）、noindex検出
+5. コンテンツ構造 (セマンティックHTML) - 見出し階層バリデーション
 6. サーバーサイドレンダリング
-7. サイトマップ品質
+7. サイトマップ品質 - URL数・lastmod設定状況表示
 
 ## API
 - POST /api/check: URLのGEOスコアチェック（パラメータ: url）。レスポンスにresponseTimeMsを含む。CORS対応

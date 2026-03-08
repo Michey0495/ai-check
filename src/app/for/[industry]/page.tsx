@@ -93,11 +93,7 @@ const industries: Record<string, IndustryData> = {
     "availability": "https://schema.org/InStock",
     "url": "https://example.com/products/wh-pro-001"
   },
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "4.6",
-    "reviewCount": "342"
-  }
+  "review": []
 }
 </script>`,
       },
@@ -210,23 +206,7 @@ Sitemap: https://example.com/sitemap.xml`,
       "name": "NatureFit公式ストア"
     }
   },
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "4.7",
-    "reviewCount": "1,203",
-    "bestRating": "5"
-  },
-  "review": [
-    {
-      "@type": "Review",
-      "author": { "@type": "Person", "name": "購入者A" },
-      "reviewRating": {
-        "@type": "Rating",
-        "ratingValue": "5"
-      },
-      "reviewBody": "甘すぎず飲みやすい。溶けやすさも良好。"
-    }
-  ]
+  "review": []
 }`,
     },
   },
@@ -308,11 +288,6 @@ Sitemap: https://example.com/sitemap.xml`,
     "Slack連携",
     "API提供"
   ],
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "4.5",
-    "reviewCount": "892"
-  }
 }
 </script>`,
       },
@@ -443,12 +418,6 @@ Sitemap: https://example.com/sitemap.xml`,
     "Slack連携",
     "REST API"
   ],
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "4.5",
-    "reviewCount": "892",
-    "bestRating": "5"
-  }
 }`,
     },
   },
@@ -964,11 +933,6 @@ Sitemap: https://example.com/sitemap.xml`,
   "priceRange": "¥1,200〜¥3,500",
   "servesCuisine": "イタリアン",
   "acceptsReservations": true,
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "4.5",
-    "reviewCount": "312"
-  }
 }
 </script>`,
       },
@@ -1040,7 +1004,7 @@ Sitemap: https://example.com/sitemap.xml`,
       {
         title: "口コミ・評価をAggregateRating構造化データで設置する",
         description:
-          "自社サイトでの口コミ掲載と評価のマークアップを行います。AIは構造化された評価データを信頼性の指標として重視します。",
+          "自社サイトでの口コミ掲載と評価のマークアップを行います。AIは構造化された評価データを信頼性の指標として重視します。注意: aggregateRatingの値は必ず実際のレビューデータに基づく数値を使用してください。架空の数値はGoogleガイドライン違反です。",
         code: `<script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -1048,22 +1012,22 @@ Sitemap: https://example.com/sitemap.xml`,
   "name": "トラットリア ベッラ",
   "aggregateRating": {
     "@type": "AggregateRating",
-    "ratingValue": "4.5",
+    "ratingValue": "（実際の平均評価を入力）",
     "bestRating": "5",
     "worstRating": "1",
-    "ratingCount": "312",
-    "reviewCount": "189"
+    "ratingCount": "（実際の評価数を入力）",
+    "reviewCount": "（実際のレビュー数を入力）"
   },
   "review": [
     {
       "@type": "Review",
-      "author": { "@type": "Person", "name": "利用者" },
+      "author": { "@type": "Person", "name": "（実際のレビュー投稿者名）" },
       "datePublished": "2026-02-15",
       "reviewRating": {
         "@type": "Rating",
         "ratingValue": "5"
       },
-      "reviewBody": "自家製パスタが絶品。特にボロネーゼは他では食べられない味。"
+      "reviewBody": "（実際のレビュー内容を入力）"
     }
   ]
 }
@@ -1127,12 +1091,6 @@ Sitemap: https://example.com/sitemap.xml`,
   "servesCuisine": "イタリアン",
   "acceptsReservations": true,
   "menu": "https://bella.example.com/menu",
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "4.5",
-    "reviewCount": "312",
-    "bestRating": "5"
-  }
 }`,
     },
   },
@@ -1355,12 +1313,6 @@ Sitemap: https://example.com/sitemap.xml`,
       "jobTitle": "シニアエンジニア"
     }
   },
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "4.7",
-    "reviewCount": "1203",
-    "bestRating": "5"
-  }
 }`,
     },
   },
