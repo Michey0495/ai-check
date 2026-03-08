@@ -153,7 +153,7 @@ export default function Home() {
         <p className="mb-4 text-sm font-medium tracking-wide text-primary/80">
           2026年、AI検索は全検索の25%を占める -- 89%のサイトが未対応
         </p>
-        <p className="mb-4 inline-block rounded-full border border-red-500/30 bg-red-500/10 px-4 py-1.5 text-xs font-semibold tracking-wide text-red-400">
+        <p className="mb-4 inline-block rounded-full border border-red-500/30 bg-red-500/10 px-4 py-1.5 text-sm font-semibold tracking-wide text-red-400">
           Google AI Mode 日本上陸 -- 従来SEOのCTRが4.5%に激減
         </p>
         <h1 className="mb-4 text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl">
@@ -179,7 +179,7 @@ export default function Home() {
           ].map((item) => (
             <div key={item.stat} className="text-center">
               <p className="text-2xl font-bold text-primary sm:text-3xl">{item.stat}</p>
-              <p className="mt-1 text-xs text-white/40 sm:text-sm">{item.label}</p>
+              <p className="mt-1 text-sm text-white/40">{item.label}</p>
             </div>
           ))}
         </div>
@@ -298,7 +298,7 @@ export default function Home() {
               <p className="text-sm leading-relaxed text-white/50">
                 {item.pain}
               </p>
-              <p className="mt-3 text-xs text-primary/60">業界別ガイドを見る →</p>
+              <p className="mt-3 text-sm text-primary/60">業界別ガイドを見る →</p>
             </Link>
           ))}
         </div>
