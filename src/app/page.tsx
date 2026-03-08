@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { UrlCheckForm } from "@/components/url-check-form";
+import { FaqAccordion } from "@/components/faq-accordion";
 import { CHECK_INDICATORS, GENERATOR_TYPES } from "@/lib/check-indicators";
 
 const faqData = [
@@ -330,17 +331,7 @@ export default function Home() {
         <h2 className="mb-10 text-center text-2xl font-bold text-white">
           よくある質問
         </h2>
-        <div className="mx-auto max-w-2xl space-y-6">
-          {faqData.map((faq) => (
-            <div
-              key={faq.q}
-              className="rounded-lg border border-white/10 bg-white/5 p-6"
-            >
-              <h3 className="mb-2 font-semibold text-white">{faq.q}</h3>
-              <p className="text-sm leading-relaxed text-white/50">{faq.a}</p>
-            </div>
-          ))}
-        </div>
+        <FaqAccordion items={faqData} />
       </section>
 
       {/* Before / After */}

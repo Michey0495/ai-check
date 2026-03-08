@@ -528,7 +528,7 @@ export function CheckPageClient() {
           <div className="mb-2 text-lg text-white/70">チェック中...</div>
           <p className="text-sm text-white/40">{url} を分析しています</p>
           <div className="mx-auto mt-6 max-w-xs space-y-3">
-            {["robots.txt", "llms.txt", "llms-full.txt", "HTML構造", "メタデータ", "サイトマップ"].map((item) => (
+            {["robots.txt", "llms.txt", "llms-full.txt", "HTML構造", "メタデータ", "サイトマップ", "agent.json"].map((item) => (
               <div key={item} className="flex items-center gap-3 text-sm text-white/30">
                 <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-white/30" />
                 {item} を確認中

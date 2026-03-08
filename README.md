@@ -223,3 +223,10 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - ナビゲーション: ヘッダーガイドドロップダウン・フッターにクイックスタートガイドへのリンク追加
 - SEO: sitemap.xml, llms.txt, GEO対策ガイドの関連コンテンツにクイックスタートページを追加
 - AI公開チャネル: agent.json v1.5.0に更新（新機能反映）
+
+### Night 18 (完了)
+- UX: トップページFAQをアコーディオン化（クリックで開閉、CSS gridアニメーション）
+- チェック強化: AIクローラー検出を5→10種に拡大（ChatGPT-User, anthropic-ai, Bytespider, CCBot, Applebot-Extended, cohere-ai追加）
+- チェック強化: メタタグチェックにnoindex検出追加（meta robots noindex設定時に警告）
+- API: 全APIエンドポイントにCORSヘッダー追加（クロスオリジンからのAPI利用対応、OPTIONSプリフライト対応）
+- AI公開チャネル: agent.json v1.6.0に更新、llms.txtに対応クローラー一覧・CORS情報追記

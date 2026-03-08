@@ -48,10 +48,13 @@
 7. サイトマップ品質
 
 ## API
-- POST /api/check: URLのGEOスコアチェック（パラメータ: url）。レスポンスにresponseTimeMsを含む
-- POST /api/generate: ファイル生成（パラメータ: type, data）
-- POST /api/mcp: MCP Server (JSON-RPC 2.0) - 5ツール: check_geo_score, generate_llms_txt, generate_robots_txt, generate_json_ld, generate_agent_json
+- POST /api/check: URLのGEOスコアチェック（パラメータ: url）。レスポンスにresponseTimeMsを含む。CORS対応
+- POST /api/generate: ファイル生成（パラメータ: type, data）。CORS対応
+- POST /api/mcp: MCP Server (JSON-RPC 2.0) - 5ツール: check_geo_score, generate_llms_txt, generate_robots_txt, generate_json_ld, generate_agent_json。CORS対応
 - GET /api/badge?url=URL&style=flat|card: GEOスコアバッジ（SVG画像）
+
+## 対応AIクローラー検出
+GPTBot, ChatGPT-User, ClaudeBot, anthropic-ai, PerplexityBot, Google-Extended, Bytespider, CCBot, Applebot-Extended, cohere-ai
 
 ## 技術スタック
 - Next.js 15, TypeScript, Tailwind CSS, shadcn/ui, Vercel

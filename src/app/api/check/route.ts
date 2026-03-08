@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { CheckResult, CheckReport } from "@/lib/check-indicators";
 import { getGrade } from "@/lib/check-indicators";
+import { corsHeaders, corsOptionsResponse } from "@/lib/cors";
+
+export async function OPTIONS() {
+  return corsOptionsResponse();
+}
 
 export const maxDuration = 30;
 
@@ -86,7 +91,7 @@ function checkRobotsTxt(robotsText: string | null, baseUrl: string): CheckResult
     };
   }
 
-  const aiCrawlers = ["GPTBot", "ClaudeBot", "PerplexityBot", "Google-Extended", "Anthropic"];
+  const aiCrawlers = ["GPTBot", "ChatGPT-User", "ClaudeBot", "anthropic-ai", "PerplexityBot", "Google-Extended", "Bytespider", "CCBot", "Applebot-Extended", "cohere-ai"];
   const blocked = aiCrawlers.filter((c) => {
     const escaped = c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const pattern = new RegExp(`User-agent:\\s*${escaped}\\s*\\n[\\s\\S]*?Disallow:\\s*/`, "i");
@@ -224,6 +229,12 @@ function checkMetaTags(html: string): CheckResult {
   const hasLang = /<html[^>]*lang=["'][^"']+["']/i.test(html);
   const hasViewport = /<meta[^>]*name=["']viewport["']/i.test(html);
 
+  // Detect noindex (blocks search engine indexing)
+  const robotsMetaMatch = html.match(/<meta[^>]*name=["']robots["'][^>]*content=["']([^"']+)["']/i)
+    ?? html.match(/<meta[^>]*content=["']([^"']+)["'][^>]*name=["']robots["']/i);
+  const robotsContent = robotsMetaMatch?.[1]?.toLowerCase() ?? "";
+  const hasNoindex = robotsContent.includes("noindex");
+
   // Extract actual values for display
   const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
   const titleText = titleMatch?.[1]?.trim() ?? "";
@@ -247,6 +258,18 @@ function checkMetaTags(html: string): CheckResult {
   if (titleText) extractedParts.push(`title: 「${titleText.slice(0, 60)}${titleText.length > 60 ? "..." : ""}」(${titleText.length}文字)`);
   if (descText) extractedParts.push(`description: 「${descText.slice(0, 80)}${descText.length > 80 ? "..." : ""}」(${descText.length}文字)`);
   const extractedText = extractedParts.length > 0 ? ` 検出値: ${extractedParts.join("、")}。` : "";
+
+  if (hasNoindex) {
+    // noindex overrides everything - it's a critical issue
+    return {
+      id: "meta-tags",
+      score: 3,
+      maxScore: 15,
+      status: "fail",
+      message: "メタタグ: noindex検出",
+      details: `meta robots に noindex が設定されています。これにより検索エンジン（AI検索含む）にインデックスされません。GEO対策には noindex の解除が必要です。${extractedText}`,
+    };
+  }
 
   if (coreScore >= 4) {
     const bonusText = bonusDetails.length > 0 ? ` ${bonusDetails.join("、")}。` : "";
@@ -555,9 +578,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(report, {
       headers: {
         "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+        ...corsHeaders(),
       },
     });
   } catch {
-    return NextResponse.json({ error: "チェック中にエラーが発生しました。" }, { status: 500 });
+    return NextResponse.json(
+      { error: "チェック中にエラーが発生しました。" },
+      { status: 500, headers: corsHeaders() }
+    );
   }
 }

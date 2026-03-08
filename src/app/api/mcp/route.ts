@@ -1,4 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { corsOptionsResponse } from "@/lib/cors";
+
+export async function OPTIONS() {
+  return corsOptionsResponse();
+}
 
 const TOOLS = [
   {

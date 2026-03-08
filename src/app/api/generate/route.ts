@@ -1,4 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { corsHeaders, corsOptionsResponse } from "@/lib/cors";
+
+export async function OPTIONS() {
+  return corsOptionsResponse();
+}
 
 export async function POST(request: NextRequest) {
   try {
