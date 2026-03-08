@@ -13,7 +13,7 @@ const faqData = [
   },
   {
     q: "チェックは無料ですか?",
-    a: "はい、完全無料でご利用いただけます。アカウント登録も不要です。URLを入力するだけで7つの指標でサイトを分析します。すでに5,000以上のサイトにご利用いただいています。",
+    a: "はい、完全無料でご利用いただけます。アカウント登録も不要です。URLを入力するだけで7つの指標でサイトを分析します。",
   },
   {
     q: "llms.txtとは何ですか?",
@@ -168,7 +168,7 @@ export default function Home() {
           <UrlCheckForm size="lg" />
         </div>
         <p className="mt-4 text-sm text-white/40">
-          無料 / 登録不要 / 30秒で結果表示 / 5,000+サイトが利用
+          無料 / 登録不要 / 30秒で結果表示
         </p>
         <div className="mx-auto mt-12 grid max-w-2xl grid-cols-1 gap-4 sm:grid-cols-3">
           {[
@@ -433,7 +433,7 @@ export default function Home() {
           <UrlCheckForm size="lg" />
         </div>
         <p className="mt-4 text-sm text-white/40">
-          無料・登録不要 / 30秒でGEOスコアを表示 / 5,000+サイトが利用中
+          無料・登録不要 / 30秒でGEOスコアを表示
         </p>
       </section>
     </div>
