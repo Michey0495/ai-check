@@ -52,6 +52,7 @@ http://localhost:3000 で起動。
 | `/for/professional` | 士業向けGEO対策 |
 | `/for/local` | ローカルビジネス向けGEO対策 |
 | `/for/education` | 教育向けGEO対策 |
+| `/privacy` | プライバシーポリシー |
 
 ## チェック指標（7項目）
 
@@ -230,3 +231,11 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - チェック強化: メタタグチェックにnoindex検出追加（meta robots noindex設定時に警告）
 - API: 全APIエンドポイントにCORSヘッダー追加（クロスオリジンからのAPI利用対応、OPTIONSプリフライト対応）
 - AI公開チャネル: agent.json v1.6.0に更新、llms.txtに対応クローラー一覧・CORS情報追記
+
+### Night 19 (完了)
+- 修正: fabricated social proof（「5,000+サイトが利用中」）をトップページから削除
+- コンテンツ: プライバシーポリシーページ追加（/privacy）- GA・Cookie・データ取り扱いの開示
+- チェックAPI強化: 対象サイト到達不可時の明確なエラーメッセージ追加（422レスポンス）
+- ナビゲーション: フッターにプライバシーポリシーリンク追加（ガイドカラム + フッターバー）
+- SEO: sitemap.xml, llms.txtにプライバシーページ追加
+- AI公開チャネル: agent.json v1.8.0に更新
