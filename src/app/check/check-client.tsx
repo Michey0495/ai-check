@@ -110,12 +110,14 @@ function StatusBadge({ status }: { status: "pass" | "warn" | "fail" }) {
 function generateReportText(report: CheckReport): string {
   const pct = Math.round((report.totalScore / report.maxScore) * 100);
   const htmlSizeText = report.htmlSizeKB != null ? ` | HTML: ${report.htmlSizeKB}KB` : "";
+  const httpsText = report.isHttps !== undefined ? ` | ${report.isHttps ? "HTTPS" : "HTTP"}` : "";
+  const linkText = report.internalLinkCount != null ? ` | 内部リンク: ${report.internalLinkCount}件 / 外部リンク: ${report.externalLinkCount ?? 0}件` : "";
   const lines = [
     `AI Check - GEOスコアレポート`,
     `================================`,
     `URL: ${report.url}`,
     `スコア: ${pct}/100 (グレード: ${report.grade})`,
-    `チェック日時: ${new Date(report.checkedAt).toLocaleString("ja-JP")}${htmlSizeText}`,
+    `チェック日時: ${new Date(report.checkedAt).toLocaleString("ja-JP")}${htmlSizeText}${httpsText}${linkText}`,
     ``,
     `--- 詳細結果 ---`,
   ];
@@ -390,6 +392,64 @@ const indicatorTips: Record<string, { tip: string; guide?: string }> = {
   },
 };
 
+function AllFixCodes({ report }: { report: CheckReport }) {
+  const [open, setOpen] = useState(false);
+  const codesWithNames = report.results
+    .filter((r) => r.code)
+    .map((r) => ({
+      id: r.id,
+      message: r.message,
+      code: r.code!,
+    }));
+
+  if (codesWithNames.length === 0) return null;
+
+  const handleCopyAll = () => {
+    const allCode = codesWithNames
+      .map((c) => `/* --- ${c.message} --- */\n${c.code}`)
+      .join("\n\n");
+    navigator.clipboard.writeText(allCode);
+  };
+
+  return (
+    <div className="rounded-lg border border-white/10 bg-white/5">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex w-full cursor-pointer items-center justify-between px-6 py-4 text-left transition-all duration-200 hover:bg-white/[0.03]"
+      >
+        <h2 className="text-lg font-semibold text-white">
+          改善コードまとめ（{codesWithNames.length}件）
+        </h2>
+        <span className="text-sm text-white/40">{open ? "閉じる" : "展開"}</span>
+      </button>
+      {open && (
+        <div className="border-t border-white/10 px-6 py-4">
+          <div className="mb-4 flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="cursor-pointer border-white/10 bg-white/5 text-white/70 transition-all duration-200 hover:bg-white/10 hover:text-white"
+              onClick={handleCopyAll}
+            >
+              全コードをコピー
+            </Button>
+          </div>
+          <div className="space-y-4">
+            {codesWithNames.map((c) => (
+              <div key={c.id}>
+                <p className="mb-1 text-sm font-medium text-white/70">{c.message}</p>
+                <pre className="overflow-x-auto rounded-lg bg-black/50 p-4 text-xs text-white/70">
+                  <code>{c.code}</code>
+                </pre>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function CheckPageClient() {
   const searchParams = useSearchParams();
   const url = searchParams.get("url") ?? "";
@@ -615,6 +675,24 @@ export function CheckPageClient() {
                 <span className="ml-2">HTML: {report.htmlSizeKB}KB</span>
               )}
             </p>
+            {/* Site info badges */}
+            <div className="mt-3 flex flex-wrap justify-center gap-2">
+              {report.isHttps !== undefined && (
+                <span className={`rounded-full px-3 py-1 text-xs ${report.isHttps ? "bg-green-500/10 text-green-400" : "bg-red-500/10 text-red-400"}`}>
+                  {report.isHttps ? "HTTPS" : "HTTP（非暗号化）"}
+                </span>
+              )}
+              {report.internalLinkCount != null && (
+                <span className="rounded-full bg-white/5 px-3 py-1 text-xs text-white/50">
+                  内部リンク: {report.internalLinkCount}件
+                </span>
+              )}
+              {report.externalLinkCount != null && (
+                <span className="rounded-full bg-white/5 px-3 py-1 text-xs text-white/50">
+                  外部リンク: {report.externalLinkCount}件
+                </span>
+              )}
+            </div>
             <div className="mt-4 flex flex-wrap justify-center gap-3">
               <Button
                 variant="outline"
@@ -751,9 +829,32 @@ export function CheckPageClient() {
                     )}
                   </div>
                 )}
+                {r.id === "structured-data" && r.status !== "pass" && report.suggestedSchemas && report.suggestedSchemas.length > 0 && (
+                  <div className="mt-2 rounded border border-white/5 bg-white/[0.02] px-4 py-2.5">
+                    <p className="text-xs text-white/50">
+                      おすすめスキーマ: {report.suggestedSchemas.map((s, i) => (
+                        <span key={s}>
+                          <Link
+                            href={`/generate/json-ld?type=${s.toLowerCase()}`}
+                            className="cursor-pointer text-primary/70 transition-all duration-200 hover:text-primary"
+                          >
+                            {s}
+                          </Link>
+                          {i < report.suggestedSchemas!.length - 1 ? ", " : ""}
+                        </span>
+                      ))}
+                      （ページ内容から推定）
+                    </p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
+
+          {/* All fix codes section */}
+          {report.results.some((r) => r.code) && (
+            <AllFixCodes report={report} />
+          )}
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="rounded-lg border border-white/10 bg-white/5 p-6">

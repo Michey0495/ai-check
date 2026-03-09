@@ -109,12 +109,20 @@ function checkRobotsTxt(robotsText: string | null, baseUrl: string): CheckResult
     };
   }
 
+  // Check for global block: User-agent: * with Disallow: /
+  const hasGlobalBlock = /User-agent:\s*\*\s*\n(?:(?!User-agent:)[^\n]*\n)*?\s*Disallow:\s*\/\s*$/im.test(robotsText);
+
   const aiCrawlers = ["GPTBot", "ChatGPT-User", "ClaudeBot", "anthropic-ai", "PerplexityBot", "Google-Extended", "Bytespider", "CCBot", "Applebot-Extended", "cohere-ai"];
   const blocked = aiCrawlers.filter((c) => {
     const escaped = c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    // Match User-agent block: only look at directives until the next User-agent or end of text
+    // Check if crawler has specific Allow rule (overrides global block)
+    const hasSpecificAllow = new RegExp(`User-agent:\\s*${escaped}\\s*\\n(?:(?!User-agent:)[^\\n]*\\n)*?\\s*Allow:\\s*/`, "i").test(robotsText);
+    if (hasSpecificAllow) return false;
+    // Check if crawler is specifically blocked
     const pattern = new RegExp(`User-agent:\\s*${escaped}\\s*\\n(?:(?!User-agent:)[^\\n]*\\n)*?\\s*Disallow:\\s*/`, "i");
-    return pattern.test(robotsText);
+    if (pattern.test(robotsText)) return true;
+    // If global block exists and no specific allow, crawler is blocked
+    return hasGlobalBlock;
   });
   const allowed = aiCrawlers.length - blocked.length;
 
@@ -731,6 +739,48 @@ export async function POST(request: NextRequest) {
 
     const htmlSizeKB = Math.round((new TextEncoder().encode(html).length) / 1024);
 
+    // Analyze links in the page
+    const linkHrefs = html.match(/<a[^>]*href=["']([^"'#]+)["']/gi) ?? [];
+    let internalLinkCount = 0;
+    let externalLinkCount = 0;
+    for (const link of linkHrefs) {
+      const hrefMatch = link.match(/href=["']([^"'#]+)["']/i);
+      if (!hrefMatch) continue;
+      const href = hrefMatch[1];
+      if (href.startsWith("/") || href.startsWith(baseUrl)) {
+        internalLinkCount++;
+      } else if (href.startsWith("http")) {
+        externalLinkCount++;
+      }
+    }
+
+    // Detect likely schema types from page content
+    const suggestedSchemas: string[] = [];
+    const lowerHtml = html.toLowerCase();
+    if (lowerHtml.includes("cart") || lowerHtml.includes("add to cart") || lowerHtml.includes("price") || lowerHtml.includes("カート") || lowerHtml.includes("価格")) {
+      suggestedSchemas.push("Product");
+    }
+    if (lowerHtml.includes("<article") || lowerHtml.includes("published") || lowerHtml.includes("投稿日") || lowerHtml.includes("公開日")) {
+      suggestedSchemas.push("Article");
+    }
+    if (/<h[2-3][^>]*>.*(?:faq|よくある質問|q&a)/i.test(html)) {
+      suggestedSchemas.push("FAQPage");
+    }
+    if (lowerHtml.includes("recipe") || lowerHtml.includes("レシピ") || lowerHtml.includes("材料")) {
+      suggestedSchemas.push("Recipe");
+    }
+    if (lowerHtml.includes("event") || lowerHtml.includes("イベント") || lowerHtml.includes("開催日")) {
+      suggestedSchemas.push("Event");
+    }
+    if (lowerHtml.includes("course") || lowerHtml.includes("コース") || lowerHtml.includes("受講")) {
+      suggestedSchemas.push("Course");
+    }
+    if (suggestedSchemas.length === 0) {
+      suggestedSchemas.push("WebSite");
+    }
+
+    const isHttps = parsedUrl.protocol === "https:";
+
     const report: CheckReport = {
       url,
       totalScore,
@@ -743,6 +793,10 @@ export async function POST(request: NextRequest) {
       siteTitle: titleMatch?.[1]?.trim() || undefined,
       favicon: faviconUrl || `${baseUrl}/favicon.ico`,
       htmlSizeKB,
+      isHttps,
+      internalLinkCount,
+      externalLinkCount,
+      suggestedSchemas,
     };
 
     return NextResponse.json(report, {

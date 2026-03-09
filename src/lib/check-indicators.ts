@@ -113,6 +113,10 @@ export type CheckReport = {
   siteTitle?: string;
   favicon?: string;
   htmlSizeKB?: number;
+  isHttps?: boolean;
+  internalLinkCount?: number;
+  externalLinkCount?: number;
+  suggestedSchemas?: string[];
 };
 
 export function getGrade(score: number, maxScore: number): CheckReport["grade"] {
