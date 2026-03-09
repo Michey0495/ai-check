@@ -49,11 +49,15 @@ function saveToHistory(report: CheckReport) {
   };
   const filtered = history.filter((h) => h.url !== entry.url);
   filtered.unshift(entry);
-  localStorage.setItem(HISTORY_KEY, JSON.stringify(filtered.slice(0, MAX_HISTORY)));
+  try {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(filtered.slice(0, MAX_HISTORY)));
+  } catch {
+    // Ignore QuotaExceededError
+  }
 }
 
 function ScoreCircle({ score, maxScore, grade }: { score: number; maxScore: number; grade: string }) {
-  const pct = Math.round((score / maxScore) * 100);
+  const pct = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
   const gradeColors: Record<string, string> = {
     A: "text-green-400",
     B: "text-blue-400",
@@ -438,13 +442,14 @@ function AllFixCodes({ report }: { report: CheckReport }) {
     const allCode = codesWithNames
       .map((c) => `/* --- ${c.message} --- */\n${c.code}`)
       .join("\n\n");
-    navigator.clipboard.writeText(allCode);
+    navigator.clipboard.writeText(allCode).catch(() => {});
   };
 
   return (
     <div className="rounded-lg border border-white/10 bg-white/5">
       <button
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
         className="flex w-full cursor-pointer items-center justify-between px-6 py-4 text-left transition-all duration-200 hover:bg-white/[0.03]"
       >
         <h2 className="text-lg font-semibold text-white">
@@ -538,7 +543,7 @@ export function CheckPageClient() {
 
   const handleCopyReport = useCallback(() => {
     if (!report) return;
-    navigator.clipboard.writeText(generateReportText(report));
+    navigator.clipboard.writeText(generateReportText(report)).catch(() => {});
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }, [report]);
@@ -600,7 +605,7 @@ export function CheckPageClient() {
   const handleCopyShareUrl = useCallback(() => {
     if (!report) return;
     const shareUrl = `https://ai-check.ezoai.jp/check?url=${encodeURIComponent(report.url)}`;
-    navigator.clipboard.writeText(shareUrl);
+    navigator.clipboard.writeText(shareUrl).catch(() => {});
     setUrlCopied(true);
     setTimeout(() => setUrlCopied(false), 2000);
   }, [report]);

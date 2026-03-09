@@ -46,7 +46,7 @@ export function LlmsTxtGenerator() {
   }
 
   function handleCopy() {
-    navigator.clipboard.writeText(output);
+    navigator.clipboard.writeText(output).catch(() => {});
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }

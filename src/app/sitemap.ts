@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://ai-check.ezoai.jp";
-  const now = new Date().toISOString();
+  const now = "2026-03-10T00:00:00.000Z";
 
   return [
     { url: baseUrl, lastModified: now, changeFrequency: "weekly", priority: 1.0 },

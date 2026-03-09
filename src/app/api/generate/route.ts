@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { corsOptionsResponse } from "@/lib/cors";
+import { corsHeaders, corsOptionsResponse } from "@/lib/cors";
 
 function sanitizeLine(str: string): string {
   return str.replace(/[\r\n]/g, " ").trim();
@@ -16,14 +16,14 @@ export async function POST(request: NextRequest) {
     if (!type || !data) {
       return NextResponse.json(
         { error: "type と data パラメータが必要です。" },
-        { status: 400 }
+        { status: 400, headers: corsHeaders() }
       );
     }
 
     if (typeof type !== "string") {
       return NextResponse.json(
         { error: "type は文字列である必要があります。" },
-        { status: 400 }
+        { status: 400, headers: corsHeaders() }
       );
     }
 
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     if (dataStr.length > 50_000) {
       return NextResponse.json(
         { error: "入力データが大きすぎます。" },
-        { status: 400 }
+        { status: 400, headers: corsHeaders() }
       );
     }
 
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
         if (!siteName || !siteUrl) {
           return NextResponse.json(
             { error: "siteName と siteUrl は必須です。" },
-            { status: 400 }
+            { status: 400, headers: corsHeaders() }
           );
         }
         const lines: string[] = [];
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
           type: "llms-txt",
           content: lines.join("\n"),
           filename: "llms.txt",
-        });
+        }, { headers: corsHeaders() });
       }
 
       case "robots-txt": {
@@ -104,19 +104,19 @@ export async function POST(request: NextRequest) {
           type: "robots-txt",
           content: lines.join("\n"),
           filename: "robots.txt",
-        });
+        }, { headers: corsHeaders() });
       }
 
       default:
         return NextResponse.json(
           { error: `未対応の生成タイプ: ${sanitizeLine(type)}` },
-          { status: 400 }
+          { status: 400, headers: corsHeaders() }
         );
     }
   } catch {
     return NextResponse.json(
       { error: "生成中にエラーが発生しました。" },
-      { status: 500 }
+      { status: 500, headers: corsHeaders() }
     );
   }
 }

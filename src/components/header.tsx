@@ -42,6 +42,16 @@ export function Header() {
     }
   }, [guidesOpen]);
 
+  useEffect(() => {
+    function handleEscape(e: KeyboardEvent) {
+      if (e.key === "Escape") setMobileOpen(false);
+    }
+    if (mobileOpen) {
+      document.addEventListener("keydown", handleEscape);
+      return () => document.removeEventListener("keydown", handleEscape);
+    }
+  }, [mobileOpen]);
+
   return (
     <header className="border-b border-white/10">
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4">

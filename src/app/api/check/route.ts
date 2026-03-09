@@ -36,17 +36,31 @@ function checkRateLimit(ip: string): boolean {
 }
 
 function isPrivateHostname(hostname: string): boolean {
-  if (hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1") return true;
-  if (hostname.endsWith(".local") || hostname.endsWith(".internal")) return true;
-  const parts = hostname.split(".");
+  // Strip IPv6 brackets
+  const h = hostname.replace(/^\[|\]$/g, "");
+  if (h === "localhost" || h === "127.0.0.1" || h === "::1" || h === "0.0.0.0") return true;
+  if (h.endsWith(".local") || h.endsWith(".internal")) return true;
+  // Block IPv6 private/link-local ranges
+  if (h.startsWith("fe80:") || h.startsWith("fc00:") || h.startsWith("fd00:")) return true;
+  // Block IPv4-mapped IPv6 (e.g., ::ffff:127.0.0.1, ::ffff:10.0.0.1)
+  const v4Mapped = h.match(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/i);
+  if (v4Mapped) return isPrivateIPv4(v4Mapped[1]);
+  const parts = h.split(".");
   if (parts.length === 4 && parts.every((p) => /^\d+$/.test(p))) {
-    const [a, b] = parts.map(Number);
-    if (a === 10) return true;
-    if (a === 172 && b >= 16 && b <= 31) return true;
-    if (a === 192 && b === 168) return true;
-    if (a === 169 && b === 254) return true;
-    if (a === 0 || a === 127) return true;
+    return isPrivateIPv4(h);
   }
+  return false;
+}
+
+function isPrivateIPv4(ip: string): boolean {
+  const parts = ip.split(".").map(Number);
+  if (parts.length !== 4) return false;
+  const [a, b] = parts;
+  if (a === 10) return true;
+  if (a === 172 && b >= 16 && b <= 31) return true;
+  if (a === 192 && b === 168) return true;
+  if (a === 169 && b === 254) return true;
+  if (a === 0 || a === 127) return true;
   return false;
 }
 
@@ -664,33 +678,43 @@ export async function POST(request: NextRequest) {
     if (!checkRateLimit(ip)) {
       return NextResponse.json(
         { error: "リクエスト数が上限を超えました。しばらく待ってから再度お試しください。" },
-        { status: 429 }
+        { status: 429, headers: corsHeaders() }
       );
     }
 
-    const { url } = await request.json();
+    let body: { url?: string };
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json(
+        { error: "リクエストボディが不正です。JSON形式で送信してください。" },
+        { status: 400, headers: corsHeaders() }
+      );
+    }
+
+    const { url } = body;
 
     if (!url || typeof url !== "string" || !url.trim()) {
-      return NextResponse.json({ error: "URLを入力してください。" }, { status: 400 });
+      return NextResponse.json({ error: "URLを入力してください。" }, { status: 400, headers: corsHeaders() });
     }
 
     if (url.length > 2048) {
-      return NextResponse.json({ error: "URLが長すぎます。2048文字以内にしてください。" }, { status: 400 });
+      return NextResponse.json({ error: "URLが長すぎます。2048文字以内にしてください。" }, { status: 400, headers: corsHeaders() });
     }
 
     let parsedUrl: URL;
     try {
       parsedUrl = new URL(url);
     } catch {
-      return NextResponse.json({ error: "有効なURLを入力してください。" }, { status: 400 });
+      return NextResponse.json({ error: "有効なURLを入力してください。" }, { status: 400, headers: corsHeaders() });
     }
 
     if (!["http:", "https:"].includes(parsedUrl.protocol)) {
-      return NextResponse.json({ error: "http または https のURLを入力してください。" }, { status: 400 });
+      return NextResponse.json({ error: "http または https のURLを入力してください。" }, { status: 400, headers: corsHeaders() });
     }
 
     if (isPrivateHostname(parsedUrl.hostname)) {
-      return NextResponse.json({ error: "プライベートネットワークのURLはチェックできません。" }, { status: 400 });
+      return NextResponse.json({ error: "プライベートネットワークのURLはチェックできません。" }, { status: 400, headers: corsHeaders() });
     }
 
     const baseUrl = parsedUrl.origin;
