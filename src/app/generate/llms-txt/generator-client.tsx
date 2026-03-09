@@ -65,8 +65,9 @@ export function LlmsTxtGenerator() {
     <div className="grid gap-8 lg:grid-cols-2">
       <div className="space-y-4">
         <div>
-          <Label className="mb-1.5 text-white/70">サイト名 *</Label>
+          <Label htmlFor="llms-site-name" className="mb-1.5 text-white/70">サイト名 *</Label>
           <Input
+            id="llms-site-name"
             value={siteName}
             onChange={(e) => setSiteName(e.target.value)}
             placeholder="例: AI Check"
@@ -75,8 +76,9 @@ export function LlmsTxtGenerator() {
           />
         </div>
         <div>
-          <Label className="mb-1.5 text-white/70">サイトURL *</Label>
+          <Label htmlFor="llms-site-url" className="mb-1.5 text-white/70">サイトURL *</Label>
           <Input
+            id="llms-site-url"
             value={siteUrl}
             onChange={(e) => setSiteUrl(e.target.value)}
             placeholder="例: https://ai-check.ezoai.jp"
@@ -85,8 +87,9 @@ export function LlmsTxtGenerator() {
           />
         </div>
         <div>
-          <Label className="mb-1.5 text-white/70">サイト説明</Label>
+          <Label htmlFor="llms-description" className="mb-1.5 text-white/70">サイト説明</Label>
           <Textarea
+            id="llms-description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="サイトの概要を簡潔に"
@@ -96,8 +99,9 @@ export function LlmsTxtGenerator() {
           />
         </div>
         <div>
-          <Label className="mb-1.5 text-white/70">主要ページ（1行に1ページ）</Label>
+          <Label htmlFor="llms-pages" className="mb-1.5 text-white/70">主要ページ（1行に1ページ）</Label>
           <Textarea
+            id="llms-pages"
             value={pages}
             onChange={(e) => setPages(e.target.value)}
             placeholder={`[トップ](https://example.com/): サイトの概要\n[サービス](https://example.com/services): 提供サービス`}
@@ -107,8 +111,9 @@ export function LlmsTxtGenerator() {
           />
         </div>
         <div>
-          <Label className="mb-1.5 text-white/70">API情報（任意）</Label>
+          <Label htmlFor="llms-api-info" className="mb-1.5 text-white/70">API情報（任意）</Label>
           <Textarea
+            id="llms-api-info"
             value={apiInfo}
             onChange={(e) => setApiInfo(e.target.value)}
             placeholder="REST API, MCP Serverなどの情報"

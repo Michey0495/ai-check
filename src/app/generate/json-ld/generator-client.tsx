@@ -113,11 +113,11 @@ export function JsonLdGenerator() {
     <div className="grid gap-8 lg:grid-cols-2">
       <div className="space-y-4">
         <div>
-          <Label className="mb-1.5 text-white/70">スキーマタイプ</Label>
+          <Label htmlFor="jsonld-schema-type" className="mb-1.5 text-white/70">スキーマタイプ</Label>
           <select
+            id="jsonld-schema-type"
             value={schemaType}
             onChange={(e) => setSchemaType(e.target.value)}
-            aria-label="スキーマタイプ"
             className="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-white"
           >
             {SCHEMA_TYPES.map((t) => (
@@ -128,10 +128,11 @@ export function JsonLdGenerator() {
           </select>
         </div>
         <div>
-          <Label className="mb-1.5 text-white/70">
+          <Label htmlFor="jsonld-site-name" className="mb-1.5 text-white/70">
             {schemaType === "Article" ? "記事タイトル" : "サイト名 / 組織名"} *
           </Label>
           <Input
+            id="jsonld-site-name"
             value={siteName}
             onChange={(e) => setSiteName(e.target.value)}
             placeholder="例: AI Check"
@@ -140,8 +141,9 @@ export function JsonLdGenerator() {
           />
         </div>
         <div>
-          <Label className="mb-1.5 text-white/70">URL *</Label>
+          <Label htmlFor="jsonld-url" className="mb-1.5 text-white/70">URL *</Label>
           <Input
+            id="jsonld-url"
             value={siteUrl}
             onChange={(e) => setSiteUrl(e.target.value)}
             placeholder="https://example.com"
@@ -150,8 +152,9 @@ export function JsonLdGenerator() {
           />
         </div>
         <div>
-          <Label className="mb-1.5 text-white/70">説明</Label>
+          <Label htmlFor="jsonld-description" className="mb-1.5 text-white/70">説明</Label>
           <Textarea
+            id="jsonld-description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="簡潔な説明"
@@ -162,10 +165,11 @@ export function JsonLdGenerator() {
         </div>
         {schemaType === "FAQPage" && (
           <div>
-            <Label className="mb-1.5 text-white/70">
+            <Label htmlFor="jsonld-faq" className="mb-1.5 text-white/70">
               FAQ（質問|回答 の形式で1行1件）
             </Label>
             <Textarea
+              id="jsonld-faq"
               value={extra}
               onChange={(e) => setExtra(e.target.value)}
               placeholder={`GEO対策とは?|AI検索エンジンへの最適化手法です\nllms.txtとは?|AI向けサイト説明ファイルです`}
@@ -177,8 +181,9 @@ export function JsonLdGenerator() {
         )}
         {schemaType === "LocalBusiness" && (
           <div>
-            <Label className="mb-1.5 text-white/70">住所</Label>
+            <Label htmlFor="jsonld-address" className="mb-1.5 text-white/70">住所</Label>
             <Input
+              id="jsonld-address"
               value={extra}
               onChange={(e) => setExtra(e.target.value)}
               placeholder="東京都渋谷区..."

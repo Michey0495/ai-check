@@ -60,8 +60,9 @@ export function AgentJsonGenerator() {
     <div className="grid gap-8 lg:grid-cols-2">
       <div className="space-y-4">
         <div>
-          <Label className="mb-1.5 text-white/70">エージェント名 *</Label>
+          <Label htmlFor="agent-name" className="mb-1.5 text-white/70">エージェント名 *</Label>
           <Input
+            id="agent-name"
             value={agentName}
             onChange={(e) => setAgentName(e.target.value)}
             placeholder="例: AI Check Agent"
@@ -70,8 +71,9 @@ export function AgentJsonGenerator() {
           />
         </div>
         <div>
-          <Label className="mb-1.5 text-white/70">サイトURL *</Label>
+          <Label htmlFor="agent-url" className="mb-1.5 text-white/70">サイトURL *</Label>
           <Input
+            id="agent-url"
             value={agentUrl}
             onChange={(e) => setAgentUrl(e.target.value)}
             placeholder="https://example.com"
@@ -80,8 +82,9 @@ export function AgentJsonGenerator() {
           />
         </div>
         <div>
-          <Label className="mb-1.5 text-white/70">説明</Label>
+          <Label htmlFor="agent-description" className="mb-1.5 text-white/70">説明</Label>
           <Textarea
+            id="agent-description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="このエージェントが提供する機能の概要"
@@ -91,10 +94,11 @@ export function AgentJsonGenerator() {
           />
         </div>
         <div>
-          <Label className="mb-1.5 text-white/70">
+          <Label htmlFor="agent-capabilities" className="mb-1.5 text-white/70">
             機能一覧（1行に1機能）
           </Label>
           <Textarea
+            id="agent-capabilities"
             value={capabilities}
             onChange={(e) => setCapabilities(e.target.value)}
             placeholder={`GEOスコアチェック\nllms.txt生成\nrobots.txt生成`}
@@ -104,10 +108,11 @@ export function AgentJsonGenerator() {
           />
         </div>
         <div>
-          <Label className="mb-1.5 text-white/70">
+          <Label htmlFor="agent-mcp-endpoint" className="mb-1.5 text-white/70">
             MCPエンドポイント（任意）
           </Label>
           <Input
+            id="agent-mcp-endpoint"
             value={mcpEndpoint}
             onChange={(e) => setMcpEndpoint(e.target.value)}
             placeholder="https://example.com/api/mcp"

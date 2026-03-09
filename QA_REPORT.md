@@ -1,6 +1,6 @@
 # QA Report - web-url-a (AI Check)
 
-**Date:** 2026-03-10 (5th pass)
+**Date:** 2026-03-10 (6th pass)
 **Status:** PASS
 
 ## Checklist
@@ -13,17 +13,30 @@
 - [x] ローディング状態の表示 (loading.tsx)
 - [x] エラー状態の表示 (error.tsx, global-error.tsx)
 
-## 今回修正した問題 (5th pass)
+## 今回修正した問題 (6th pass)
 
-### Edge Cases
+### Accessibility - Form Label Associations
 
 | # | Severity | Issue | File | Fix |
 |---|----------|-------|------|-----|
-| E1 | Medium | MCP API: missing CORS headers on all responses | api/mcp/route.ts | Added `corsHeaders()` to all JSON-RPC responses via `jsonRpcResponse()` helper |
-| E2 | Medium | MCP API: `request.json()` crash on malformed body returns generic -32603 instead of -32700 Parse error | api/mcp/route.ts | Added separate try/catch for `request.json()` returning proper JSON-RPC -32700 error |
-| E3 | Low | CheckHistory: division by zero when `entry.maxScore === 0` | check-client.tsx | Added `entry.maxScore > 0` guard |
+| A1 | Medium | JSON-LD generator: 6 labels missing htmlFor/id | json-ld/generator-client.tsx | Added htmlFor + id for schema-type, site-name, url, description, faq, address |
+| A2 | Medium | agent.json generator: 5 labels missing htmlFor/id | agent-json/generator-client.tsx | Added htmlFor + id for name, url, description, capabilities, mcp-endpoint |
+| A3 | Medium | llms.txt generator: 5 labels missing htmlFor/id | llms-txt/generator-client.tsx | Added htmlFor + id for site-name, site-url, description, pages, api-info |
+| A4 | Medium | robots.txt generator: 1 label missing htmlFor/id | robots-txt/generator-client.tsx | Added htmlFor + id for sitemap-url |
+| A5 | Low | Badge generator: style selector lacks ARIA role | badge/generator-client.tsx | Added `role="radiogroup"` + `aria-labelledby` on style button group |
+
+### Other Fixes
+
+| # | Severity | Issue | File | Fix |
+|---|----------|-------|------|-----|
+| O1 | Low | Copyright year hardcoded as 2026 | footer.tsx | Changed to `new Date().getFullYear()` |
 
 ## 前回までの修正済み
+
+### 5th pass
+- MCP API: CORS headers on all JSON-RPC responses
+- MCP API: separate try/catch for request.json() returning -32700
+- CheckHistory: division by zero guard (maxScore > 0)
 
 ### 4th pass
 - SSRF: IPv6 private address blocking (fe80::, fc00::, fd00::, ::ffff: mapped)
@@ -84,13 +97,12 @@
 
 ### Accessibility
 - スキップナビゲーション, lang="ja", aria-label, aria-expanded, role, aria-live
+- 全ジェネレーターフォームのlabel-input関連付け完了
 
 ## 既知の軽微な問題（対応不要）
 
 - Desktop guides dropdown: arrow key navigation未実装 (tab navで動作)
 - Mobile menu: focus trap未実装 (nav menu, not modal)
-- Generator form labels: `htmlFor`/`id` association未設定
 - `useSyncExternalStore` with `getHistory()`: new array on each call (minor re-renders)
 - In-memory rate limiters: serverless cold start でリセット (現時点で許容)
-- Copyright year: 2026ハードコード
 - Breadcrumb JSON-LD: 1 item only on home page

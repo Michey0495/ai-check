@@ -68,8 +68,8 @@ export function BadgeGenerator() {
         </div>
 
         <div>
-          <Label className="text-white/70">スタイル</Label>
-          <div className="mt-2 flex gap-3">
+          <Label id="badge-style-label" className="text-white/70">スタイル</Label>
+          <div className="mt-2 flex gap-3" role="radiogroup" aria-labelledby="badge-style-label">
             {STYLES.map((s) => (
               <button
                 key={s.id}

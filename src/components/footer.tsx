@@ -170,7 +170,7 @@ export function Footer() {
               AI Checkについて
             </Link>
           </div>
-          <p>&copy; 2026 AI Check - ezoai.jp</p>
+          <p>&copy; {new Date().getFullYear()} AI Check - ezoai.jp</p>
         </div>
       </div>
     </footer>

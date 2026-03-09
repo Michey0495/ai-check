@@ -82,8 +82,9 @@ export function RobotsTxtGenerator() {
     <div className="grid gap-8 lg:grid-cols-2">
       <div className="space-y-4">
         <div>
-          <Label className="mb-1.5 text-white/70">サイトマップURL（任意）</Label>
+          <Label htmlFor="robots-sitemap-url" className="mb-1.5 text-white/70">サイトマップURL（任意）</Label>
           <Input
+            id="robots-sitemap-url"
             value={sitemapUrl}
             onChange={(e) => setSitemapUrl(e.target.value)}
             placeholder="https://example.com/sitemap.xml"
