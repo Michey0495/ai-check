@@ -852,6 +852,84 @@ export async function POST(request: NextRequest) {
 
     const isHttps = parsedUrl.protocol === "https:";
 
+    // CMS/Framework detection
+    const detectedTech: string[] = [];
+    if (responseHdrs["x-powered-by"]?.toLowerCase().includes("next.js") || html.includes("__next") || html.includes("_next/static")) {
+      detectedTech.push("Next.js");
+    }
+    if (responseHdrs["x-powered-by"]?.toLowerCase().includes("express")) {
+      detectedTech.push("Express");
+    }
+    if (html.includes("wp-content") || html.includes("wp-includes") || responseHdrs["x-powered-by"]?.toLowerCase().includes("wordpress") || html.includes('name="generator" content="WordPress')) {
+      detectedTech.push("WordPress");
+    }
+    if (html.includes("Shopify.theme") || html.includes("cdn.shopify.com")) {
+      detectedTech.push("Shopify");
+    }
+    if (html.includes("__nuxt") || html.includes("/_nuxt/")) {
+      detectedTech.push("Nuxt.js");
+    }
+    if (html.includes("__gatsby") || html.includes("/static/") && html.includes("gatsby")) {
+      detectedTech.push("Gatsby");
+    }
+    if (html.includes("__remixContext") || html.includes("remix")) {
+      if (html.includes("__remixContext")) detectedTech.push("Remix");
+    }
+    if (html.includes("data-reactroot") || html.includes("__REACT") || html.includes("react-root")) {
+      if (!detectedTech.some(t => ["Next.js", "Gatsby", "Remix"].includes(t))) {
+        detectedTech.push("React");
+      }
+    }
+    if (html.includes("ng-version") || html.includes("ng-app")) {
+      detectedTech.push("Angular");
+    }
+    if (html.includes("data-v-") || html.includes("__vue")) {
+      if (!detectedTech.includes("Nuxt.js")) detectedTech.push("Vue.js");
+    }
+    if (html.includes("data-svelte") || html.includes("__sveltekit")) {
+      detectedTech.push("SvelteKit");
+    }
+    if (html.includes("data-turbo") || html.includes("turbolinks")) {
+      detectedTech.push("Ruby on Rails");
+    }
+    if (html.includes('content="Hugo')) {
+      detectedTech.push("Hugo");
+    }
+    if (html.includes("wix.com") || html.includes("wixsite")) {
+      detectedTech.push("Wix");
+    }
+    if (html.includes("squarespace.com") || html.includes("squarespace-cdn")) {
+      detectedTech.push("Squarespace");
+    }
+    // Detect common analytics/tools
+    if (html.includes("googletagmanager.com") || html.includes("google-analytics.com") || html.includes("gtag")) {
+      detectedTech.push("Google Analytics");
+    }
+    if (html.includes("clarity.ms")) {
+      detectedTech.push("Microsoft Clarity");
+    }
+
+    // OG image accessibility check
+    let ogImageAccessible: boolean | undefined;
+    const ogImageUrl = ogImageMatch?.[1];
+    if (ogImageUrl) {
+      try {
+        const ogUrl = ogImageUrl.startsWith("http") ? ogImageUrl : `${baseUrl}${ogImageUrl.startsWith("/") ? "" : "/"}${ogImageUrl}`;
+        const ogParsed = new URL(ogUrl);
+        if (!isPrivateHostname(ogParsed.hostname)) {
+          const ogRes = await fetch(ogUrl, {
+            method: "HEAD",
+            signal: AbortSignal.timeout(5000),
+            redirect: "follow",
+            headers: { "User-Agent": "AI-Check-Bot/1.0" },
+          }).catch(() => null);
+          ogImageAccessible = ogRes?.ok ?? false;
+        }
+      } catch {
+        ogImageAccessible = false;
+      }
+    }
+
     // Accessibility analysis
     const imgTags = html.match(/<img[^>]*>/gi) ?? [];
     const imgCount = imgTags.length;
@@ -924,6 +1002,8 @@ export async function POST(request: NextRequest) {
       },
       contentLanguage: contentLanguage || undefined,
       hreflangTags: hreflangTags.length > 0 ? hreflangTags : undefined,
+      detectedTech: detectedTech.length > 0 ? detectedTech : undefined,
+      ogImageAccessible,
     };
 
     return NextResponse.json(report, {

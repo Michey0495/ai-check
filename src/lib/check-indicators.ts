@@ -145,6 +145,8 @@ export type CheckReport = {
   };
   contentLanguage?: string;
   hreflangTags?: string[];
+  detectedTech?: string[];
+  ogImageAccessible?: boolean;
 };
 
 export function getGrade(score: number, maxScore: number): CheckReport["grade"] {

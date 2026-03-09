@@ -169,6 +169,18 @@ function generateReportText(report: CheckReport): string {
     if (report.hreflangTags && report.hreflangTags.length > 0) lines.push(`hreflang: ${report.hreflangTags.join(", ")}`);
   }
 
+  if (report.detectedTech && report.detectedTech.length > 0) {
+    lines.push("");
+    lines.push("--- 検出テクノロジー ---");
+    lines.push(report.detectedTech.join(", "));
+  }
+
+  if (report.ogImageAccessible !== undefined) {
+    lines.push("");
+    lines.push(`--- OG画像 ---`);
+    lines.push(`アクセス可否: ${report.ogImageAccessible ? "OK" : "アクセス不可（URLを確認してください）"}`);
+  }
+
   const failItems = report.results.filter((r) => r.status === "fail");
   const warnItems = report.results.filter((r) => r.status === "warn");
 
@@ -767,6 +779,16 @@ export function CheckPageClient() {
                   画像alt: {report.accessibility.imgWithAlt}/{report.accessibility.imgCount}
                 </span>
               )}
+              {report.ogImageAccessible !== undefined && (
+                <span className={`rounded-full px-3 py-1 text-xs ${report.ogImageAccessible ? "bg-green-500/10 text-green-400" : "bg-red-500/10 text-red-400"}`}>
+                  OG画像: {report.ogImageAccessible ? "アクセス可" : "アクセス不可"}
+                </span>
+              )}
+              {report.detectedTech && report.detectedTech.length > 0 && (
+                <span className="rounded-full bg-purple-500/10 px-3 py-1 text-xs text-purple-400">
+                  {report.detectedTech.filter(t => !["Google Analytics", "Microsoft Clarity"].includes(t)).slice(0, 3).join(" / ") || report.detectedTech[0]}
+                </span>
+              )}
             </div>
             <div className="mt-4 flex flex-wrap justify-center gap-3">
               <Button
@@ -977,6 +999,26 @@ export function CheckPageClient() {
                   </p>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Detected technologies */}
+          {report.detectedTech && report.detectedTech.length > 0 && (
+            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+              <h2 className="mb-3 text-lg font-semibold text-white">検出テクノロジー</h2>
+              <div className="flex flex-wrap gap-2">
+                {report.detectedTech.map((tech) => (
+                  <span
+                    key={tech}
+                    className="rounded-full border border-purple-500/20 bg-purple-500/10 px-3 py-1.5 text-sm text-purple-300"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+              <p className="mt-3 text-xs text-white/40">
+                HTMLソースとレスポンスヘッダーから検出されたフレームワーク・CMS・ツールです。
+              </p>
             </div>
           )}
 

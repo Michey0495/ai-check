@@ -59,6 +59,8 @@
 - セキュリティヘッダー分析（HSTS、CSP、X-Frame-Options、X-Content-Type-Options、Referrer-Policy）
 - パフォーマンスヒント（preconnect/prefetch数、画像遅延読み込み、スクリプト最適化、font-display検出）
 - 多言語対応検出（Content-Languageヘッダー、hreflangタグ）
+- CMS/フレームワーク検出（WordPress, Next.js, Shopify, Nuxt.js, React, Angular, Vue.js, SvelteKit, Hugo, Wix, Squarespace等をHTMLソースとレスポンスヘッダーから自動判定）
+- OG画像アクセス可否検証（og:image URLに対するHEADリクエストで画像が実際にアクセス可能かを検証）
 
 ## API
 - GET /api/check?url=URL: URLのGEOスコアチェック（GETメソッド対応、ブラウザから直接アクセス可）。CORS対応

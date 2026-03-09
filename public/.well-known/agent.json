@@ -2,7 +2,7 @@
   "name": "AI Check",
   "description": "WebサイトのAI検索対応度をチェックし、llms.txt・robots.txt・JSON-LD構造化データ・agent.jsonを自動生成するツール",
   "url": "https://ai-check.ezoai.jp",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "capabilities": [
     "GEOスコアチェック（7指標 + llms-full.txt検出 + スキーマタイプ識別 + noindex検出）",
     "AIクローラー検出（GPTBot, ChatGPT-User, ClaudeBot, anthropic-ai, PerplexityBot, Google-Extended, Bytespider, CCBot, Applebot-Extended, cohere-ai）",
@@ -40,7 +40,9 @@
     "パフォーマンスヒント分析（preconnect/prefetch、画像遅延読み込み、スクリプト最適化、font-display検出）",
     "多言語対応検出（Content-Languageヘッダー、hreflangタグ）",
     "PWA対応（Web App Manifest）",
-    "LINEシェア対応"
+    "LINEシェア対応",
+    "CMS/フレームワーク検出（WordPress, Next.js, Shopify, Nuxt.js, React, Angular, Vue.js, SvelteKit等）",
+    "OG画像アクセス可否検証（og:image URLのHEADリクエスト検証）"
   ],
   "endpoints": {
     "mcp": "https://ai-check.ezoai.jp/api/mcp",

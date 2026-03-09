@@ -294,3 +294,11 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - UX: チェック結果のサイト情報バッジにContent-Language・hreflangタグを表示
 - UX: テキストレポートに多言語対応セクション追加
 - AI公開チャネル: agent.json v2.4.0に更新、llms.txtに多言語対応検出情報追記
+
+### Night 26 (完了)
+- チェック強化: CMS/フレームワーク自動検出追加（WordPress, Next.js, Shopify, Nuxt.js, React, Angular, Vue.js, SvelteKit, Gatsby, Remix, Hugo, Wix, Squarespace + Google Analytics, Microsoft Clarity）
+- チェック強化: OG画像アクセス可否検証追加（og:image URLにHEADリクエストを送信し、画像が実際にアクセス可能かを検証）
+- UX: チェック結果に「検出テクノロジー」セクション追加（検出されたフレームワーク・CMS・ツールをタグ表示）
+- UX: チェック結果のサイト情報バッジにOG画像アクセス可否・検出テクノロジーを表示
+- UX: テキストレポートに検出テクノロジー・OG画像アクセス情報を追加
+- AI公開チャネル: agent.json v2.5.0に更新、llms.txtにCMS検出・OG画像検証情報追記
