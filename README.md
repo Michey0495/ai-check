@@ -284,3 +284,13 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - UX: テキストレポートにセキュリティヘッダー・パフォーマンスヒント情報を追加
 - 修正: llms.txt技術スタック Next.js 16→15
 - AI公開チャネル: agent.json v2.3.0に更新、llms.txtにセキュリティ・パフォーマンス情報追記
+
+### Night 25 (完了)
+- PWA: Web App Manifest（manifest.json）追加（アプリインストール対応）
+- チェック強化: Content-Languageヘッダー検出追加（多言語対応状況をレポートに表示）
+- チェック強化: hreflangタグ検出追加（多言語ページの代替言語設定をレポートに表示）
+- チェック強化: メタタグチェック結果に多言語対応情報を統合表示
+- UX: LINEシェアボタン追加（日本市場向け、X/Twitter・URL共有に加えLINEでの共有が可能に）
+- UX: チェック結果のサイト情報バッジにContent-Language・hreflangタグを表示
+- UX: テキストレポートに多言語対応セクション追加
+- AI公開チャネル: agent.json v2.4.0に更新、llms.txtに多言語対応検出情報追記

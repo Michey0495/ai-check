@@ -108,6 +108,7 @@ export const metadata: Metadata = {
     canonical: "https://ai-check.ezoai.jp",
   },
   metadataBase: new URL("https://ai-check.ezoai.jp"),
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({

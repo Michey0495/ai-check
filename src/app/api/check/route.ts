@@ -765,11 +765,29 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Content-Language and hreflang detection
+    const responseHdrs = pageRes.headers ?? {};
+    const contentLanguage = responseHdrs["content-language"] ?? "";
+    const hreflangMatches = html.match(/<link[^>]*rel=["']alternate["'][^>]*hreflang=["']([^"']+)["']/gi) ?? [];
+    const hreflangTags = hreflangMatches.map((m) => {
+      const match = m.match(/hreflang=["']([^"']+)["']/i);
+      return match?.[1] ?? "";
+    }).filter(Boolean);
+
+    const metaResult = checkMetaTags(html, pageRes.headers);
+    // Enrich meta tag result with hreflang/Content-Language info
+    const i18nParts: string[] = [];
+    if (contentLanguage) i18nParts.push(`Content-Language: ${contentLanguage}`);
+    if (hreflangTags.length > 0) i18nParts.push(`hreflang: ${hreflangTags.join(", ")}`);
+    if (i18nParts.length > 0) {
+      metaResult.details += ` 多言語対応: ${i18nParts.join("、")}。`;
+    }
+
     const results: CheckResult[] = [
       checkRobotsTxt(robotsText, baseUrl),
       llmsResult,
       structuredDataResult,
-      checkMetaTags(html, pageRes.headers),
+      metaResult,
       checkContentStructure(html),
       checkSSR(html),
       checkSitemap(sitemapText, baseUrl),
@@ -843,7 +861,6 @@ export async function POST(request: NextRequest) {
     const hasAriaLabels = /aria-label=/i.test(html);
 
     // Security headers analysis
-    const responseHdrs = pageRes.headers ?? {};
     const hasHsts = !!responseHdrs["strict-transport-security"];
     const hasCsp = !!responseHdrs["content-security-policy"] || !!responseHdrs["content-security-policy-report-only"];
     const hasXFrameOptions = !!responseHdrs["x-frame-options"];
@@ -905,6 +922,8 @@ export async function POST(request: NextRequest) {
         asyncScriptCount,
         totalScriptCount,
       },
+      contentLanguage: contentLanguage || undefined,
+      hreflangTags: hreflangTags.length > 0 ? hreflangTags : undefined,
     };
 
     return NextResponse.json(report, {

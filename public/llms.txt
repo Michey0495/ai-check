@@ -58,6 +58,7 @@
 - X-Robots-Tagレスポンスヘッダーによるnoindex検出
 - セキュリティヘッダー分析（HSTS、CSP、X-Frame-Options、X-Content-Type-Options、Referrer-Policy）
 - パフォーマンスヒント（preconnect/prefetch数、画像遅延読み込み、スクリプト最適化、font-display検出）
+- 多言語対応検出（Content-Languageヘッダー、hreflangタグ）
 
 ## API
 - GET /api/check?url=URL: URLのGEOスコアチェック（GETメソッド対応、ブラウザから直接アクセス可）。CORS対応

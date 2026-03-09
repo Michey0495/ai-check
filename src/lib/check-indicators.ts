@@ -143,6 +143,8 @@ export type CheckReport = {
     asyncScriptCount: number;
     totalScriptCount: number;
   };
+  contentLanguage?: string;
+  hreflangTags?: string[];
 };
 
 export function getGrade(score: number, maxScore: number): CheckReport["grade"] {

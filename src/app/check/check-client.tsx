@@ -162,6 +162,13 @@ function generateReportText(report: CheckReport): string {
     lines.push(`スクリプト: ${p.totalScriptCount}件（defer: ${p.deferScriptCount}, async: ${p.asyncScriptCount}）`);
   }
 
+  if (report.contentLanguage || (report.hreflangTags && report.hreflangTags.length > 0)) {
+    lines.push("");
+    lines.push("--- 多言語対応 ---");
+    if (report.contentLanguage) lines.push(`Content-Language: ${report.contentLanguage}`);
+    if (report.hreflangTags && report.hreflangTags.length > 0) lines.push(`hreflang: ${report.hreflangTags.join(", ")}`);
+  }
+
   const failItems = report.results.filter((r) => r.status === "fail");
   const warnItems = report.results.filter((r) => r.status === "warn");
 
@@ -602,6 +609,18 @@ export function CheckPageClient() {
     );
   }, [report]);
 
+  const handleShareLINE = useCallback(() => {
+    if (!report) return;
+    const pct = Math.round((report.totalScore / report.maxScore) * 100);
+    const shareUrl = `https://ai-check.ezoai.jp/check?url=${encodeURIComponent(report.url)}`;
+    const text = `AI検索対応度チェック結果: ${report.grade}ランク (${pct}/100) ${shareUrl}`;
+    window.open(
+      `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(text)}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
+  }, [report]);
+
   const handleCopyShareUrl = useCallback(() => {
     if (!report) return;
     const shareUrl = `https://ai-check.ezoai.jp/check?url=${encodeURIComponent(report.url)}`;
@@ -727,6 +746,16 @@ export function CheckPageClient() {
                   外部リンク: {report.externalLinkCount}件
                 </span>
               )}
+              {report.contentLanguage && (
+                <span className="rounded-full bg-blue-500/10 px-3 py-1 text-xs text-blue-400">
+                  言語: {report.contentLanguage}
+                </span>
+              )}
+              {report.hreflangTags && report.hreflangTags.length > 0 && (
+                <span className="rounded-full bg-blue-500/10 px-3 py-1 text-xs text-blue-400">
+                  hreflang: {report.hreflangTags.join(", ")}
+                </span>
+              )}
               {report.accessibility && report.accessibility.imgCount > 0 && (
                 <span className={`rounded-full px-3 py-1 text-xs ${
                   report.accessibility.imgWithAlt === report.accessibility.imgCount
@@ -773,6 +802,14 @@ export function CheckPageClient() {
                 onClick={handleShareX}
               >
                 Xでシェア
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="cursor-pointer border-[#06C755]/30 bg-[#06C755]/10 text-[#06C755] transition-all duration-200 hover:bg-[#06C755]/20"
+                onClick={handleShareLINE}
+              >
+                LINEで送る
               </Button>
               <Button
                 variant="outline"
