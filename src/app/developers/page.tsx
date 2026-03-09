@@ -24,9 +24,32 @@ const breadcrumbJsonLd = {
 
 const endpoints = [
   {
+    method: "GET",
+    path: "/api/check?url=https://example.com",
+    description: "URLのGEOスコアをチェック（GETメソッド）。クエリパラメータでURLを指定。ブラウザから直接アクセス可能。",
+    request: `// クエリパラメータ
+?url=https://example.com   // 必須: チェック対象URL`,
+    response: `{
+  "url": "https://example.com",
+  "totalScore": 65,
+  "maxScore": 100,
+  "grade": "C",
+  "results": [...],
+  "checkedAt": "2026-03-10T00:00:00.000Z",
+  "accessibility": {
+    "imgCount": 12,
+    "imgWithAlt": 10,
+    "hasSkipNav": true,
+    "ariaLandmarks": 3,
+    "hasAriaLabels": true
+  }
+}`,
+    notes: "レート制限: 10リクエスト/分（IP単位）。POSTと同じレスポンス形式。",
+  },
+  {
     method: "POST",
     path: "/api/check",
-    description: "URLのGEOスコアをチェック",
+    description: "URLのGEOスコアをチェック（POSTメソッド）",
     request: `{
   "url": "https://example.com"
 }`,
@@ -46,7 +69,7 @@ const endpoints = [
       "code": null
     }
   ],
-  "checkedAt": "2026-03-09T00:00:00.000Z"
+  "checkedAt": "2026-03-10T00:00:00.000Z"
 }`,
     notes: "レート制限: 10リクエスト/分（IP単位）",
   },

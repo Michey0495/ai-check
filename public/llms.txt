@@ -54,9 +54,12 @@
 - 内部リンク・外部リンク数分析
 - おすすめスキーマタイプ推定（ページ内容から自動判定）
 - 改善コードまとめ表示
+- アクセシビリティ概要（画像alt属性、スキップナビゲーション、ARIAランドマーク）
+- X-Robots-Tagレスポンスヘッダーによるnoindex検出
 
 ## API
-- POST /api/check: URLのGEOスコアチェック（パラメータ: url）。レスポンスにresponseTimeMsを含む。CORS対応
+- GET /api/check?url=URL: URLのGEOスコアチェック（GETメソッド対応、ブラウザから直接アクセス可）。CORS対応
+- POST /api/check: URLのGEOスコアチェック（パラメータ: url）。レスポンスにresponseTimeMs、アクセシビリティ情報を含む。CORS対応
 - POST /api/generate: ファイル生成（パラメータ: type, data）。CORS対応
 - POST /api/mcp: MCP Server (JSON-RPC 2.0) - 5ツール: check_geo_score, generate_llms_txt, generate_robots_txt, generate_json_ld, generate_agent_json。CORS対応
 - GET /api/badge?url=URL&style=flat|card: GEOスコアバッジ（SVG画像）

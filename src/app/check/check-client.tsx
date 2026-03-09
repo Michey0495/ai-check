@@ -128,6 +128,15 @@ function generateReportText(report: CheckReport): string {
     if (r.details) lines.push(`    ${r.details}`);
   }
 
+  if (report.accessibility) {
+    const a = report.accessibility;
+    lines.push("");
+    lines.push("--- アクセシビリティ ---");
+    lines.push(`画像: ${a.imgCount}枚（alt属性あり: ${a.imgWithAlt}枚）`);
+    lines.push(`スキップナビゲーション: ${a.hasSkipNav ? "あり" : "なし"}`);
+    lines.push(`ARIAランドマーク: ${a.ariaLandmarks}件`);
+  }
+
   const failItems = report.results.filter((r) => r.status === "fail");
   const warnItems = report.results.filter((r) => r.status === "warn");
 
@@ -692,6 +701,17 @@ export function CheckPageClient() {
                   外部リンク: {report.externalLinkCount}件
                 </span>
               )}
+              {report.accessibility && report.accessibility.imgCount > 0 && (
+                <span className={`rounded-full px-3 py-1 text-xs ${
+                  report.accessibility.imgWithAlt === report.accessibility.imgCount
+                    ? "bg-green-500/10 text-green-400"
+                    : report.accessibility.imgWithAlt > 0
+                    ? "bg-yellow-500/10 text-yellow-400"
+                    : "bg-red-500/10 text-red-400"
+                }`}>
+                  画像alt: {report.accessibility.imgWithAlt}/{report.accessibility.imgCount}
+                </span>
+              )}
             </div>
             <div className="mt-4 flex flex-wrap justify-center gap-3">
               <Button
@@ -746,6 +766,54 @@ export function CheckPageClient() {
               </Button>
             </div>
           </div>
+
+          {/* Accessibility summary */}
+          {report.accessibility && (report.accessibility.imgCount > 0 || report.accessibility.ariaLandmarks > 0) && (
+            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+              <h2 className="mb-3 text-lg font-semibold text-white">アクセシビリティ概要</h2>
+              <div className="grid gap-3 sm:grid-cols-3">
+                {report.accessibility.imgCount > 0 && (
+                  <div className="rounded-lg bg-white/[0.03] p-3">
+                    <p className="text-xs text-white/40">画像のalt属性</p>
+                    <p className={`text-lg font-bold ${
+                      report.accessibility.imgWithAlt === report.accessibility.imgCount
+                        ? "text-green-400"
+                        : report.accessibility.imgWithAlt > 0
+                        ? "text-yellow-400"
+                        : "text-red-400"
+                    }`}>
+                      {report.accessibility.imgWithAlt}/{report.accessibility.imgCount}
+                    </p>
+                    <p className="text-xs text-white/30">
+                      {report.accessibility.imgWithAlt === report.accessibility.imgCount
+                        ? "全画像にalt属性が設定済み"
+                        : `${report.accessibility.imgCount - report.accessibility.imgWithAlt}枚にalt属性が未設定`}
+                    </p>
+                  </div>
+                )}
+                <div className="rounded-lg bg-white/[0.03] p-3">
+                  <p className="text-xs text-white/40">スキップナビゲーション</p>
+                  <p className={`text-lg font-bold ${report.accessibility.hasSkipNav ? "text-green-400" : "text-white/30"}`}>
+                    {report.accessibility.hasSkipNav ? "あり" : "なし"}
+                  </p>
+                  <p className="text-xs text-white/30">
+                    {report.accessibility.hasSkipNav
+                      ? "キーボードユーザーがコンテンツに直接移動可能"
+                      : "キーボードユーザー向けにスキップリンクの追加を推奨"}
+                  </p>
+                </div>
+                <div className="rounded-lg bg-white/[0.03] p-3">
+                  <p className="text-xs text-white/40">ARIAランドマーク</p>
+                  <p className={`text-lg font-bold ${report.accessibility.ariaLandmarks > 0 || report.accessibility.hasAriaLabels ? "text-green-400" : "text-white/30"}`}>
+                    {report.accessibility.ariaLandmarks}件
+                  </p>
+                  <p className="text-xs text-white/30">
+                    {report.accessibility.hasAriaLabels ? "aria-label使用あり" : "ARIA属性の活用を推奨"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Grade explanation */}
           <div className="rounded-lg border border-white/10 bg-white/5 p-6">

@@ -50,7 +50,9 @@ function isPrivateHostname(hostname: string): boolean {
   return false;
 }
 
-async function safeFetch(url: string, timeoutMs = 10000): Promise<{ ok: boolean; text: string }> {
+type FetchResult = { ok: boolean; text: string; headers?: Record<string, string> };
+
+async function safeFetch(url: string, timeoutMs = 10000, returnHeaders = false): Promise<FetchResult> {
   try {
     const parsed = new URL(url);
     if (isPrivateHostname(parsed.hostname)) return { ok: false, text: "" };
@@ -79,7 +81,13 @@ async function safeFetch(url: string, timeoutMs = 10000): Promise<{ ok: boolean;
       ? chunks[0]
       : new Uint8Array(await new Blob(chunks).arrayBuffer());
     const text = new TextDecoder().decode(merged);
-    return { ok: true, text };
+    const result: FetchResult = { ok: true, text };
+    if (returnHeaders) {
+      const hdrs: Record<string, string> = {};
+      res.headers.forEach((v, k) => { hdrs[k.toLowerCase()] = v; });
+      result.headers = hdrs;
+    }
+    return result;
   } catch {
     return { ok: false, text: "" };
   }
@@ -356,7 +364,7 @@ function checkStructuredData(html: string, baseUrl: string): CheckResult {
   };
 }
 
-function checkMetaTags(html: string): CheckResult {
+function checkMetaTags(html: string, responseHeaders?: Record<string, string>): CheckResult {
   const hasTitle = /<title[^>]*>.+?<\/title>/i.test(html);
   const hasDescription = /<meta[^>]*name=["']description["'][^>]*content=["'][^"']+["']/i.test(html);
   const hasOgTitle = /<meta[^>]*property=["']og:title["']/i.test(html);
@@ -372,7 +380,8 @@ function checkMetaTags(html: string): CheckResult {
   const robotsMetaMatch = html.match(/<meta[^>]*name=["']robots["'][^>]*content=["']([^"']+)["']/i)
     ?? html.match(/<meta[^>]*content=["']([^"']+)["'][^>]*name=["']robots["']/i);
   const robotsContent = robotsMetaMatch?.[1]?.toLowerCase() ?? "";
-  const hasNoindex = robotsContent.includes("noindex");
+  const xRobotsTag = responseHeaders?.["x-robots-tag"]?.toLowerCase() ?? "";
+  const hasNoindex = robotsContent.includes("noindex") || xRobotsTag.includes("noindex");
 
   // Extract actual values for display
   const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
@@ -410,13 +419,16 @@ function checkMetaTags(html: string): CheckResult {
 
   if (hasNoindex) {
     // noindex overrides everything - it's a critical issue
+    const noindexSource = xRobotsTag.includes("noindex")
+      ? "X-Robots-Tagレスポンスヘッダー"
+      : "meta robotsタグ";
     return {
       id: "meta-tags",
       score: 3,
       maxScore: 15,
       status: "fail",
       message: "メタタグ: noindex検出",
-      details: `meta robots に noindex が設定されています。これにより検索エンジン（AI検索含む）にインデックスされません。GEO対策には noindex の解除が必要です。${extractedText}`,
+      details: `${noindexSource}に noindex が設定されています。これにより検索エンジン（AI検索含む）にインデックスされません。GEO対策には noindex の解除が必要です。${extractedText}`,
     };
   }
 
@@ -629,6 +641,23 @@ function checkSitemap(sitemapText: string | null, baseUrl: string): CheckResult 
   };
 }
 
+export async function GET(request: NextRequest) {
+  const url = request.nextUrl.searchParams.get("url");
+  if (!url) {
+    return NextResponse.json(
+      { error: "urlクエリパラメータを指定してください。例: /api/check?url=https://example.com" },
+      { status: 400, headers: corsHeaders() }
+    );
+  }
+  // Reuse POST logic by creating a synthetic request body
+  const syntheticRequest = new NextRequest(request.url, {
+    method: "POST",
+    headers: request.headers,
+    body: JSON.stringify({ url }),
+  });
+  return POST(syntheticRequest);
+}
+
 export async function POST(request: NextRequest) {
   try {
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
@@ -672,7 +701,7 @@ export async function POST(request: NextRequest) {
       safeFetch(`${baseUrl}/robots.txt`),
       safeFetch(`${baseUrl}/llms.txt`),
       safeFetch(`${baseUrl}/llms-full.txt`),
-      safeFetch(url, 15000),
+      safeFetch(url, 15000, true),
       safeFetch(`${baseUrl}/sitemap.xml`),
       safeFetch(`${baseUrl}/.well-known/agent.json`),
     ]);
@@ -716,7 +745,7 @@ export async function POST(request: NextRequest) {
       checkRobotsTxt(robotsText, baseUrl),
       llmsResult,
       structuredDataResult,
-      checkMetaTags(html),
+      checkMetaTags(html, pageRes.headers),
       checkContentStructure(html),
       checkSSR(html),
       checkSitemap(sitemapText, baseUrl),
@@ -781,6 +810,14 @@ export async function POST(request: NextRequest) {
 
     const isHttps = parsedUrl.protocol === "https:";
 
+    // Accessibility analysis
+    const imgTags = html.match(/<img[^>]*>/gi) ?? [];
+    const imgCount = imgTags.length;
+    const imgWithAlt = imgTags.filter((tag) => /\balt=["'][^"']*["']/i.test(tag)).length;
+    const hasSkipNav = /skip.*nav|skip.*content|skiplink/i.test(html);
+    const ariaLandmarks = (html.match(/role=["'](banner|navigation|main|contentinfo|complementary|search)["']/gi) ?? []).length;
+    const hasAriaLabels = /aria-label=/i.test(html);
+
     const report: CheckReport = {
       url,
       totalScore,
@@ -797,6 +834,13 @@ export async function POST(request: NextRequest) {
       internalLinkCount,
       externalLinkCount,
       suggestedSchemas,
+      accessibility: {
+        imgCount,
+        imgWithAlt,
+        hasSkipNav,
+        ariaLandmarks,
+        hasAriaLabels,
+      },
     };
 
     return NextResponse.json(report, {

@@ -117,6 +117,13 @@ export type CheckReport = {
   internalLinkCount?: number;
   externalLinkCount?: number;
   suggestedSchemas?: string[];
+  accessibility?: {
+    imgCount: number;
+    imgWithAlt: number;
+    hasSkipNav: boolean;
+    ariaLandmarks: number;
+    hasAriaLabels: boolean;
+  };
 };
 
 export function getGrade(score: number, maxScore: number): CheckReport["grade"] {
