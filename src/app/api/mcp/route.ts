@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { corsOptionsResponse } from "@/lib/cors";
+import { corsHeaders, corsOptionsResponse } from "@/lib/cors";
 
 export async function OPTIONS() {
   return corsOptionsResponse();
@@ -99,21 +99,34 @@ const TOOLS = [
   },
 ];
 
+function jsonRpcResponse(data: object, status = 200) {
+  return NextResponse.json(data, { status, headers: corsHeaders() });
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { jsonrpc, method, id, params } = body;
+    let body: Record<string, unknown>;
+    try {
+      body = await request.json();
+    } catch {
+      return jsonRpcResponse(
+        { jsonrpc: "2.0", error: { code: -32700, message: "Parse error" }, id: null },
+        400
+      );
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { jsonrpc, method, id, params } = body as any;
 
     if (jsonrpc !== "2.0") {
-      return NextResponse.json(
+      return jsonRpcResponse(
         { jsonrpc: "2.0", error: { code: -32600, message: "Invalid Request" }, id },
-        { status: 400 }
+        400
       );
     }
 
     switch (method) {
       case "initialize":
-        return NextResponse.json({
+        return jsonRpcResponse({
           jsonrpc: "2.0",
           result: {
             protocolVersion: "2024-11-05",
@@ -124,7 +137,7 @@ export async function POST(request: NextRequest) {
         });
 
       case "tools/list":
-        return NextResponse.json({
+        return jsonRpcResponse({
           jsonrpc: "2.0",
           result: { tools: TOOLS },
           id,
@@ -141,7 +154,7 @@ export async function POST(request: NextRequest) {
             body: JSON.stringify({ url: args.url }),
           });
           const result = await checkRes.json();
-          return NextResponse.json({
+          return jsonRpcResponse({
             jsonrpc: "2.0",
             result: { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] },
             id,
@@ -164,7 +177,7 @@ export async function POST(request: NextRequest) {
           lines.push("## 連絡先");
           lines.push(`- サイト: ${args.siteUrl}`);
 
-          return NextResponse.json({
+          return jsonRpcResponse({
             jsonrpc: "2.0",
             result: { content: [{ type: "text", text: lines.join("\n") }] },
             id,
@@ -188,7 +201,7 @@ export async function POST(request: NextRequest) {
             lines.push(`Sitemap: ${args.sitemapUrl}`);
           }
 
-          return NextResponse.json({
+          return jsonRpcResponse({
             jsonrpc: "2.0",
             result: { content: [{ type: "text", text: lines.join("\n") }] },
             id,
@@ -241,7 +254,7 @@ export async function POST(request: NextRequest) {
           }
 
           const script = `<script type="application/ld+json">\n${JSON.stringify(jsonLd, null, 2)}\n</script>`;
-          return NextResponse.json({
+          return jsonRpcResponse({
             jsonrpc: "2.0",
             result: { content: [{ type: "text", text: script }] },
             id,
@@ -260,14 +273,14 @@ export async function POST(request: NextRequest) {
             authentication: { type: "none" },
           };
 
-          return NextResponse.json({
+          return jsonRpcResponse({
             jsonrpc: "2.0",
             result: { content: [{ type: "text", text: JSON.stringify(agentCard, null, 2) }] },
             id,
           });
         }
 
-        return NextResponse.json({
+        return jsonRpcResponse({
           jsonrpc: "2.0",
           error: { code: -32601, message: `Unknown tool: ${toolName}` },
           id,
@@ -275,16 +288,16 @@ export async function POST(request: NextRequest) {
       }
 
       default:
-        return NextResponse.json({
+        return jsonRpcResponse({
           jsonrpc: "2.0",
           error: { code: -32601, message: "Method not found" },
           id,
         });
     }
   } catch {
-    return NextResponse.json(
+    return jsonRpcResponse(
       { jsonrpc: "2.0", error: { code: -32603, message: "Internal error" }, id: null },
-      { status: 500 }
+      500
     );
   }
 }

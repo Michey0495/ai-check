@@ -294,7 +294,7 @@ function CheckHistory({ currentUrl }: { currentUrl: string }) {
                 {entry.grade}
               </span>
               <p className="text-xs text-white/30">
-                {Math.round((entry.totalScore / entry.maxScore) * 100)}/100
+                {entry.maxScore > 0 ? Math.round((entry.totalScore / entry.maxScore) * 100) : 0}/100
               </p>
             </div>
           </Link>

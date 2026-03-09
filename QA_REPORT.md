@@ -1,6 +1,6 @@
 # QA Report - web-url-a (AI Check)
 
-**Date:** 2026-03-10 (4th pass)
+**Date:** 2026-03-10 (5th pass)
 **Status:** PASS
 
 ## Checklist
@@ -13,45 +13,32 @@
 - [x] ローディング状態の表示 (loading.tsx)
 - [x] エラー状態の表示 (error.tsx, global-error.tsx)
 
-## 今回修正した問題 (4th pass)
-
-### Security (Critical)
-
-| # | Severity | Issue | File | Fix |
-|---|----------|-------|------|-----|
-| S1 | High | SSRF: IPv6 private addresses not blocked (fe80::, fc00::, fd00::, ::ffff:127.0.0.1) | api/check/route.ts | Added IPv6 private/link-local range and IPv4-mapped IPv6 blocking |
-| S2 | High | SVG badge XSS: grade/score values unsanitized in SVG output | api/badge/route.ts | Added `escapeXml()` sanitization |
-| S3 | High | Badge API SSRF: no URL protocol validation | api/badge/route.ts | Added URL parsing and http/https-only validation |
-| S4 | Medium | Missing CORS headers on 429/400 error responses | api/check/route.ts | Added `corsHeaders()` to all error responses |
-| S5 | Medium | Missing CORS headers on all generate API responses | api/generate/route.ts | Added `corsHeaders()` to all responses |
-| S6 | Medium | `request.json()` crash on malformed request body | api/check/route.ts | Wrapped in try/catch with proper 400 error |
-| S7 | Medium | URL form allowed non-http protocols client-side | url-check-form.tsx | Added protocol validation |
+## 今回修正した問題 (5th pass)
 
 ### Edge Cases
 
-| # | Issue | File | Fix |
-|---|-------|------|-----|
-| E1 | Silent failure on invalid URL input (no user feedback) | url-check-form.tsx | Added visible error message with `role="alert"` |
-| E2 | `navigator.clipboard.writeText` unhandled rejection (8 files) | all generator-clients + check-client | Added `.catch(() => {})` |
-| E3 | `localStorage.setItem` QuotaExceededError unhandled | check-client.tsx | Wrapped in try/catch |
-| E4 | Division by zero in ScoreCircle (maxScore=0) | check-client.tsx | Added `maxScore > 0` guard |
-| E5 | Division by zero in badge API score calculation | api/badge/route.ts | Added `maxScore > 0` guard |
-
-### SEO
-
-| # | Issue | File | Fix |
-|---|-------|------|-----|
-| SEO1 | `dateModified` using runtime `new Date()` (misleading crawlers) | page.tsx | Changed to fixed date |
-| SEO2 | Sitemap `lastModified` using runtime date (all pages appear freshly modified) | sitemap.ts | Changed to fixed date |
-
-### Accessibility
-
-| # | Issue | File | Fix |
-|---|-------|------|-----|
-| A1 | AllFixCodes expand/collapse button missing `aria-expanded` | check-client.tsx | Added `aria-expanded={open}` |
-| A2 | Mobile menu: no Escape key handler | header.tsx | Added Escape key listener |
+| # | Severity | Issue | File | Fix |
+|---|----------|-------|------|-----|
+| E1 | Medium | MCP API: missing CORS headers on all responses | api/mcp/route.ts | Added `corsHeaders()` to all JSON-RPC responses via `jsonRpcResponse()` helper |
+| E2 | Medium | MCP API: `request.json()` crash on malformed body returns generic -32603 instead of -32700 Parse error | api/mcp/route.ts | Added separate try/catch for `request.json()` returning proper JSON-RPC -32700 error |
+| E3 | Low | CheckHistory: division by zero when `entry.maxScore === 0` | check-client.tsx | Added `entry.maxScore > 0` guard |
 
 ## 前回までの修正済み
+
+### 4th pass
+- SSRF: IPv6 private address blocking (fe80::, fc00::, fd00::, ::ffff: mapped)
+- SVG badge XSS sanitization (`escapeXml()`)
+- Badge API URL protocol validation
+- CORS headers on all check/generate API error responses
+- `request.json()` error handling in check API
+- URL form protocol validation client-side
+- Invalid URL form error messaging with `role="alert"`
+- Clipboard API rejection handling in 8 files
+- localStorage QuotaExceededError handling
+- Division by zero guards in ScoreCircle and badge API
+- `dateModified`/`lastmod` using fixed dates
+- `aria-expanded` on expand/collapse buttons
+- Escape key handler for mobile menu
 
 ### 3rd pass
 - llms.txt のNext.jsバージョン記載ミス修正 (15 -> 16)
@@ -93,7 +80,7 @@
 ### Edge Cases / Security
 - URL: maxLength=2048, https://自動付与, protocol検証, SSRF防止(IPv4+IPv6), レートリミット
 - XSS: React escaping + SVG escapeXml
-- CORS: 全APIレスポンスにcorsHeaders設定
+- CORS: 全APIレスポンスにcorsHeaders設定（check, generate, feedback, mcp）
 
 ### Accessibility
 - スキップナビゲーション, lang="ja", aria-label, aria-expanded, role, aria-live
