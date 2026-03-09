@@ -124,6 +124,25 @@ export type CheckReport = {
     ariaLandmarks: number;
     hasAriaLabels: boolean;
   };
+  securityHeaders?: {
+    hasHsts: boolean;
+    hasCsp: boolean;
+    hasXFrameOptions: boolean;
+    hasXContentTypeOptions: boolean;
+    hasReferrerPolicy: boolean;
+    score: number; // 0-5
+  };
+  performanceHints?: {
+    preconnectCount: number;
+    prefetchCount: number;
+    lazyImageCount: number;
+    totalImageCount: number;
+    hasFontDisplay: boolean;
+    hasModuleScripts: boolean;
+    deferScriptCount: number;
+    asyncScriptCount: number;
+    totalScriptCount: number;
+  };
 };
 
 export function getGrade(score: number, maxScore: number): CheckReport["grade"] {

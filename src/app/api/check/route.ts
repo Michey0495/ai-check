@@ -818,6 +818,27 @@ export async function POST(request: NextRequest) {
     const ariaLandmarks = (html.match(/role=["'](banner|navigation|main|contentinfo|complementary|search)["']/gi) ?? []).length;
     const hasAriaLabels = /aria-label=/i.test(html);
 
+    // Security headers analysis
+    const responseHdrs = pageRes.headers ?? {};
+    const hasHsts = !!responseHdrs["strict-transport-security"];
+    const hasCsp = !!responseHdrs["content-security-policy"] || !!responseHdrs["content-security-policy-report-only"];
+    const hasXFrameOptions = !!responseHdrs["x-frame-options"];
+    const hasXContentTypeOptions = responseHdrs["x-content-type-options"]?.includes("nosniff") ?? false;
+    const hasReferrerPolicy = !!responseHdrs["referrer-policy"];
+    const secHeaderScore = [hasHsts, hasCsp, hasXFrameOptions, hasXContentTypeOptions, hasReferrerPolicy].filter(Boolean).length;
+
+    // Performance hints analysis
+    const preconnectCount = (html.match(/<link[^>]*rel=["']preconnect["']/gi) ?? []).length;
+    const prefetchCount = (html.match(/<link[^>]*rel=["'](?:dns-prefetch|prefetch|preload)["']/gi) ?? []).length;
+    const lazyImageCount = (html.match(/<img[^>]*loading=["']lazy["']/gi) ?? []).length;
+    const totalImageCount = imgCount;
+    const hasFontDisplay = /font-display\s*:/i.test(html);
+    const scriptTags = html.match(/<script[^>]*>/gi) ?? [];
+    const totalScriptCount = scriptTags.filter((s) => !s.includes("application/ld+json") && !s.includes("application/json")).length;
+    const deferScriptCount = scriptTags.filter((s) => /\bdefer\b/i.test(s)).length;
+    const asyncScriptCount = scriptTags.filter((s) => /\basync\b/i.test(s)).length;
+    const hasModuleScripts = scriptTags.some((s) => /type=["']module["']/i.test(s));
+
     const report: CheckReport = {
       url,
       totalScore,
@@ -840,6 +861,25 @@ export async function POST(request: NextRequest) {
         hasSkipNav,
         ariaLandmarks,
         hasAriaLabels,
+      },
+      securityHeaders: {
+        hasHsts,
+        hasCsp,
+        hasXFrameOptions,
+        hasXContentTypeOptions,
+        hasReferrerPolicy,
+        score: secHeaderScore,
+      },
+      performanceHints: {
+        preconnectCount,
+        prefetchCount,
+        lazyImageCount,
+        totalImageCount,
+        hasFontDisplay,
+        hasModuleScripts,
+        deferScriptCount,
+        asyncScriptCount,
+        totalScriptCount,
       },
     };
 

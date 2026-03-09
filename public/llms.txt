@@ -56,6 +56,8 @@
 - 改善コードまとめ表示
 - アクセシビリティ概要（画像alt属性、スキップナビゲーション、ARIAランドマーク）
 - X-Robots-Tagレスポンスヘッダーによるnoindex検出
+- セキュリティヘッダー分析（HSTS、CSP、X-Frame-Options、X-Content-Type-Options、Referrer-Policy）
+- パフォーマンスヒント（preconnect/prefetch数、画像遅延読み込み、スクリプト最適化、font-display検出）
 
 ## API
 - GET /api/check?url=URL: URLのGEOスコアチェック（GETメソッド対応、ブラウザから直接アクセス可）。CORS対応
@@ -68,7 +70,7 @@
 GPTBot, ChatGPT-User, ClaudeBot, anthropic-ai, PerplexityBot, Google-Extended, Bytespider, CCBot, Applebot-Extended, cohere-ai
 
 ## 技術スタック
-- Next.js 16, TypeScript, Tailwind CSS, shadcn/ui, Vercel
+- Next.js 15, TypeScript, Tailwind CSS, shadcn/ui, Vercel
 
 ## 連絡先
 - サイト: https://ai-check.ezoai.jp

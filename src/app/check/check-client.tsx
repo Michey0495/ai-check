@@ -137,6 +137,27 @@ function generateReportText(report: CheckReport): string {
     lines.push(`ARIAランドマーク: ${a.ariaLandmarks}件`);
   }
 
+  if (report.securityHeaders) {
+    const s = report.securityHeaders;
+    lines.push("");
+    lines.push(`--- セキュリティヘッダー (${s.score}/5) ---`);
+    lines.push(`HSTS: ${s.hasHsts ? "あり" : "なし"}`);
+    lines.push(`CSP: ${s.hasCsp ? "あり" : "なし"}`);
+    lines.push(`X-Frame-Options: ${s.hasXFrameOptions ? "あり" : "なし"}`);
+    lines.push(`X-Content-Type-Options: ${s.hasXContentTypeOptions ? "あり" : "なし"}`);
+    lines.push(`Referrer-Policy: ${s.hasReferrerPolicy ? "あり" : "なし"}`);
+  }
+
+  if (report.performanceHints) {
+    const p = report.performanceHints;
+    lines.push("");
+    lines.push("--- パフォーマンスヒント ---");
+    if (p.preconnectCount > 0) lines.push(`preconnect: ${p.preconnectCount}件`);
+    if (p.prefetchCount > 0) lines.push(`prefetch/preload: ${p.prefetchCount}件`);
+    lines.push(`画像の遅延読み込み: ${p.lazyImageCount}/${p.totalImageCount}枚`);
+    lines.push(`スクリプト: ${p.totalScriptCount}件（defer: ${p.deferScriptCount}, async: ${p.asyncScriptCount}）`);
+  }
+
   const failItems = report.results.filter((r) => r.status === "fail");
   const warnItems = report.results.filter((r) => r.status === "warn");
 
@@ -809,6 +830,108 @@ export function CheckPageClient() {
                   </p>
                   <p className="text-xs text-white/30">
                     {report.accessibility.hasAriaLabels ? "aria-label使用あり" : "ARIA属性の活用を推奨"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Security headers */}
+          {report.securityHeaders && (
+            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+              <div className="mb-3 flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-white">セキュリティヘッダー</h2>
+                <span className={`rounded-full px-3 py-1 text-xs ${
+                  report.securityHeaders.score >= 4 ? "bg-green-500/10 text-green-400"
+                    : report.securityHeaders.score >= 2 ? "bg-yellow-500/10 text-yellow-400"
+                    : "bg-red-500/10 text-red-400"
+                }`}>
+                  {report.securityHeaders.score}/5
+                </span>
+              </div>
+              <div className="grid gap-2 sm:grid-cols-5">
+                {([
+                  { label: "HSTS", ok: report.securityHeaders.hasHsts, desc: "通信の暗号化を強制" },
+                  { label: "CSP", ok: report.securityHeaders.hasCsp, desc: "XSS攻撃の防止" },
+                  { label: "X-Frame", ok: report.securityHeaders.hasXFrameOptions, desc: "クリックジャッキング防止" },
+                  { label: "Nosniff", ok: report.securityHeaders.hasXContentTypeOptions, desc: "MIMEスニッフィング防止" },
+                  { label: "Referrer", ok: report.securityHeaders.hasReferrerPolicy, desc: "リファラー情報の制御" },
+                ] as const).map((h) => (
+                  <div key={h.label} className="rounded-lg bg-white/[0.03] p-3 text-center">
+                    <p className={`text-sm font-medium ${h.ok ? "text-green-400" : "text-white/30"}`}>
+                      {h.label}
+                    </p>
+                    <p className="mt-1 text-xs text-white/30">{h.desc}</p>
+                  </div>
+                ))}
+              </div>
+              {report.securityHeaders.score < 3 && (
+                <p className="mt-3 text-xs text-white/40">
+                  セキュリティヘッダーの追加により、サイトの信頼性が向上し、AI検索エンジンからの評価にも好影響があります。
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Performance hints */}
+          {report.performanceHints && (
+            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+              <h2 className="mb-3 text-lg font-semibold text-white">パフォーマンスヒント</h2>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="rounded-lg bg-white/[0.03] p-3">
+                  <p className="text-xs text-white/40">リソースヒント</p>
+                  <p className={`text-lg font-bold ${
+                    report.performanceHints.preconnectCount + report.performanceHints.prefetchCount > 0
+                      ? "text-green-400" : "text-white/30"
+                  }`}>
+                    {report.performanceHints.preconnectCount + report.performanceHints.prefetchCount}件
+                  </p>
+                  <p className="text-xs text-white/30">
+                    preconnect: {report.performanceHints.preconnectCount} / prefetch: {report.performanceHints.prefetchCount}
+                  </p>
+                </div>
+                <div className="rounded-lg bg-white/[0.03] p-3">
+                  <p className="text-xs text-white/40">画像の遅延読み込み</p>
+                  <p className={`text-lg font-bold ${
+                    report.performanceHints.totalImageCount === 0
+                      ? "text-white/30"
+                      : report.performanceHints.lazyImageCount > 0
+                      ? "text-green-400" : "text-yellow-400"
+                  }`}>
+                    {report.performanceHints.lazyImageCount}/{report.performanceHints.totalImageCount}
+                  </p>
+                  <p className="text-xs text-white/30">
+                    {report.performanceHints.totalImageCount === 0
+                      ? "画像なし"
+                      : report.performanceHints.lazyImageCount > 0
+                      ? "loading=lazy 設定済み"
+                      : "lazy loading の追加を推奨"}
+                  </p>
+                </div>
+                <div className="rounded-lg bg-white/[0.03] p-3">
+                  <p className="text-xs text-white/40">スクリプト最適化</p>
+                  <p className={`text-lg font-bold ${
+                    report.performanceHints.totalScriptCount === 0
+                      ? "text-white/30"
+                      : (report.performanceHints.deferScriptCount + report.performanceHints.asyncScriptCount) > 0
+                      ? "text-green-400" : "text-yellow-400"
+                  }`}>
+                    {report.performanceHints.deferScriptCount + report.performanceHints.asyncScriptCount}/{report.performanceHints.totalScriptCount}
+                  </p>
+                  <p className="text-xs text-white/30">
+                    defer: {report.performanceHints.deferScriptCount} / async: {report.performanceHints.asyncScriptCount}
+                    {report.performanceHints.hasModuleScripts ? " / module使用" : ""}
+                  </p>
+                </div>
+                <div className="rounded-lg bg-white/[0.03] p-3">
+                  <p className="text-xs text-white/40">font-display</p>
+                  <p className={`text-lg font-bold ${report.performanceHints.hasFontDisplay ? "text-green-400" : "text-white/30"}`}>
+                    {report.performanceHints.hasFontDisplay ? "検出" : "未検出"}
+                  </p>
+                  <p className="text-xs text-white/30">
+                    {report.performanceHints.hasFontDisplay
+                      ? "フォント読み込み最適化済み"
+                      : "font-display: swap の使用を推奨"}
                   </p>
                 </div>
               </div>

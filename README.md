@@ -275,3 +275,12 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - UX: テキストレポートにアクセシビリティ情報を追加
 - 開発者ドキュメント: GETメソッドのAPIリファレンスを追加
 - AI公開チャネル: agent.json v2.2.0に更新、llms.txtにGET API・アクセシビリティ情報追記
+
+### Night 24 (完了)
+- チェック強化: セキュリティヘッダー分析追加（HSTS、CSP、X-Frame-Options、X-Content-Type-Options、Referrer-Policyの5項目検出・スコア表示）
+- チェック強化: パフォーマンスヒント分析追加（preconnect/prefetch数、画像遅延読み込み率、スクリプト最適化状況、font-display検出）
+- UX: チェック結果に「セキュリティヘッダー」セクション追加（5項目のヘッダー設定状況をビジュアル表示）
+- UX: チェック結果に「パフォーマンスヒント」セクション追加（リソースヒント・遅延読み込み・スクリプト最適化・font-displayの4指標）
+- UX: テキストレポートにセキュリティヘッダー・パフォーマンスヒント情報を追加
+- 修正: llms.txt技術スタック Next.js 16→15
+- AI公開チャネル: agent.json v2.3.0に更新、llms.txtにセキュリティ・パフォーマンス情報追記
