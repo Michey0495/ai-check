@@ -174,7 +174,7 @@ JSON-RPC 2.0 プロトコル。5つのツールを提供:
 | チャネル | パス | 目的 |
 |----------|------|------|
 | MCP Server | `/api/mcp` | AIエージェントが直接ツールとして利用（5ツール） |
-| A2A Agent Card | `/.well-known/agent.json` | エージェント間の発見・接続 (v1.5.0) |
+| A2A Agent Card | `/.well-known/agent.json` | エージェント間の発見・接続 (v2.4.0) |
 | llms.txt | `/llms.txt` | AI向けサイト説明・API仕様 |
 | robots.txt | `/robots.txt` | AIクローラー許可 |
 | sitemap.xml | `/sitemap.xml` | 動的ページ一覧 |

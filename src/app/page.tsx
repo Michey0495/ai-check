@@ -171,9 +171,8 @@ export default function Home() {
         <p className="mt-4 text-sm text-white/40">
           無料 / 登録不要 / 30秒で結果表示
         </p>
-        <div className="mx-auto mt-12 grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-4">
+        <div className="mx-auto mt-12 grid max-w-3xl grid-cols-3 gap-4">
           {[
-            { stat: "5,000+", label: "分析済みサイト数" },
             { stat: "25%", label: "AI検索の市場シェア（2026年）" },
             { stat: "89%", label: "AI検索に未対応のWebサイト" },
             { stat: "7項目", label: "GEOスコア チェック指標" },
