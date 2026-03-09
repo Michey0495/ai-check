@@ -87,6 +87,7 @@ export function RobotsTxtGenerator() {
             value={sitemapUrl}
             onChange={(e) => setSitemapUrl(e.target.value)}
             placeholder="https://example.com/sitemap.xml"
+            maxLength={2048}
             className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
           />
         </div>

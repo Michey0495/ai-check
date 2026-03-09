@@ -70,6 +70,7 @@ export function LlmsTxtGenerator() {
             value={siteName}
             onChange={(e) => setSiteName(e.target.value)}
             placeholder="例: AI Check"
+            maxLength={200}
             className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
           />
         </div>
@@ -79,6 +80,7 @@ export function LlmsTxtGenerator() {
             value={siteUrl}
             onChange={(e) => setSiteUrl(e.target.value)}
             placeholder="例: https://ai-check.ezoai.jp"
+            maxLength={2048}
             className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
           />
         </div>
@@ -89,6 +91,7 @@ export function LlmsTxtGenerator() {
             onChange={(e) => setDescription(e.target.value)}
             placeholder="サイトの概要を簡潔に"
             rows={3}
+            maxLength={1000}
             className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
           />
         </div>
@@ -99,6 +102,7 @@ export function LlmsTxtGenerator() {
             onChange={(e) => setPages(e.target.value)}
             placeholder={`[トップ](https://example.com/): サイトの概要\n[サービス](https://example.com/services): 提供サービス`}
             rows={4}
+            maxLength={5000}
             className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
           />
         </div>
@@ -109,6 +113,7 @@ export function LlmsTxtGenerator() {
             onChange={(e) => setApiInfo(e.target.value)}
             placeholder="REST API, MCP Serverなどの情報"
             rows={3}
+            maxLength={2000}
             className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
           />
         </div>

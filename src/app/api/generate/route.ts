@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { corsOptionsResponse } from "@/lib/cors";
 
+function sanitizeLine(str: string): string {
+  return str.replace(/[\r\n]/g, " ").trim();
+}
+
 export async function OPTIONS() {
   return corsOptionsResponse();
 }
@@ -12,6 +16,13 @@ export async function POST(request: NextRequest) {
     if (!type || !data) {
       return NextResponse.json(
         { error: "type と data パラメータが必要です。" },
+        { status: 400 }
+      );
+    }
+
+    if (typeof type !== "string") {
+      return NextResponse.json(
+        { error: "type は文字列である必要があります。" },
         { status: 400 }
       );
     }
@@ -35,26 +46,26 @@ export async function POST(request: NextRequest) {
           );
         }
         const lines: string[] = [];
-        lines.push(`# ${siteName}`);
+        lines.push(`# ${sanitizeLine(siteName)}`);
         lines.push("");
         if (description) {
-          lines.push(`> ${description}`);
+          lines.push(`> ${sanitizeLine(description)}`);
           lines.push("");
         }
         if (pages) {
           lines.push("## 主要ページ");
-          (Array.isArray(pages) ? pages : pages.split(/\r?\n/))
+          (Array.isArray(pages) ? pages : String(pages).split(/\r?\n/))
             .filter((p: string) => p.trim())
-            .forEach((p: string) => lines.push(`- ${p.trim()}`));
+            .forEach((p: string) => lines.push(`- ${sanitizeLine(p)}`));
           lines.push("");
         }
         if (apiInfo) {
           lines.push("## API");
-          lines.push(apiInfo);
+          lines.push(sanitizeLine(String(apiInfo)));
           lines.push("");
         }
         lines.push("## 連絡先");
-        lines.push(`- サイト: ${siteUrl}`);
+        lines.push(`- サイト: ${sanitizeLine(String(siteUrl))}`);
 
         return NextResponse.json({
           success: true,
@@ -80,12 +91,12 @@ export async function POST(request: NextRequest) {
           "",
         ];
         crawlers.forEach((c: string) => {
-          lines.push(`User-agent: ${c}`);
+          lines.push(`User-agent: ${sanitizeLine(String(c))}`);
           lines.push("Allow: /");
           lines.push("");
         });
         if (sitemapUrl) {
-          lines.push(`Sitemap: ${sitemapUrl}`);
+          lines.push(`Sitemap: ${sanitizeLine(String(sitemapUrl))}`);
         }
 
         return NextResponse.json({
@@ -98,7 +109,7 @@ export async function POST(request: NextRequest) {
 
       default:
         return NextResponse.json(
-          { error: `未対応の生成タイプ: ${type}` },
+          { error: `未対応の生成タイプ: ${sanitizeLine(type)}` },
           { status: 400 }
         );
     }

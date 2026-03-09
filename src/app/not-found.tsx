@@ -1,4 +1,10 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "404 - ページが見つかりません",
+  description: "お探しのページは見つかりませんでした。URLを確認してもう一度お試しください。",
+};
 
 export default function NotFound() {
   return (

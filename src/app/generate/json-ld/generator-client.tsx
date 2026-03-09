@@ -135,6 +135,7 @@ export function JsonLdGenerator() {
             value={siteName}
             onChange={(e) => setSiteName(e.target.value)}
             placeholder="例: AI Check"
+            maxLength={200}
             className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
           />
         </div>
@@ -144,6 +145,7 @@ export function JsonLdGenerator() {
             value={siteUrl}
             onChange={(e) => setSiteUrl(e.target.value)}
             placeholder="https://example.com"
+            maxLength={2048}
             className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
           />
         </div>
@@ -154,6 +156,7 @@ export function JsonLdGenerator() {
             onChange={(e) => setDescription(e.target.value)}
             placeholder="簡潔な説明"
             rows={3}
+            maxLength={1000}
             className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
           />
         </div>
@@ -167,6 +170,7 @@ export function JsonLdGenerator() {
               onChange={(e) => setExtra(e.target.value)}
               placeholder={`GEO対策とは?|AI検索エンジンへの最適化手法です\nllms.txtとは?|AI向けサイト説明ファイルです`}
               rows={4}
+              maxLength={5000}
               className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
             />
           </div>
@@ -178,6 +182,7 @@ export function JsonLdGenerator() {
               value={extra}
               onChange={(e) => setExtra(e.target.value)}
               placeholder="東京都渋谷区..."
+              maxLength={500}
               className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
             />
           </div>

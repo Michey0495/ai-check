@@ -65,6 +65,7 @@ export function AgentJsonGenerator() {
             value={agentName}
             onChange={(e) => setAgentName(e.target.value)}
             placeholder="例: AI Check Agent"
+            maxLength={200}
             className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
           />
         </div>
@@ -74,6 +75,7 @@ export function AgentJsonGenerator() {
             value={agentUrl}
             onChange={(e) => setAgentUrl(e.target.value)}
             placeholder="https://example.com"
+            maxLength={2048}
             className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
           />
         </div>
@@ -84,6 +86,7 @@ export function AgentJsonGenerator() {
             onChange={(e) => setDescription(e.target.value)}
             placeholder="このエージェントが提供する機能の概要"
             rows={3}
+            maxLength={1000}
             className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
           />
         </div>
@@ -96,6 +99,7 @@ export function AgentJsonGenerator() {
             onChange={(e) => setCapabilities(e.target.value)}
             placeholder={`GEOスコアチェック\nllms.txt生成\nrobots.txt生成`}
             rows={4}
+            maxLength={3000}
             className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
           />
         </div>
@@ -107,6 +111,7 @@ export function AgentJsonGenerator() {
             value={mcpEndpoint}
             onChange={(e) => setMcpEndpoint(e.target.value)}
             placeholder="https://example.com/api/mcp"
+            maxLength={2048}
             className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
           />
         </div>
