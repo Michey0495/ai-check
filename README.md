@@ -52,6 +52,7 @@ http://localhost:3000 で起動。
 | `/for/professional` | 士業向けGEO対策 |
 | `/for/local` | ローカルビジネス向けGEO対策 |
 | `/for/education` | 教育向けGEO対策 |
+| `/history` | チェック履歴（過去のGEOスコアチェック結果一覧） |
 | `/tools` | GEO対策ツール一覧（全5ツールの詳細紹介） |
 | `/privacy` | プライバシーポリシー |
 
@@ -302,3 +303,12 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - UX: チェック結果のサイト情報バッジにOG画像アクセス可否・検出テクノロジーを表示
 - UX: テキストレポートに検出テクノロジー・OG画像アクセス情報を追加
 - AI公開チャネル: agent.json v2.5.0に更新、llms.txtにCMS検出・OG画像検証情報追記
+
+### Night 27 (完了)
+- コンテンツ: チェック履歴ページ追加（/history）- 過去のチェック結果一覧、統計サマリー（平均スコア・グレード分布）、日付/スコア順ソート、個別削除・一括クリア
+- チェック強化: Core Web Vitalsヒント分析追加（LCP候補検出、CLSリスク要因分析、レンダーブロッキングリソース数、インラインCSSサイズ計測、fetchpriority検出）
+- UX: チェック結果に「Core Web Vitalsヒント」セクション追加（レンダーブロック・CLSリスク・LCP候補・インラインCSSの4指標をビジュアル表示）
+- UX: テキストレポートにCore Web Vitals情報を追加
+- ナビゲーション: ヘッダー・フッターにチェック履歴ページへのリンク追加
+- SEO: sitemap.xmlに履歴ページ追加
+- AI公開チャネル: agent.json v2.6.0に更新、llms.txtにCore Web Vitals・履歴ページ情報追記
