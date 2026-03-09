@@ -175,6 +175,19 @@ function generateReportText(report: CheckReport): string {
     lines.push(report.detectedTech.join(", "));
   }
 
+  if (report.coreWebVitals) {
+    const c = report.coreWebVitals;
+    lines.push("");
+    lines.push("--- Core Web Vitals ヒント ---");
+    lines.push(`レンダーブロッキングリソース: ${c.renderBlockingCount}件`);
+    if (c.lcpCandidate) lines.push(`LCP候補: ${c.lcpCandidate}`);
+    lines.push(`fetchpriority=high: ${c.hasFetchPriority ? "設定済み" : "未設定"}`);
+    lines.push(`インラインCSS: ${c.inlineCssSize < 1024 ? `${c.inlineCssSize}B` : `${Math.round(c.inlineCssSize / 1024)}KB`}`);
+    if (c.clsRiskFactors.length > 0) {
+      lines.push(`CLSリスク要因: ${c.clsRiskFactors.join("、")}`);
+    }
+  }
+
   if (report.ogImageAccessible !== undefined) {
     lines.push("");
     lines.push(`--- OG画像 ---`);
@@ -999,6 +1012,85 @@ export function CheckPageClient() {
                   </p>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Core Web Vitals hints */}
+          {report.coreWebVitals && (
+            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+              <h2 className="mb-3 text-lg font-semibold text-white">Core Web Vitals ヒント</h2>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="rounded-lg bg-white/[0.03] p-3">
+                  <p className="text-xs text-white/40">レンダーブロック</p>
+                  <p className={`text-lg font-bold ${
+                    report.coreWebVitals.renderBlockingCount === 0
+                      ? "text-green-400"
+                      : report.coreWebVitals.renderBlockingCount <= 3
+                      ? "text-yellow-400"
+                      : "text-red-400"
+                  }`}>
+                    {report.coreWebVitals.renderBlockingCount}件
+                  </p>
+                  <p className="text-xs text-white/30">
+                    {report.coreWebVitals.renderBlockingCount === 0
+                      ? "ブロッキングリソースなし"
+                      : "CSS/JSがレンダリングをブロック"}
+                  </p>
+                </div>
+                <div className="rounded-lg bg-white/[0.03] p-3">
+                  <p className="text-xs text-white/40">CLS リスク要因</p>
+                  <p className={`text-lg font-bold ${
+                    report.coreWebVitals.clsRiskFactors.length === 0
+                      ? "text-green-400"
+                      : "text-yellow-400"
+                  }`}>
+                    {report.coreWebVitals.clsRiskFactors.length}件
+                  </p>
+                  <p className="text-xs text-white/30">
+                    {report.coreWebVitals.clsRiskFactors.length === 0
+                      ? "レイアウトシフトのリスク低"
+                      : "レイアウトシフトの可能性"}
+                  </p>
+                </div>
+                <div className="rounded-lg bg-white/[0.03] p-3">
+                  <p className="text-xs text-white/40">LCP候補</p>
+                  <p className="text-lg font-bold text-white/60">
+                    {report.coreWebVitals.lcpCandidate ?? "不明"}
+                  </p>
+                  <p className="text-xs text-white/30">
+                    {report.coreWebVitals.hasFetchPriority
+                      ? "fetchpriority=high 設定済み"
+                      : "fetchpriority=high の追加を推奨"}
+                  </p>
+                </div>
+                <div className="rounded-lg bg-white/[0.03] p-3">
+                  <p className="text-xs text-white/40">インラインCSS</p>
+                  <p className={`text-lg font-bold ${
+                    report.coreWebVitals.inlineCssSize < 10000
+                      ? "text-green-400"
+                      : report.coreWebVitals.inlineCssSize < 50000
+                      ? "text-yellow-400"
+                      : "text-red-400"
+                  }`}>
+                    {report.coreWebVitals.inlineCssSize < 1024
+                      ? `${report.coreWebVitals.inlineCssSize}B`
+                      : `${Math.round(report.coreWebVitals.inlineCssSize / 1024)}KB`}
+                  </p>
+                  <p className="text-xs text-white/30">
+                    {report.coreWebVitals.inlineCssSize < 10000
+                      ? "適切なサイズ"
+                      : "外部CSSへの分離を検討"}
+                  </p>
+                </div>
+              </div>
+              {report.coreWebVitals.clsRiskFactors.length > 0 && (
+                <div className="mt-3 space-y-1">
+                  <p className="text-xs font-medium text-yellow-400/80">CLS リスク詳細:</p>
+                  {report.coreWebVitals.clsRiskFactors.map((factor, i) => (
+                    <p key={i} className="text-xs text-white/40">- {factor}</p>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 

@@ -147,6 +147,15 @@ export type CheckReport = {
   hreflangTags?: string[];
   detectedTech?: string[];
   ogImageAccessible?: boolean;
+  coreWebVitals?: {
+    lcpCandidate?: string; // e.g. "img", "h1", "video"
+    lcpImageCount: number; // above-fold large images without explicit dimensions
+    clsRiskFactors: string[]; // e.g. "images without dimensions", "dynamic content injection"
+    renderBlockingCount: number; // render-blocking CSS/JS
+    inlineCssSize: number; // bytes of inline <style>
+    hasViewportMeta: boolean;
+    hasFetchPriority: boolean; // fetchpriority="high" on LCP image
+  };
 };
 
 export function getGrade(score: number, maxScore: number): CheckReport["grade"] {

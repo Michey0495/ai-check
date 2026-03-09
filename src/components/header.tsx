@@ -16,6 +16,7 @@ const guideLinks = [
 
 const navLinks = [
   { href: "/check", label: "チェック" },
+  { href: "/history", label: "履歴" },
   { href: "/tools", label: "ツール" },
   { href: "/developers", label: "API" },
   { href: "/about", label: "About" },

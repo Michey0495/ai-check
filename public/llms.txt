@@ -20,6 +20,7 @@
 - [5分で始めるGEO対策](https://ai-check.ezoai.jp/guides/quick-start): robots.txt・llms.txt・JSON-LDの3ファイルを設定するだけのクイックスタートガイド
 - [ツール一覧](https://ai-check.ezoai.jp/tools): 全5種の無料GEO対策ツール一覧（llms.txt・robots.txt・JSON-LD・agent.json・バッジ生成）
 - [API / 開発者向け](https://ai-check.ezoai.jp/developers): REST API・MCP Serverリファレンス
+- [チェック履歴](https://ai-check.ezoai.jp/history): 過去のGEOスコアチェック履歴の閲覧・管理
 - [About](https://ai-check.ezoai.jp/about): サービス概要
 - [プライバシーポリシー](https://ai-check.ezoai.jp/privacy): 個人情報の取り扱い・Cookie・GA利用について
 
@@ -61,6 +62,7 @@
 - 多言語対応検出（Content-Languageヘッダー、hreflangタグ）
 - CMS/フレームワーク検出（WordPress, Next.js, Shopify, Nuxt.js, React, Angular, Vue.js, SvelteKit, Hugo, Wix, Squarespace等をHTMLソースとレスポンスヘッダーから自動判定）
 - OG画像アクセス可否検証（og:image URLに対するHEADリクエストで画像が実際にアクセス可能かを検証）
+- Core Web Vitalsヒント（LCP候補検出、CLSリスク要因分析、レンダーブロッキングリソース数、インラインCSSサイズ、fetchpriority検出）
 
 ## API
 - GET /api/check?url=URL: URLのGEOスコアチェック（GETメソッド対応、ブラウザから直接アクセス可）。CORS対応

@@ -19,6 +19,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/history" className="transition-all duration-200 hover:text-white/70 focus:text-white/70 focus:underline focus:outline-none cursor-pointer">
+                  チェック履歴
+                </Link>
+              </li>
+              <li>
                 <Link href="/check/robots-txt" className="transition-all duration-200 hover:text-white/70 focus:text-white/70 focus:underline focus:outline-none cursor-pointer">
                   AIクローラーチェック
                 </Link>

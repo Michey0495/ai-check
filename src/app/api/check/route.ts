@@ -958,6 +958,60 @@ export async function POST(request: NextRequest) {
     const asyncScriptCount = scriptTags.filter((s) => /\basync\b/i.test(s)).length;
     const hasModuleScripts = scriptTags.some((s) => /type=["']module["']/i.test(s));
 
+    // Core Web Vitals hints analysis
+    // LCP candidate detection: look for large images/videos above the fold
+    const heroImgMatch = html.match(/<(?:img|video|source)[^>]*(?:src|srcset)=["']([^"']+)["'][^>]*>/i);
+    const lcpCandidate = heroImgMatch
+      ? (heroImgMatch[0].startsWith("<video") ? "video" : "img")
+      : (/<h1[^>]*>/i.test(html) ? "h1" : undefined);
+
+    // Count images without explicit width/height (CLS risk)
+    const allImgTags = html.match(/<img[^>]*>/gi) ?? [];
+    const imgsWithoutDimensions = allImgTags.filter((tag) => {
+      const hasWidth = /\bwidth\s*=\s*["']?\d/i.test(tag);
+      const hasHeight = /\bheight\s*=\s*["']?\d/i.test(tag);
+      return !hasWidth || !hasHeight;
+    }).length;
+
+    // CLS risk factors
+    const clsRiskFactors: string[] = [];
+    if (imgsWithoutDimensions > 0) {
+      clsRiskFactors.push(`width/height未指定の画像: ${imgsWithoutDimensions}枚`);
+    }
+    // Iframes without dimensions
+    const iframeTags = html.match(/<iframe[^>]*>/gi) ?? [];
+    const iframesWithoutDimensions = iframeTags.filter((tag) => {
+      return !(/\bwidth\s*=\s*["']?\d/i.test(tag) && /\bheight\s*=\s*["']?\d/i.test(tag));
+    }).length;
+    if (iframesWithoutDimensions > 0) {
+      clsRiskFactors.push(`width/height未指定のiframe: ${iframesWithoutDimensions}件`);
+    }
+    // Ads or dynamic injection patterns
+    if (html.includes("googlesyndication") || html.includes("adsbygoogle")) {
+      clsRiskFactors.push("広告スクリプト検出（レイアウトシフトの原因になりやすい）");
+    }
+    // Web fonts without font-display
+    const fontFacesCount = (html.match(/@font-face/gi) ?? []).length;
+    if (fontFacesCount > 0 && !hasFontDisplay) {
+      clsRiskFactors.push(`@font-faceにfont-display未設定（${fontFacesCount}件）`);
+    }
+
+    // Render-blocking resources
+    const renderBlockingCss = (html.match(/<link[^>]*rel=["']stylesheet["'][^>]*>/gi) ?? [])
+      .filter((tag) => !/\bmedia=["']print["']/i.test(tag) && !/\bmedia=["']not all["']/i.test(tag));
+    const renderBlockingJs = scriptTags
+      .filter((s) => !s.includes("application/ld+json") && !s.includes("application/json"))
+      .filter((s) => !/\bdefer\b/i.test(s) && !/\basync\b/i.test(s) && !/type=["']module["']/i.test(s))
+      .filter((s) => /\bsrc=["']/i.test(s)); // only external scripts
+    const renderBlockingCount = renderBlockingCss.length + renderBlockingJs.length;
+
+    // Inline CSS size
+    const inlineStyles = html.match(/<style[^>]*>([\s\S]*?)<\/style>/gi) ?? [];
+    const inlineCssSize = inlineStyles.reduce((sum, s) => sum + new TextEncoder().encode(s).length, 0);
+
+    // fetchpriority="high" on images
+    const hasFetchPriority = allImgTags.some((tag) => /fetchpriority=["']high["']/i.test(tag));
+
     const report: CheckReport = {
       url,
       totalScore,
@@ -1004,6 +1058,15 @@ export async function POST(request: NextRequest) {
       hreflangTags: hreflangTags.length > 0 ? hreflangTags : undefined,
       detectedTech: detectedTech.length > 0 ? detectedTech : undefined,
       ogImageAccessible,
+      coreWebVitals: {
+        lcpCandidate: lcpCandidate,
+        lcpImageCount: imgsWithoutDimensions,
+        clsRiskFactors,
+        renderBlockingCount,
+        inlineCssSize,
+        hasViewportMeta: /<meta[^>]*name=["']viewport["']/i.test(html),
+        hasFetchPriority,
+      },
     };
 
     return NextResponse.json(report, {
