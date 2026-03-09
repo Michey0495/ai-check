@@ -1,6 +1,6 @@
 # QA Report - web-url-a (AI Check)
 
-**Date:** 2026-03-10 (2nd pass)
+**Date:** 2026-03-10 (3rd pass)
 **Status:** PASS
 
 ## Checklist
@@ -8,47 +8,27 @@
 - [x] `npm run build` 成功 (41ページ、エラーなし)
 - [x] `npm run lint` エラーなし
 - [x] レスポンシブ対応（モバイル・デスクトップ） - Tailwind responsive utilities適切に使用
-- [x] favicon, OGP設定 - apple-icon.tsx, icon.tsx, opengraph-image.tsx + 全ページにOpenGraph追加
-- [x] 404ページ - not-found.tsx 実装済み、メタデータ追加済み
+- [x] favicon, OGP設定 - apple-icon.tsx, icon.tsx, opengraph-image.tsx + 全ページにOpenGraph設定
+- [x] 404ページ - not-found.tsx 実装済み、メタデータ設定済み
 - [x] ローディング状態の表示 - loading.tsx 実装済み、aria属性付き
 - [x] エラー状態の表示 - error.tsx, global-error.tsx 実装済み
 
-## 今回修正した問題 (2nd pass)
+## 今回修正した問題 (3rd pass)
 
-### 1. [Medium] loading.tsx アクセシビリティ改善
-- **ファイル:** `src/app/loading.tsx`
-- **問題:** スピナーにrole/aria-label未設定でスクリーンリーダーが認識不可
-- **修正:** `role="status" aria-label="読み込み中"` 追加
+### 1. [Low] llms.txt のNext.jsバージョン記載ミス
+- **ファイル:** `public/llms.txt`
+- **問題:** 技術スタックに「Next.js 15」と記載されていたが、実際は Next.js 16.1.6
+- **修正:** 「Next.js 16」に更新
 
-### 2. [Low] not-found.tsx メタデータ未設定
-- **ファイル:** `src/app/not-found.tsx`
-- **問題:** 404ページにtitle/descriptionメタデータなし
-- **修正:** metadata export追加
+## 前回修正済み (2nd pass)
 
-### 3. [Medium] FAQ accordion aria-controls未設定
-- **ファイル:** `src/components/faq-accordion.tsx`
-- **問題:** ボタンにaria-controls未設定、パネルにid/role未設定
-- **修正:** `aria-controls={faq-panel-${i}}`, `id`, `role="region"` 追加
-
-### 4. [High] generate API ユーザー入力未サニタイズ
-- **ファイル:** `src/app/api/generate/route.ts`
-- **問題:** ユーザー入力が改行インジェクション可能な状態でテキスト出力に含まれていた
-- **修正:** `sanitizeLine()` 関数追加、全入力値に適用
-
-### 5. [Medium] generate API type パラメータ未検証
-- **ファイル:** `src/app/api/generate/route.ts`
-- **問題:** type パラメータの型チェックなし、エラーメッセージで未サニタイズのまま反映
-- **修正:** `typeof type !== "string"` バリデーション追加、エラーメッセージにsanitizeLine適用
-
-### 6. [Medium] 全ジェネレーター入力にmaxLength未設定
-- **ファイル:** 5つのgenerator-client.tsx
-- **問題:** Input/TextareaにmaxLength制限なく、大量データ入力が可能
-- **修正:** 適切なmaxLength制限追加 (Input: 200-2048, Textarea: 1000-5000)
-
-### 7. [Medium] フッターリンクのfocus表示不足
-- **ファイル:** `src/components/footer.tsx`
-- **問題:** `focus:outline-none` のみで視覚的なフォーカス表示なし（キーボードユーザーに影響）
-- **修正:** `focus:underline` 追加
+- loading.tsx アクセシビリティ改善（role/aria-label追加）
+- not-found.tsx メタデータ追加
+- FAQ accordion aria-controls設定
+- generate API ユーザー入力サニタイズ（CRLFインジェクション防止）
+- generate API type パラメータ検証追加
+- 全ジェネレーター入力にmaxLength制限追加
+- フッターリンクのfocus表示改善
 
 ## 前回修正済み (1st pass)
 
@@ -61,18 +41,50 @@
 
 ## 確認済み（問題なし）
 
-- 全21ページにtitle/description/OG/canonical設定済み
-- JSON-LD構造化データ (Organization, WebApplication, FAQ, BreadcrumbList等)
-- robots.txt: AIクローラー許可設定済み
-- llms.txt: サービス概要・API情報記載
+### SEO / Metadata
+- 全ページにtitle/description/OG/canonical設定済み
+- JSON-LD構造化データ (Organization, WebApplication, FAQ, HowTo, BreadcrumbList等)
+- robots.txt: AIクローラー許可設定済み + Sitemapディレクティブ
+- llms.txt: 75行、サービス概要・API情報・チェック指標記載
 - /.well-known/agent.json: A2A Agent Card実装済み
-- sitemap.xml: 42エントリ、優先度・更新頻度設定済み
-- APIレート制限: check(10/min), feedback(5/5min), badge(30/min)
-- URL validation: プロトコルチェック, 2048文字制限, プライベートネットワークブロック
-- skip link: 「メインコンテンツへスキップ」実装済み
-- セマンティックHTML: main/nav/section/article適切に使用
+- sitemap.xml: 32エントリ、優先度・更新頻度・lastmod設定済み
+- metadataBase: https://ai-check.ezoai.jp 設定済み
+- viewport: width=device-width, initialScale=1, maximumScale=5
+
+### UI / Design System
+- 背景色: `bg-black` - OK
+- テキスト: `text-white`, `text-white/70`, `text-white/50` 等 - OK
+- カード: `bg-white/5 border border-white/10` - OK
+- ホバー: `cursor-pointer`, `transition-all duration-200` 全コンポーネント統一
+- フォント: Geist Sans + Geist Mono
+- アイコン: SVGインラインのみ（外部ライブラリ不使用） - OK
+- レスポンシブ: sm:, lg: ブレークポイント適切
+- モバイルナビ: ハンバーガーメニュー + ドロップダウン
+
+### Edge Cases / Security
+- URL入力: maxLength=2048, https://自動付与, URL.parse検証
+- API: URL長さ制限, プロトコル検証, SSRF防止(プライベートIP拒否), レートリミット, ペイロードサイズ制限
+- XSS: dangerouslySetInnerHTMLは全てJSON.stringify経由（安全）
+- CRLFインジェクション: sanitizeLine() でサニタイズ済み
+- CORS: corsHeaders() で適切なヘッダー設定
+
+### Accessibility
+- スキップナビゲーション: layout.tsx に設置済み
+- lang="ja" 設定済み
+- aria-label: フォーム、ボタン、SVGに設定
+- aria-expanded: ドロップダウン、アコーディオンに設定
+- role: status, alert, progressbar, img 適切に使用
+- aria-live="polite": ローディング状態に設定
+- table: aria-label, scope 設定済み
+- focus状態: フッターリンクに focus:underline 設定
+
+### Performance
 - Server Component優先、"use client"は必要箇所のみ
-- localStorage.getItem のJSON.parseは全てtry-catchで保護済み
+- 41ページ中大半がSSG/Static
+- API: Promise.all で並列フェッチ、AbortSignal.timeout(10s)
+- Cache-Control: public, s-maxage=300
+- バンドル: 外部ライブラリ最小限
+- GA: afterInteractive strategy で遅延読み込み
 
 ## 既知の軽微な問題（対応不要）
 

@@ -68,7 +68,7 @@
 GPTBot, ChatGPT-User, ClaudeBot, anthropic-ai, PerplexityBot, Google-Extended, Bytespider, CCBot, Applebot-Extended, cohere-ai
 
 ## 技術スタック
-- Next.js 15, TypeScript, Tailwind CSS, shadcn/ui, Vercel
+- Next.js 16, TypeScript, Tailwind CSS, shadcn/ui, Vercel
 
 ## 連絡先
 - サイト: https://ai-check.ezoai.jp
