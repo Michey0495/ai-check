@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore, useCallback } from "react";
+import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -58,20 +58,20 @@ export function HistoryClient() {
     return new Date(b.checkedAt).getTime() - new Date(a.checkedAt).getTime();
   });
 
-  const clearHistory = useCallback(() => {
+  const clearHistory = () => {
     localStorage.removeItem(HISTORY_KEY);
     window.dispatchEvent(new Event("storage"));
     setConfirmClear(false);
-  }, []);
+  };
 
-  const removeEntry = useCallback(
-    (url: string) => {
-      const updated = entries.filter((e) => e.url !== url);
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
-      window.dispatchEvent(new Event("storage"));
-    },
-    [entries]
-  );
+  const removeEntry = (url: string) => {
+    const current: HistoryEntry[] = JSON.parse(
+      localStorage.getItem(HISTORY_KEY) ?? "[]"
+    );
+    const updated = current.filter((e) => e.url !== url);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
+    window.dispatchEvent(new Event("storage"));
+  };
 
   // Stats
   const avgScore =

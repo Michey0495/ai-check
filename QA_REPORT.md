@@ -1,11 +1,11 @@
 # QA Report - web-url-a (AI Check)
 
-**Date:** 2026-03-10 (6th pass)
+**Date:** 2026-03-10 (7th pass)
 **Status:** PASS
 
 ## Checklist
 
-- [x] `npm run build` 成功 (41ページ、エラーなし)
+- [x] `npm run build` 成功 (42ページ、エラーなし)
 - [x] `npm run lint` エラーなし
 - [x] レスポンシブ対応（モバイル・デスクトップ）
 - [x] favicon, OGP設定 (apple-icon.tsx, icon.tsx, opengraph-image.tsx)
@@ -13,25 +13,19 @@
 - [x] ローディング状態の表示 (loading.tsx)
 - [x] エラー状態の表示 (error.tsx, global-error.tsx)
 
-## 今回修正した問題 (6th pass)
-
-### Accessibility - Form Label Associations
+## 今回修正した問題 (7th pass)
 
 | # | Severity | Issue | File | Fix |
 |---|----------|-------|------|-----|
-| A1 | Medium | JSON-LD generator: 6 labels missing htmlFor/id | json-ld/generator-client.tsx | Added htmlFor + id for schema-type, site-name, url, description, faq, address |
-| A2 | Medium | agent.json generator: 5 labels missing htmlFor/id | agent-json/generator-client.tsx | Added htmlFor + id for name, url, description, capabilities, mcp-endpoint |
-| A3 | Medium | llms.txt generator: 5 labels missing htmlFor/id | llms-txt/generator-client.tsx | Added htmlFor + id for site-name, site-url, description, pages, api-info |
-| A4 | Medium | robots.txt generator: 1 label missing htmlFor/id | robots-txt/generator-client.tsx | Added htmlFor + id for sitemap-url |
-| A5 | Low | Badge generator: style selector lacks ARIA role | badge/generator-client.tsx | Added `role="radiogroup"` + `aria-labelledby` on style button group |
-
-### Other Fixes
-
-| # | Severity | Issue | File | Fix |
-|---|----------|-------|------|-----|
-| O1 | Low | Copyright year hardcoded as 2026 | footer.tsx | Changed to `new Date().getFullYear()` |
+| 1 | High | React Compiler lint errors: `useCallback` + `entries` dependency caused `react-hooks/preserve-manual-memoization` (2 errors, 1 warning) | history-client.tsx | `useCallback` を除去。`removeEntry` は直接 localStorage から読み取るように変更。`clearHistory` も簡素化 |
 
 ## 前回までの修正済み
+
+### 6th pass
+- Form label accessibility (htmlFor/id) for all generator forms
+- Badge generator: radiogroup ARIA role
+- Copyright year dynamic (`new Date().getFullYear()`)
+
 
 ### 5th pass
 - MCP API: CORS headers on all JSON-RPC responses
