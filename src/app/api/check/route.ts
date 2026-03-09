@@ -118,6 +118,12 @@ function checkRobotsTxt(robotsText: string | null, baseUrl: string): CheckResult
   });
   const allowed = aiCrawlers.length - blocked.length;
 
+  // Check for Sitemap directive in robots.txt
+  const hasSitemapDirective = /^Sitemap:\s*https?:\/\//im.test(robotsText);
+  const sitemapNote = hasSitemapDirective
+    ? " Sitemapディレクティブが設定されています。"
+    : " robots.txtにSitemapディレクティブを追加するとクローラーの巡回効率が向上します。";
+
   if (blocked.length === 0) {
     return {
       id: "robots-txt",
@@ -125,7 +131,7 @@ function checkRobotsTxt(robotsText: string | null, baseUrl: string): CheckResult
       maxScore: 15,
       status: "pass",
       message: "AIクローラーアクセス: 全て許可",
-      details: `robots.txtが存在し、主要AIクローラー（${aiCrawlers.join(", ")}）がブロックされていません。`,
+      details: `robots.txtが存在し、主要AIクローラー（${aiCrawlers.join(", ")}）がブロックされていません。${sitemapNote}`,
     };
   } else if (allowed > 0) {
     return {
@@ -217,34 +223,118 @@ function checkLlmsTxt(llmsText: string | null, hostname: string, baseUrl: string
   };
 }
 
+// Required/recommended properties per schema type for validation
+const SCHEMA_REQUIRED_PROPS: Record<string, string[]> = {
+  WebSite: ["name", "url"],
+  WebApplication: ["name", "url"],
+  Organization: ["name"],
+  LocalBusiness: ["name", "address"],
+  Product: ["name"],
+  Article: ["headline", "author"],
+  NewsArticle: ["headline", "author"],
+  BlogPosting: ["headline", "author"],
+  FAQPage: ["mainEntity"],
+  HowTo: ["name", "step"],
+  BreadcrumbList: ["itemListElement"],
+  SoftwareApplication: ["name"],
+  Course: ["name", "provider"],
+  Event: ["name", "startDate"],
+  Recipe: ["name", "recipeIngredient"],
+  VideoObject: ["name", "uploadDate"],
+  Person: ["name"],
+};
+
+function validateJsonLdItem(item: Record<string, unknown>): { type: string; valid: boolean; missing: string[] } {
+  const rawType = item["@type"];
+  const type = Array.isArray(rawType) ? rawType[0] : (typeof rawType === "string" ? rawType : "");
+  if (!type) return { type: "unknown", valid: false, missing: ["@type"] };
+
+  const required = SCHEMA_REQUIRED_PROPS[type];
+  if (!required) return { type, valid: true, missing: [] }; // unknown type, assume valid
+
+  const missing = required.filter((prop) => !item[prop]);
+  return { type, valid: missing.length === 0, missing };
+}
+
 function checkStructuredData(html: string, baseUrl: string): CheckResult {
   const jsonLdMatches = html.match(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi);
   if (jsonLdMatches && jsonLdMatches.length > 0) {
-    // Extract schema types
     const schemaTypes: string[] = [];
+    let validCount = 0;
+    let totalCount = 0;
+    let parseErrors = 0;
+    const missingProps: string[] = [];
+
     for (const match of jsonLdMatches) {
       const content = match.replace(/<script[^>]*>|<\/script>/gi, "");
       try {
         const parsed = JSON.parse(content);
         const items = Array.isArray(parsed) ? parsed : [parsed];
         for (const item of items) {
+          totalCount++;
           if (item["@type"]) {
             const t = Array.isArray(item["@type"]) ? item["@type"].join(", ") : item["@type"];
             schemaTypes.push(t);
+            const validation = validateJsonLdItem(item as Record<string, unknown>);
+            if (validation.valid) {
+              validCount++;
+            } else if (validation.missing.length > 0) {
+              missingProps.push(`${t}: ${validation.missing.join(", ")}が未設定`);
+            }
+          } else {
+            // No @type
+            missingProps.push("@type未設定のJSON-LDあり");
           }
         }
       } catch {
-        // invalid JSON-LD, still count it
+        parseErrors++;
       }
     }
+
+    const hasContext = html.includes('"@context"') && html.includes("schema.org");
     const typesText = schemaTypes.length > 0 ? ` 検出スキーマ: ${schemaTypes.join(", ")}。` : "";
+    const parseErrorText = parseErrors > 0 ? ` ${parseErrors}件のJSON-LDにパースエラーがあります。` : "";
+
+    if (parseErrors > 0 && validCount === 0) {
+      return {
+        id: "structured-data",
+        score: 5,
+        maxScore: 20,
+        status: "warn",
+        message: `構造化データ: JSON-LDにパースエラー`,
+        details: `${jsonLdMatches.length}件のJSON-LDが検出されましたが、JSONとして正しくパースできません。構文を確認してください。`,
+      };
+    }
+
+    if (missingProps.length > 0 && validCount < totalCount) {
+      return {
+        id: "structured-data",
+        score: 15,
+        maxScore: 20,
+        status: "warn",
+        message: `構造化データ: ${jsonLdMatches.length}件検出（一部不完全）`,
+        details: `JSON-LD構造化データが設置されていますが、推奨プロパティが不足しています。${typesText}不足項目: ${missingProps.join("、")}。${parseErrorText}`,
+      };
+    }
+
+    if (!hasContext) {
+      return {
+        id: "structured-data",
+        score: 15,
+        maxScore: 20,
+        status: "warn",
+        message: `構造化データ: ${jsonLdMatches.length}件検出（@context未設定）`,
+        details: `JSON-LDが検出されましたが、@contextにschema.orgが設定されていない可能性があります。${typesText}@context: "https://schema.org" を設定してください。`,
+      };
+    }
+
     return {
       id: "structured-data",
       score: 20,
       maxScore: 20,
       status: "pass",
       message: `構造化データ: ${jsonLdMatches.length}件のJSON-LDを検出`,
-      details: `JSON-LD構造化データが適切に設置されています。${typesText}AI検索エンジンがコンテンツを正確に理解できます。`,
+      details: `JSON-LD構造化データが適切に設置されています。${typesText}AI検索エンジンがコンテンツを正確に理解できます。${parseErrorText}`,
     };
   }
   return {
@@ -639,6 +729,8 @@ export async function POST(request: NextRequest) {
       faviconUrl = faviconUrl.startsWith("/") ? `${baseUrl}${faviconUrl}` : `${baseUrl}/${faviconUrl}`;
     }
 
+    const htmlSizeKB = Math.round((new TextEncoder().encode(html).length) / 1024);
+
     const report: CheckReport = {
       url,
       totalScore,
@@ -650,6 +742,7 @@ export async function POST(request: NextRequest) {
       ogImage: ogImageMatch?.[1] || undefined,
       siteTitle: titleMatch?.[1]?.trim() || undefined,
       favicon: faviconUrl || `${baseUrl}/favicon.ico`,
+      htmlSizeKB,
     };
 
     return NextResponse.json(report, {

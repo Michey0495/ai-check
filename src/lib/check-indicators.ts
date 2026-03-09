@@ -112,6 +112,7 @@ export type CheckReport = {
   ogImage?: string;
   siteTitle?: string;
   favicon?: string;
+  htmlSizeKB?: number;
 };
 
 export function getGrade(score: number, maxScore: number): CheckReport["grade"] {

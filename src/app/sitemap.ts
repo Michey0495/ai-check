@@ -21,6 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/guides/industry`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/guides/quick-start`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${baseUrl}/developers`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${baseUrl}/tools`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${baseUrl}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     { url: `${baseUrl}/privacy`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
     // チェック項目別ページ

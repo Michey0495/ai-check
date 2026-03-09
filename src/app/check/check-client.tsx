@@ -109,12 +109,13 @@ function StatusBadge({ status }: { status: "pass" | "warn" | "fail" }) {
 
 function generateReportText(report: CheckReport): string {
   const pct = Math.round((report.totalScore / report.maxScore) * 100);
+  const htmlSizeText = report.htmlSizeKB != null ? ` | HTML: ${report.htmlSizeKB}KB` : "";
   const lines = [
     `AI Check - GEOスコアレポート`,
     `================================`,
     `URL: ${report.url}`,
     `スコア: ${pct}/100 (グレード: ${report.grade})`,
-    `チェック日時: ${new Date(report.checkedAt).toLocaleString("ja-JP")}`,
+    `チェック日時: ${new Date(report.checkedAt).toLocaleString("ja-JP")}${htmlSizeText}`,
     ``,
     `--- 詳細結果 ---`,
   ];
@@ -609,6 +610,9 @@ export function CheckPageClient() {
               チェック日時: {new Date(report.checkedAt).toLocaleString("ja-JP")}
               {report.responseTimeMs != null && (
                 <span className="ml-2">({(report.responseTimeMs / 1000).toFixed(1)}秒)</span>
+              )}
+              {report.htmlSizeKB != null && (
+                <span className="ml-2">HTML: {report.htmlSizeKB}KB</span>
               )}
             </p>
             <div className="mt-4 flex flex-wrap justify-center gap-3">

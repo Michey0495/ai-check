@@ -52,6 +52,7 @@ http://localhost:3000 で起動。
 | `/for/professional` | 士業向けGEO対策 |
 | `/for/local` | ローカルビジネス向けGEO対策 |
 | `/for/education` | 教育向けGEO対策 |
+| `/tools` | GEO対策ツール一覧（全5ツールの詳細紹介） |
 | `/privacy` | プライバシーポリシー |
 
 ## チェック指標（7項目）
@@ -247,3 +248,12 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - チェック強化: llms.txt品質チェック追加（セクション見出し・URL・API情報の有無を評価、300文字未満または見出しなしでwarn）
 - チェック強化: サイトマップにlastmod設定状況表示を追加（lastmod設定件数・割合を表示）
 - AI公開チャネル: agent.json v1.9.0に更新、llms.txtにチェック指標の詳細説明を追記
+
+### Night 21 (完了)
+- チェック強化: JSON-LD構造化データの必須プロパティ検証追加（17スキーマタイプ対応: WebSite, Product, Article, FAQ, HowTo, Organization, LocalBusiness等）- 不完全なJSON-LDに警告、パースエラー検出
+- チェック強化: robots.txt Sitemapディレクティブ検出追加（Sitemap行の有無を報告、未設定時は追加を推奨）
+- チェック強化: HTMLサイズ（ページ重量）をレポートに追加（htmlSizeKB）
+- コンテンツ: GEO対策ツール一覧ページ追加（/tools）- 全5ツールの詳細説明・ユースケース・機能リスト、CollectionPage構造化データ付き
+- ナビゲーション: ヘッダー「生成ツール」→「ツール」に変更（/toolsへリンク）、フッターにツール一覧リンク追加
+- SEO: sitemap.xml, llms.txt, agent.json v2.0.0にツール一覧ページ追記
+- UX: チェック結果にHTMLサイズ表示追加

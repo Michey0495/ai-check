@@ -39,6 +39,11 @@ export function Footer() {
             <h3 className="mb-3 text-sm font-semibold text-white">生成ツール</h3>
             <ul className="space-y-2 text-sm text-white/50">
               <li>
+                <Link href="/tools" className="transition-all duration-200 hover:text-white/70 focus:text-white/70 focus:outline-none cursor-pointer font-medium text-white/60">
+                  ツール一覧
+                </Link>
+              </li>
+              <li>
                 <Link href="/generate/llms-txt" className="transition-all duration-200 hover:text-white/70 focus:text-white/70 focus:outline-none cursor-pointer">
                   llms.txt 生成
                 </Link>
