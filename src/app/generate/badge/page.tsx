@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   description:
     "GEOスコアバッジを生成してREADMEやWebサイトに埋め込み。リアルタイムでAI検索対応度スコアを表示するSVGバッジ。",
   alternates: { canonical: "https://ai-check.ezoai.jp/generate/badge" },
+  openGraph: {
+    title: "GEOスコアバッジ生成 - サイトにスコアを埋め込む",
+    description: "GEOスコアバッジを生成してREADMEやWebサイトに埋め込み。リアルタイムでAI検索対応度スコアを表示するSVGバッジ。",
+    url: "https://ai-check.ezoai.jp/generate/badge",
+  },
 };
 
 const breadcrumbJsonLd = {

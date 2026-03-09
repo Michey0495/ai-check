@@ -6,6 +6,11 @@ export const metadata: Metadata = {
   description:
     "AI Checkは、WebサイトのAI検索対応度をチェックし、改善コードを自動生成する無料ツールです。",
   alternates: { canonical: "https://ai-check.ezoai.jp/about" },
+  openGraph: {
+    title: "AI Checkについて",
+    description: "AI Checkは、WebサイトのAI検索対応度をチェックし、改善コードを自動生成する無料ツールです。",
+    url: "https://ai-check.ezoai.jp/about",
+  },
 };
 
 const breadcrumbJsonLd = {

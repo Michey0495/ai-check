@@ -6,6 +6,11 @@ export const metadata: Metadata = {
   description:
     "AI向けサイト説明ファイル（llms.txt）をフォーム入力だけで自動生成。AI検索エンジンにサイト情報を正しく伝える第一歩。",
   alternates: { canonical: "https://ai-check.ezoai.jp/generate/llms-txt" },
+  openGraph: {
+    title: "llms.txt 生成ツール",
+    description: "AI向けサイト説明ファイル（llms.txt）をフォーム入力だけで自動生成。AI検索エンジンにサイト情報を正しく伝える第一歩。",
+    url: "https://ai-check.ezoai.jp/generate/llms-txt",
+  },
 };
 
 const breadcrumbJsonLd = {

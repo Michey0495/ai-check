@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   description:
     "GEO対策・AI検索最適化に関する用語集。llms.txt、robots.txt、JSON-LD、A2A Agent Card、MCP Server等のキーワードを分かりやすく解説。",
   alternates: { canonical: "https://ai-check.ezoai.jp/guides/glossary" },
+  openGraph: {
+    title: "GEO・AI検索 用語集",
+    description: "GEO対策・AI検索最適化に関する用語集。llms.txt、robots.txt、JSON-LD、A2A Agent Card、MCP Server等のキーワードを分かりやすく解説。",
+    url: "https://ai-check.ezoai.jp/guides/glossary",
+  },
 };
 
 const breadcrumbJsonLd = {

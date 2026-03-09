@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid feedback type" }, { status: 400 });
   }
 
-  if (!message?.trim()) {
+  if (typeof message !== "string" || !message.trim()) {
     return NextResponse.json({ error: "Message required" }, { status: 400 });
   }
 
@@ -54,9 +54,7 @@ export async function POST(request: NextRequest) {
   }
 
   const ALLOWED_REPOS = ["web-url-a"];
-  if (repo && (!ALLOWED_REPOS.includes(repo) || !/^[a-zA-Z0-9_.-]+$/.test(repo))) {
-    return NextResponse.json({ error: "Invalid repo name" }, { status: 400 });
-  }
+  const targetRepo = typeof repo === "string" && ALLOWED_REPOS.includes(repo) ? repo : "web-url-a";
 
   const labels: Record<string, string> = {
     bug: "bug",
@@ -72,7 +70,7 @@ export async function POST(request: NextRequest) {
 
   if (token) {
     try {
-      await fetch(`https://api.github.com/repos/Michey0495/${repo}/issues`, {
+      const res = await fetch(`https://api.github.com/repos/Michey0495/${targetRepo}/issues`, {
         method: "POST",
         headers: {
           Authorization: `token ${token}`,
@@ -84,8 +82,13 @@ export async function POST(request: NextRequest) {
           labels: [labels[type] || "feedback"],
         }),
       });
+      if (!res.ok) {
+        console.error("GitHub issue creation failed:", res.status);
+        return NextResponse.json({ error: "フィードバックの送信に失敗しました" }, { status: 502 });
+      }
     } catch (e) {
       console.error("Failed to create GitHub issue:", e);
+      return NextResponse.json({ error: "フィードバックの送信に失敗しました" }, { status: 502 });
     }
   }
 

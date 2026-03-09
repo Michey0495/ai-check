@@ -6,6 +6,11 @@ export const metadata: Metadata = {
   description:
     "ECサイト、SaaS、メディア、士業・コンサルなど業界別のGEO対策（AI検索最適化）を解説。ChatGPT・Perplexityで引用されるための業界固有の施策と構造化データの使い分けを紹介。",
   alternates: { canonical: "https://ai-check.ezoai.jp/guides/industry" },
+  openGraph: {
+    title: "業界別GEO対策ガイド - EC・SaaS・メディア・士業のAI検索最適化",
+    description: "ECサイト、SaaS、メディア、士業・コンサルなど業界別のGEO対策（AI検索最適化）を解説。ChatGPT・Perplexityで引用されるための業界固有の施策を紹介。",
+    url: "https://ai-check.ezoai.jp/guides/industry",
+  },
   keywords: [
     "ECサイト GEO対策",
     "SaaS AI検索対策",

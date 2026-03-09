@@ -6,6 +6,11 @@ export const metadata: Metadata = {
   description:
     "AI Check REST API・MCP Serverの使い方。GEOスコアチェック、llms.txt生成、robots.txt生成、JSON-LD生成、agent.json生成のAPIリファレンス。",
   alternates: { canonical: "https://ai-check.ezoai.jp/developers" },
+  openGraph: {
+    title: "API / 開発者向けドキュメント",
+    description: "AI Check REST API・MCP Serverの使い方。GEOスコアチェック、llms.txt生成、robots.txt生成、JSON-LD生成、agent.json生成のAPIリファレンス。",
+    url: "https://ai-check.ezoai.jp/developers",
+  },
 };
 
 const breadcrumbJsonLd = {

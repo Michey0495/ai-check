@@ -6,6 +6,11 @@ export const metadata: Metadata = {
   description:
     "Schema.org準拠のJSON-LD構造化データをフォーム入力だけで自動生成。WebSite, Organization, FAQPage等に対応。",
   alternates: { canonical: "https://ai-check.ezoai.jp/generate/json-ld" },
+  openGraph: {
+    title: "JSON-LD 構造化データ生成ツール",
+    description: "Schema.org準拠のJSON-LD構造化データをフォーム入力だけで自動生成。WebSite, Organization, FAQPage等に対応。",
+    url: "https://ai-check.ezoai.jp/generate/json-ld",
+  },
 };
 
 const breadcrumbJsonLd = {

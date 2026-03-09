@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   description:
     "GEO（AI検索最適化）とSEO（検索エンジン最適化）の違いを徹底比較。ChatGPT・Perplexity時代に必要な対策と、SEOとの両立方法を解説。",
   alternates: { canonical: "https://ai-check.ezoai.jp/guides/geo-vs-seo" },
+  openGraph: {
+    title: "GEO対策 vs SEO対策 - 違いと両立する方法",
+    description: "GEO（AI検索最適化）とSEO（検索エンジン最適化）の違いを徹底比較。ChatGPT・Perplexity時代に必要な対策と、SEOとの両立方法を解説。",
+    url: "https://ai-check.ezoai.jp/guides/geo-vs-seo",
+  },
 };
 
 const breadcrumbJsonLd = {

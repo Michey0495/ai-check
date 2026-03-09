@@ -6,6 +6,11 @@ export const metadata: Metadata = {
   description:
     "llms.txtの書き方を完全解説。AI検索エンジンやLLMにサイト情報を伝えるためのフォーマット、記載項目、設置方法を紹介。",
   alternates: { canonical: "https://ai-check.ezoai.jp/guides/llms-txt" },
+  openGraph: {
+    title: "llms.txt書き方ガイド",
+    description: "llms.txtの書き方を完全解説。AI検索エンジンやLLMにサイト情報を伝えるためのフォーマット、記載項目、設置方法を紹介。",
+    url: "https://ai-check.ezoai.jp/guides/llms-txt",
+  },
 };
 
 const breadcrumbJsonLd = {

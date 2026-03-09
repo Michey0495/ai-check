@@ -6,6 +6,11 @@ export const metadata: Metadata = {
   description:
     "AI Checkのプライバシーポリシー。個人情報の取り扱い、Cookie、Google Analyticsの利用について。",
   alternates: { canonical: "https://ai-check.ezoai.jp/privacy" },
+  openGraph: {
+    title: "プライバシーポリシー",
+    description: "AI Checkのプライバシーポリシー。個人情報の取り扱い、Cookie、Google Analyticsの利用について。",
+    url: "https://ai-check.ezoai.jp/privacy",
+  },
 };
 
 const breadcrumbJsonLd = {

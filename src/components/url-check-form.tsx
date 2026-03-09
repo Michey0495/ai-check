@@ -16,6 +16,11 @@ export function UrlCheckForm({ size = "lg" }: { size?: "lg" | "sm" }) {
     if (!/^https?:\/\//i.test(normalized)) {
       normalized = "https://" + normalized;
     }
+    try {
+      new URL(normalized);
+    } catch {
+      return;
+    }
     router.push(`/check?url=${encodeURIComponent(normalized)}`);
   }
 

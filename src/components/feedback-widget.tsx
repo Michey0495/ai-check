@@ -13,11 +13,15 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
     if (!message.trim()) return;
     setSubmitError(false);
     try {
-      await fetch("/api/feedback", {
+      const res = await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type, message, repo: repoName }),
       });
+      if (!res.ok) {
+        setSubmitError(true);
+        return;
+      }
       setSent(true);
       setTimeout(() => {
         setOpen(false);
