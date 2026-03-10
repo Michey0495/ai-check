@@ -2,7 +2,8 @@
   "name": "AI Check",
   "description": "WebサイトのAI検索対応度をチェックし、llms.txt・robots.txt・JSON-LD構造化データ・agent.jsonを自動生成するツール",
   "url": "https://ai-check.ezoai.jp",
-  "version": "2.9.0",
+  "version": "3.0.0",
+  "dateUpdated": "2026-03-11",
   "capabilities": [
     "GEOスコアチェック（7指標 + llms-full.txt検出 + スキーマタイプ識別 + noindex検出）",
     "AIクローラー検出（GPTBot, ChatGPT-User, ClaudeBot, anthropic-ai, PerplexityBot, Google-Extended, Bytespider, CCBot, Applebot-Extended, cohere-ai）",
@@ -54,7 +55,10 @@
     "バッチチェックAPI（最大10件のURLを一括チェック）",
     "コンテンツ圧縮検出（gzip/brotli/deflate）",
     "Serverヘッダー検出",
-    "印刷/PDF対応レポート出力"
+    "印刷/PDF対応レポート出力",
+    "構造化APIエラーコード（RATE_LIMITED, SSRF_BLOCKED, SITE_UNREACHABLE等11種）",
+    "バッジ埋め込みコードクイックコピー（Markdown/HTML）",
+    "開発者向けエラーコードリファレンス"
   ],
   "endpoints": {
     "mcp": "https://ai-check.ezoai.jp/api/mcp",

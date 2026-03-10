@@ -80,6 +80,9 @@ export const metadata: Metadata = {
     "AI検索 引用されない",
     "llms.txt 自動生成",
     "AI検索 対策ツール 無料",
+    "SearchGPT 対策",
+    "AI検索 表示されない",
+    "GEO対策 初心者",
   ],
   openGraph: {
     title: "AI Check - AI検索対応度チェッカー & GEO対策ツール",

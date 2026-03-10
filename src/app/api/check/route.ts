@@ -659,7 +659,7 @@ export async function GET(request: NextRequest) {
   const url = request.nextUrl.searchParams.get("url");
   if (!url) {
     return NextResponse.json(
-      { error: "urlクエリパラメータを指定してください。例: /api/check?url=https://example.com" },
+      { error: "urlクエリパラメータを指定してください。例: /api/check?url=https://example.com", errorCode: "MISSING_URL" },
       { status: 400, headers: corsHeaders() }
     );
   }
@@ -677,7 +677,7 @@ export async function POST(request: NextRequest) {
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
     if (!checkRateLimit(ip)) {
       return NextResponse.json(
-        { error: "リクエスト数が上限を超えました。しばらく待ってから再度お試しください。" },
+        { error: "リクエスト数が上限を超えました。しばらく待ってから再度お試しください。", errorCode: "RATE_LIMITED" },
         { status: 429, headers: corsHeaders() }
       );
     }
@@ -687,7 +687,7 @@ export async function POST(request: NextRequest) {
       body = await request.json();
     } catch {
       return NextResponse.json(
-        { error: "リクエストボディが不正です。JSON形式で送信してください。" },
+        { error: "リクエストボディが不正です。JSON形式で送信してください。", errorCode: "INVALID_BODY" },
         { status: 400, headers: corsHeaders() }
       );
     }
@@ -695,26 +695,26 @@ export async function POST(request: NextRequest) {
     const { url } = body;
 
     if (!url || typeof url !== "string" || !url.trim()) {
-      return NextResponse.json({ error: "URLを入力してください。" }, { status: 400, headers: corsHeaders() });
+      return NextResponse.json({ error: "URLを入力してください。", errorCode: "MISSING_URL" }, { status: 400, headers: corsHeaders() });
     }
 
     if (url.length > 2048) {
-      return NextResponse.json({ error: "URLが長すぎます。2048文字以内にしてください。" }, { status: 400, headers: corsHeaders() });
+      return NextResponse.json({ error: "URLが長すぎます。2048文字以内にしてください。", errorCode: "URL_TOO_LONG" }, { status: 400, headers: corsHeaders() });
     }
 
     let parsedUrl: URL;
     try {
       parsedUrl = new URL(url);
     } catch {
-      return NextResponse.json({ error: "有効なURLを入力してください。" }, { status: 400, headers: corsHeaders() });
+      return NextResponse.json({ error: "有効なURLを入力してください。", errorCode: "INVALID_URL" }, { status: 400, headers: corsHeaders() });
     }
 
     if (!["http:", "https:"].includes(parsedUrl.protocol)) {
-      return NextResponse.json({ error: "http または https のURLを入力してください。" }, { status: 400, headers: corsHeaders() });
+      return NextResponse.json({ error: "http または https のURLを入力してください。", errorCode: "INVALID_PROTOCOL" }, { status: 400, headers: corsHeaders() });
     }
 
     if (isPrivateHostname(parsedUrl.hostname)) {
-      return NextResponse.json({ error: "プライベートネットワークのURLはチェックできません。" }, { status: 400, headers: corsHeaders() });
+      return NextResponse.json({ error: "プライベートネットワークのURLはチェックできません。", errorCode: "SSRF_BLOCKED" }, { status: 400, headers: corsHeaders() });
     }
 
     const baseUrl = parsedUrl.origin;
@@ -734,7 +734,7 @@ export async function POST(request: NextRequest) {
     // If main page is unreachable, return a clear error
     if (!pageRes.ok && pageRes.text === "") {
       return NextResponse.json(
-        { error: "対象サイトに接続できませんでした。URLが正しいか、サイトが稼働中かご確認ください。" },
+        { error: "対象サイトに接続できませんでした。URLが正しいか、サイトが稼働中かご確認ください。", errorCode: "SITE_UNREACHABLE" },
         { status: 422, headers: corsHeaders() }
       );
     }
@@ -1129,7 +1129,7 @@ export async function POST(request: NextRequest) {
     });
   } catch {
     return NextResponse.json(
-      { error: "チェック中にエラーが発生しました。" },
+      { error: "チェック中にエラーが発生しました。", errorCode: "INTERNAL_ERROR" },
       { status: 500, headers: corsHeaders() }
     );
   }

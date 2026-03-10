@@ -305,6 +305,57 @@ curl -X POST https://ai-check.ezoai.jp/api/mcp \\
           </div>
         </section>
 
+        {/* Error Codes */}
+        <section>
+          <h2 className="mb-6 text-2xl font-bold text-white">
+            エラーコード
+          </h2>
+          <p className="mb-4 text-sm text-white/60">
+            APIエラーレスポンスには <code className="rounded bg-white/10 px-1.5 py-0.5 text-white/80">errorCode</code> フィールドが含まれます。プログラムでのエラーハンドリングに活用できます。
+          </p>
+          <div className="overflow-x-auto rounded-lg border border-white/10">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-white/10 bg-white/5">
+                  <th className="px-4 py-3 text-left font-semibold text-white/80">errorCode</th>
+                  <th className="px-4 py-3 text-left font-semibold text-white/80">HTTP</th>
+                  <th className="px-4 py-3 text-left font-semibold text-white/80">説明</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {[
+                  { code: "MISSING_URL", status: "400", desc: "URLが指定されていない" },
+                  { code: "INVALID_URL", status: "400", desc: "URLの形式が不正" },
+                  { code: "URL_TOO_LONG", status: "400", desc: "URLが2048文字を超過" },
+                  { code: "INVALID_PROTOCOL", status: "400", desc: "http/https以外のプロトコル" },
+                  { code: "INVALID_BODY", status: "400", desc: "リクエストボディがJSON形式でない" },
+                  { code: "SSRF_BLOCKED", status: "400", desc: "プライベートネットワークへのアクセス" },
+                  { code: "RATE_LIMITED", status: "429", desc: "レート制限超過（10リクエスト/分）" },
+                  { code: "SITE_UNREACHABLE", status: "422", desc: "対象サイトに接続できない" },
+                  { code: "MISSING_URLS", status: "400", desc: "バッチAPI: urls配列が未指定" },
+                  { code: "BATCH_LIMIT_EXCEEDED", status: "400", desc: "バッチAPI: 10件超過" },
+                  { code: "INTERNAL_ERROR", status: "500", desc: "サーバー内部エラー" },
+                ].map((err) => (
+                  <tr key={err.code}>
+                    <td className="px-4 py-2">
+                      <code className="text-xs text-primary">{err.code}</code>
+                    </td>
+                    <td className="px-4 py-2 text-white/50">{err.status}</td>
+                    <td className="px-4 py-2 text-white/60">{err.desc}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <pre className="mt-4 overflow-x-auto rounded-lg bg-black/50 border border-white/10 p-4 text-xs leading-relaxed text-white/70">
+{`// エラーレスポンス例
+{
+  "error": "リクエスト数が上限を超えました。",
+  "errorCode": "RATE_LIMITED"
+}`}
+          </pre>
+        </section>
+
         {/* AI Public Channels */}
         <section>
           <h2 className="mb-6 text-2xl font-bold text-white">

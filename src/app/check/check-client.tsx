@@ -662,6 +662,7 @@ export function CheckPageClient() {
   const [copied, setCopied] = useState(false);
   const [urlCopied, setUrlCopied] = useState(false);
   const [recheckKey, setRecheckKey] = useState(0);
+  const [badgeCopied, setBadgeCopied] = useState("");
   const [prevScore, setPrevScore] = useState<number | undefined>(undefined);
 
   useEffect(() => {
@@ -1470,22 +1471,35 @@ export function CheckPageClient() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="rounded-lg border border-white/10 bg-white/5 p-6">
               <h2 className="mb-2 text-lg font-semibold text-white">GEOスコアバッジ</h2>
-              <p className="mb-4 text-sm text-white/50">
+              <p className="mb-3 text-sm text-white/50">
                 このスコアをREADMEやサイトに埋め込めます。
               </p>
-              <div className="flex items-center gap-4">
+              <div className="mb-3 flex items-center gap-4">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={`/api/badge?url=${encodeURIComponent(report.url)}&style=flat`}
                   alt="GEO Score Badge"
                   className="h-5"
                 />
-                <Link
-                  href={`/generate/badge?url=${encodeURIComponent(report.url)}`}
-                  className="cursor-pointer text-sm text-primary/70 transition-all duration-200 hover:text-primary"
-                >
-                  埋め込みコードを取得 →
-                </Link>
+              </div>
+              <div className="space-y-2">
+                {[
+                  { label: "Markdown", key: "md", code: `[![GEO Score](https://ai-check.ezoai.jp/api/badge?url=${encodeURIComponent(report.url)})](https://ai-check.ezoai.jp/check?url=${encodeURIComponent(report.url)})` },
+                  { label: "HTML", key: "html", code: `<a href="https://ai-check.ezoai.jp/check?url=${encodeURIComponent(report.url)}"><img src="https://ai-check.ezoai.jp/api/badge?url=${encodeURIComponent(report.url)}" alt="GEO Score" /></a>` },
+                ].map((item) => (
+                  <button
+                    key={item.key}
+                    className="flex w-full cursor-pointer items-center justify-between rounded bg-black/30 px-3 py-2 text-left text-xs transition-all duration-200 hover:bg-black/50"
+                    onClick={() => {
+                      navigator.clipboard.writeText(item.code).catch(() => {});
+                      setBadgeCopied(item.key);
+                      setTimeout(() => setBadgeCopied(""), 2000);
+                    }}
+                  >
+                    <span className="text-white/40">{item.label}</span>
+                    <span className="text-white/60">{badgeCopied === item.key ? "コピー済み" : "コピー"}</span>
+                  </button>
+                ))}
               </div>
             </div>
             <Link

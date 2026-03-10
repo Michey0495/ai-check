@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
       body = await request.json();
     } catch {
       return NextResponse.json(
-        { error: "リクエストボディが不正です。JSON形式で送信してください。" },
+        { error: "リクエストボディが不正です。JSON形式で送信してください。", errorCode: "INVALID_BODY" },
         { status: 400, headers: corsHeaders() }
       );
     }
@@ -25,14 +25,14 @@ export async function POST(request: NextRequest) {
 
     if (!urls || !Array.isArray(urls) || urls.length === 0) {
       return NextResponse.json(
-        { error: "urlsフィールドに1つ以上のURLを配列で指定してください。" },
+        { error: "urlsフィールドに1つ以上のURLを配列で指定してください。", errorCode: "MISSING_URLS" },
         { status: 400, headers: corsHeaders() }
       );
     }
 
     if (urls.length > BATCH_MAX) {
       return NextResponse.json(
-        { error: `一度にチェックできるURLは最大${BATCH_MAX}件です。` },
+        { error: `一度にチェックできるURLは最大${BATCH_MAX}件です。`, errorCode: "BATCH_LIMIT_EXCEEDED" },
         { status: 400, headers: corsHeaders() }
       );
     }
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     for (const url of urls) {
       if (typeof url !== "string" || !url.trim()) {
         return NextResponse.json(
-          { error: `無効なURLが含まれています: ${url}` },
+          { error: `無効なURLが含まれています: ${url}`, errorCode: "INVALID_URL" },
           { status: 400, headers: corsHeaders() }
         );
       }
@@ -49,13 +49,13 @@ export async function POST(request: NextRequest) {
         const parsed = new URL(url);
         if (!["http:", "https:"].includes(parsed.protocol)) {
           return NextResponse.json(
-            { error: `http/httpsのURLを指定してください: ${url}` },
+            { error: `http/httpsのURLを指定してください: ${url}`, errorCode: "INVALID_PROTOCOL" },
             { status: 400, headers: corsHeaders() }
           );
         }
       } catch {
         return NextResponse.json(
-          { error: `有効なURLを指定してください: ${url}` },
+          { error: `有効なURLを指定してください: ${url}`, errorCode: "INVALID_URL" },
           { status: 400, headers: corsHeaders() }
         );
       }
@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
     );
   } catch {
     return NextResponse.json(
-      { error: "バッチチェック中にエラーが発生しました。" },
+      { error: "バッチチェック中にエラーが発生しました。", errorCode: "INTERNAL_ERROR" },
       { status: 500, headers: corsHeaders() }
     );
   }
