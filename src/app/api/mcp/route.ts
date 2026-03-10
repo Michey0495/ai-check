@@ -99,6 +99,10 @@ const TOOLS = [
   },
 ];
 
+function sanitizeLine(str: string): string {
+  return str.replace(/[\r\n]/g, " ").trim();
+}
+
 function jsonRpcResponse(data: object, status = 200) {
   return NextResponse.json(data, { status, headers: corsHeaders() });
 }
@@ -163,19 +167,19 @@ export async function POST(request: NextRequest) {
 
         if (toolName === "generate_llms_txt") {
           const lines: string[] = [];
-          lines.push(`# ${args.siteName}`);
+          lines.push(`# ${sanitizeLine(args.siteName ?? "")}`);
           lines.push("");
           if (args.description) {
-            lines.push(`> ${args.description}`);
+            lines.push(`> ${sanitizeLine(args.description)}`);
             lines.push("");
           }
           if (args.pages?.length) {
             lines.push("## 主要ページ");
-            args.pages.forEach((p: string) => lines.push(`- ${p}`));
+            args.pages.forEach((p: string) => lines.push(`- ${sanitizeLine(p)}`));
             lines.push("");
           }
           lines.push("## 連絡先");
-          lines.push(`- サイト: ${args.siteUrl}`);
+          lines.push(`- サイト: ${sanitizeLine(args.siteUrl ?? "")}`);
 
           return jsonRpcResponse({
             jsonrpc: "2.0",
@@ -193,12 +197,12 @@ export async function POST(request: NextRequest) {
           ];
           const lines: string[] = ["User-agent: *", "Allow: /", ""];
           crawlers.forEach((c: string) => {
-            lines.push(`User-agent: ${c}`);
+            lines.push(`User-agent: ${sanitizeLine(c)}`);
             lines.push("Allow: /");
             lines.push("");
           });
           if (args.sitemapUrl) {
-            lines.push(`Sitemap: ${args.sitemapUrl}`);
+            lines.push(`Sitemap: ${sanitizeLine(args.sitemapUrl)}`);
           }
 
           return jsonRpcResponse({
@@ -209,7 +213,15 @@ export async function POST(request: NextRequest) {
         }
 
         if (toolName === "generate_json_ld") {
+          const validTypes = ["WebSite", "Organization", "FAQPage", "HowTo", "Product", "Article"];
           const schemaType = args.type;
+          if (!validTypes.includes(schemaType)) {
+            return jsonRpcResponse({
+              jsonrpc: "2.0",
+              error: { code: -32602, message: `Invalid schema type: ${schemaType}. Must be one of: ${validTypes.join(", ")}` },
+              id,
+            });
+          }
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           let jsonLd: Record<string, any> = {
             "@context": "https://schema.org",
@@ -225,18 +237,22 @@ export async function POST(request: NextRequest) {
           const extra = args.data ?? {};
 
           if (schemaType === "FAQPage" && Array.isArray(extra.questions)) {
-            jsonLd.mainEntity = extra.questions.map((q: { question: string; answer: string }) => ({
-              "@type": "Question",
-              name: q.question,
-              acceptedAnswer: { "@type": "Answer", text: q.answer },
-            }));
+            jsonLd.mainEntity = extra.questions
+              .filter((q: { question?: string; answer?: string }) => q.question && q.answer)
+              .map((q: { question: string; answer: string }) => ({
+                "@type": "Question",
+                name: q.question,
+                acceptedAnswer: { "@type": "Answer", text: q.answer },
+              }));
           } else if (schemaType === "HowTo" && Array.isArray(extra.steps)) {
-            jsonLd.step = extra.steps.map((s: { name: string; text: string }, i: number) => ({
-              "@type": "HowToStep",
-              position: i + 1,
-              name: s.name,
-              text: s.text,
-            }));
+            jsonLd.step = extra.steps
+              .filter((s: { name?: string; text?: string }) => s.name && s.text)
+              .map((s: { name: string; text: string }, i: number) => ({
+                "@type": "HowToStep",
+                position: i + 1,
+                name: s.name,
+                text: s.text,
+              }));
           } else if (schemaType === "Organization") {
             if (extra.logo) jsonLd.logo = extra.logo;
             if (extra.sameAs) jsonLd.sameAs = extra.sameAs;

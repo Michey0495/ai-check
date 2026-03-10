@@ -56,13 +56,15 @@ export function JsonLdGenerator() {
             .split(/\r?\n/)
             .filter((l) => l.includes("|"))
             .map((l) => {
-              const [q, a] = l.split("|").map((s) => s.trim());
-              return {
-                "@type": "Question",
-                name: q,
-                acceptedAnswer: { "@type": "Answer", text: a },
-              };
-            }),
+              const parts = l.split("|").map((s) => s.trim());
+              return { q: parts[0], a: parts[1] };
+            })
+            .filter(({ q, a }) => q && a)
+            .map(({ q, a }) => ({
+              "@type": "Question",
+              name: q,
+              acceptedAnswer: { "@type": "Answer", text: a },
+            })),
         };
         break;
       case "Article":

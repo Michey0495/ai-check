@@ -37,7 +37,11 @@ export function BadgeGenerator() {
 
   function handleCopy(type: "md" | "html" | "url") {
     if (!badgeUrl) return;
-    const checkUrl = `https://ai-check.ezoai.jp/check?url=${encodeURIComponent(url.trim())}`;
+    let normalized = url.trim();
+    if (!/^https?:\/\//.test(normalized)) {
+      normalized = "https://" + normalized;
+    }
+    const checkUrl = `https://ai-check.ezoai.jp/check?url=${encodeURIComponent(normalized)}`;
     let text = "";
     if (type === "url") {
       text = badgeUrl;

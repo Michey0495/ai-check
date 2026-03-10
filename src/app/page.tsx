@@ -172,7 +172,7 @@ export default function Home() {
         <p className="mt-4 text-sm text-white/40">
           無料 / 登録不要 / 30秒で結果表示
         </p>
-        <div className="mx-auto mt-12 grid max-w-3xl grid-cols-3 gap-4">
+        <div className="mx-auto mt-12 grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3">
           {[
             { stat: "25%", label: "AI検索の市場シェア（2026年）" },
             { stat: "89%", label: "AI検索に未対応のWebサイト" },
@@ -231,7 +231,7 @@ export default function Home() {
             </div>
           ))}
           <div className="flex items-center justify-center rounded-lg border border-dashed border-white/10 p-6">
-            <p className="text-center text-sm text-white/30">
+            <p className="text-center text-sm text-white/40">
               各指標は重み付けスコアで
               <br />
               総合GEOスコアを算出
@@ -396,8 +396,8 @@ export default function Home() {
               ].map((row) => (
                 <tr key={row.feature} className="border-b border-white/5">
                   <td className="px-4 py-3">{row.feature}</td>
-                  <td className={`px-4 py-3 text-center ${row.a ? "text-white/60" : "text-white/20"}`} aria-label={row.a ? "対応" : "未対応"}>{row.a ? "\u2713" : "\u2015"}</td>
-                  <td className={`px-4 py-3 text-center ${row.b ? "text-white/60" : "text-white/20"}`} aria-label={row.b ? "対応" : "未対応"}>{row.b ? "\u2713" : "\u2015"}</td>
+                  <td className={`px-4 py-3 text-center ${row.a ? "text-white/60" : "text-white/40"}`} aria-label={row.a ? "対応" : "未対応"}>{row.a ? "\u2713" : "\u2015"}</td>
+                  <td className={`px-4 py-3 text-center ${row.b ? "text-white/60" : "text-white/40"}`} aria-label={row.b ? "対応" : "未対応"}>{row.b ? "\u2713" : "\u2015"}</td>
                   <td className="px-4 py-3 text-center text-primary" aria-label={row.us ? "対応" : "未対応"}>{row.us ? "\u2713" : "\u2015"}</td>
                 </tr>
               ))}

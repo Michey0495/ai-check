@@ -66,14 +66,14 @@ function ScoreTrendChart({ entries }: { entries: HistoryEntry[] }) {
   return (
     <div className="mb-8 rounded-lg border border-white/10 bg-white/5 p-4">
       <p className="mb-3 text-sm text-white/50">スコア推移</p>
-      <svg viewBox={`0 0 ${w} ${h}`} className="w-full" preserveAspectRatio="xMidYMid meet">
+      <svg viewBox={`0 0 ${w} ${h}`} className="w-full" preserveAspectRatio="xMidYMid meet" role="img" aria-label="GEOスコア推移チャート">
         {/* Grid */}
         {gridLines.map((v) => {
           const y = py + chartH - ((v - minScore) / range) * chartH;
           return (
             <g key={v}>
               <line x1={px} y1={y} x2={w - px} y2={y} stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
-              <text x={px - 6} y={y} fill="rgba(255,255,255,0.3)" fontSize="10" textAnchor="end" dominantBaseline="middle">
+              <text x={px - 6} y={y} fill="rgba(255,255,255,0.5)" fontSize="10" textAnchor="end" dominantBaseline="middle">
                 {v}
               </text>
             </g>
@@ -105,7 +105,7 @@ function ScoreTrendChart({ entries }: { entries: HistoryEntry[] }) {
         {points
           .filter((_, i) => i === 0 || i === points.length - 1 || (points.length > 6 && i === Math.floor(points.length / 2)))
           .map((p, i) => (
-            <text key={i} x={p.x} y={h - 2} fill="rgba(255,255,255,0.25)" fontSize="8" textAnchor="middle">
+            <text key={i} x={p.x} y={h - 2} fill="rgba(255,255,255,0.5)" fontSize="8" textAnchor="middle">
               {new Date(p.date).toLocaleDateString("ja-JP", { month: "short", day: "numeric" })}
             </text>
           ))}

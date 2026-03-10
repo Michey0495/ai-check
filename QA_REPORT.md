@@ -1,6 +1,6 @@
 # QA Report - web-url-a (AI Check)
 
-**Date:** 2026-03-11 (Night 31 QA Pass)
+**Date:** 2026-03-11 (Night 32 QA Pass)
 **Project:** AI Check (GEO Score Analyzer)
 **Domain:** ai-check.ezoai.jp
 
@@ -8,8 +8,50 @@
 
 | Check | Status |
 |-------|--------|
-| `npm run build` | PASS (43 static pages, compiled in 7.0s) |
+| `npm run build` | PASS (43 static pages, compiled in 7.1s) |
 | `npm run lint` | PASS (0 errors, 0 warnings) |
+
+## Night 32 Fixes
+
+### HIGH: MCP Route Missing Input Sanitization (Security)
+- **File:** `src/app/api/mcp/route.ts`
+- **Issue:** `generate_llms_txt` and `generate_robots_txt` tools embedded user input without sanitizing newlines, unlike `/api/generate` route which uses `sanitizeLine()`
+- **Fix:** Added `sanitizeLine()` and applied to all user inputs in MCP tool handlers
+
+### HIGH: MCP Route Missing Schema Type Validation
+- **File:** `src/app/api/mcp/route.ts`
+- **Issue:** `generate_json_ld` accepted arbitrary `@type` values without validation against allowed enum
+- **Fix:** Added validation against `["WebSite", "Organization", "FAQPage", "HowTo", "Product", "Article"]`
+
+### MEDIUM: MCP Route Invalid Array Entry Handling
+- **File:** `src/app/api/mcp/route.ts`
+- **Issue:** FAQPage and HowTo handlers didn't validate array item structure (missing question/answer or name/text)
+- **Fix:** Added `.filter()` to ensure required properties exist before mapping
+
+### MEDIUM: Stats Grid Not Responsive on Mobile
+- **File:** `src/app/page.tsx:175`
+- **Issue:** Hero stats grid used `grid-cols-3` without mobile breakpoint, cramped on small screens
+- **Fix:** Changed to `grid-cols-1 sm:grid-cols-3`
+
+### MEDIUM: Low Contrast Text (WCAG Accessibility)
+- **Files:** `src/app/page.tsx`, `src/app/history/history-client.tsx`
+- **Issue:** `text-white/20` (comparison table) and SVG text `rgba(255,255,255,0.25-0.3)` had insufficient contrast
+- **Fix:** Increased to `text-white/40` and `rgba(255,255,255,0.5)` respectively
+
+### MEDIUM: SVG Charts Missing Accessibility Attributes
+- **Files:** `src/app/check/compare/compare-client.tsx`, `src/app/history/history-client.tsx`
+- **Issue:** Radar chart and score trend chart SVGs had no `role` or `aria-label`
+- **Fix:** Added `role="img"` and descriptive `aria-label` to both SVGs
+
+### MEDIUM: Badge Generator URL Inconsistency
+- **File:** `src/app/generate/badge/generator-client.tsx`
+- **Issue:** `handleCopy` used raw URL while `generate` normalized to add `https://`, causing mismatch
+- **Fix:** Applied same URL normalization in `handleCopy`
+
+### MEDIUM: JSON-LD Generator FAQ Parsing Edge Case
+- **File:** `src/app/generate/json-ld/generator-client.tsx`
+- **Issue:** FAQ parsing could produce entries with empty question or answer
+- **Fix:** Added validation to filter out incomplete entries
 
 ## Night 31 Fixes
 

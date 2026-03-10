@@ -97,7 +97,7 @@ function RadarChart({ reports }: { reports: { url: string; report: CheckReport }
     <div className="rounded-lg border border-white/10 bg-white/5 p-6">
       <h2 className="mb-4 text-xl font-bold text-white">レーダーチャート</h2>
       <div className="flex flex-col items-center gap-4 lg:flex-row lg:items-start">
-        <svg viewBox="0 0 300 300" className="w-full max-w-[300px] shrink-0">
+        <svg viewBox="0 0 300 300" className="w-full max-w-[300px] shrink-0" role="img" aria-label="GEOスコア比較レーダーチャート">
           {/* Grid */}
           {gridPaths.map((d, i) => (
             <path key={i} d={d} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
