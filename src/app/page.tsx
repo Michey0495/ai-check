@@ -396,9 +396,9 @@ export default function Home() {
               ].map((row) => (
                 <tr key={row.feature} className="border-b border-white/5">
                   <td className="px-4 py-3">{row.feature}</td>
-                  <td className={`px-4 py-3 text-center ${row.a ? "text-white/60" : "text-white/20"}`}>{row.a ? "\u2713" : "\u2015"}</td>
-                  <td className={`px-4 py-3 text-center ${row.b ? "text-white/60" : "text-white/20"}`}>{row.b ? "\u2713" : "\u2015"}</td>
-                  <td className="px-4 py-3 text-center text-primary">{row.us ? "\u2713" : "\u2015"}</td>
+                  <td className={`px-4 py-3 text-center ${row.a ? "text-white/60" : "text-white/20"}`} aria-label={row.a ? "対応" : "未対応"}>{row.a ? "\u2713" : "\u2015"}</td>
+                  <td className={`px-4 py-3 text-center ${row.b ? "text-white/60" : "text-white/20"}`} aria-label={row.b ? "対応" : "未対応"}>{row.b ? "\u2713" : "\u2015"}</td>
+                  <td className="px-4 py-3 text-center text-primary" aria-label={row.us ? "対応" : "未対応"}>{row.us ? "\u2713" : "\u2015"}</td>
                 </tr>
               ))}
               <tr>

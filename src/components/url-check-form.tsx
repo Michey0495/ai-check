@@ -46,6 +46,7 @@ export function UrlCheckForm({ size = "lg" }: { size?: "lg" | "sm" }) {
           onChange={(e) => { setUrl(e.target.value); setError(""); }}
           aria-label="チェックするURL"
           aria-invalid={!!error}
+          aria-describedby={error ? "url-error" : undefined}
           maxLength={2048}
           className={`flex-1 border-white/10 bg-white/5 text-white placeholder:text-white/30 ${
             isLg ? "h-14 text-lg" : "h-10"
@@ -61,7 +62,7 @@ export function UrlCheckForm({ size = "lg" }: { size?: "lg" | "sm" }) {
         </Button>
       </form>
       {error && (
-        <p className="mt-2 text-sm text-red-400" role="alert">{error}</p>
+        <p id="url-error" className="mt-2 text-sm text-red-400" role="alert">{error}</p>
       )}
     </div>
   );
