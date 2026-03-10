@@ -83,6 +83,10 @@ export const metadata: Metadata = {
     "SearchGPT 対策",
     "AI検索 表示されない",
     "GEO対策 初心者",
+    "AI検索 引用率",
+    "GEO対策 2026",
+    "AI Mode 対策",
+    "AIに引用されるサイト",
   ],
   openGraph: {
     title: "AI Check - AI検索対応度チェッカー & GEO対策ツール",
