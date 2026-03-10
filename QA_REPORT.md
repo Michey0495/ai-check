@@ -1,6 +1,6 @@
 # QA Report - web-url-a (AI Check)
 
-**Date:** 2026-03-11 (Night 30 QA Pass)
+**Date:** 2026-03-11 (Night 31 QA Pass)
 **Project:** AI Check (GEO Score Analyzer)
 **Domain:** ai-check.ezoai.jp
 
@@ -9,7 +9,15 @@
 | Check | Status |
 |-------|--------|
 | `npm run build` | PASS (43 static pages, compiled in 7.0s) |
-| `npm run lint` | PASS (0 errors, 1 warning) |
+| `npm run lint` | PASS (0 errors, 0 warnings) |
+
+## Night 31 Fixes
+
+### MEDIUM: RecentChecks hydration mismatch
+- **File:** `src/components/recent-checks.tsx`
+- **Issue:** `useMemo` with `typeof window === "undefined"` guard was used to read localStorage, but this causes hydration mismatch: SSR returns empty array, client render returns localStorage data. Previous Night 30 fix (useState lazy initializer) had the same issue conceptually.
+- **Fix:** Replaced with `useSyncExternalStore` with proper server snapshot (`emptyHistory`), matching the pattern already used in `check-client.tsx`'s `CheckHistory` component. This ensures SSR/client consistency and satisfies the `react-hooks/set-state-in-effect` lint rule.
+- **Result:** No hydration mismatch, lint passes, build succeeds
 
 ## Night 30 Fixes
 

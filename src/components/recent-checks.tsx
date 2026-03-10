@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useSyncExternalStore } from "react";
 import Link from "next/link";
 
 type HistoryEntry = {
@@ -12,6 +12,21 @@ type HistoryEntry = {
 };
 
 const HISTORY_KEY = "aicheck-history";
+const emptyHistory: HistoryEntry[] = [];
+
+function getHistoryFromStorage(): HistoryEntry[] {
+  try {
+    const stored = JSON.parse(localStorage.getItem(HISTORY_KEY) ?? "[]") as HistoryEntry[];
+    return stored.slice(0, 5);
+  } catch {
+    return [];
+  }
+}
+
+function subscribeStorage(cb: () => void) {
+  window.addEventListener("storage", cb);
+  return () => window.removeEventListener("storage", cb);
+}
 
 function getGradeColor(grade: string) {
   switch (grade) {
@@ -34,15 +49,7 @@ function getGradeBg(grade: string) {
 }
 
 export function RecentChecks() {
-  const history = useMemo<HistoryEntry[]>(() => {
-    if (typeof window === "undefined") return [];
-    try {
-      const stored = JSON.parse(localStorage.getItem(HISTORY_KEY) ?? "[]") as HistoryEntry[];
-      return stored.slice(0, 5);
-    } catch {
-      return [];
-    }
-  }, []);
+  const history = useSyncExternalStore(subscribeStorage, getHistoryFromStorage, () => emptyHistory);
 
   if (history.length === 0) return null;
 
