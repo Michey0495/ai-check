@@ -161,12 +161,21 @@ export type CheckReport = {
     fbAppId?: string;
     ogSiteName?: string;
   };
+  imageOptimization?: {
+    totalImages: number;
+    webpCount: number;
+    avifCount: number;
+    pictureElementCount: number;
+    srcsetCount: number;
+    modernFormatRatio: number;
+  };
   redirectChain?: {
     hops: number;
     finalUrl: string;
     hasHttpToHttps: boolean;
     hasWwwRedirect: boolean;
     chain: string[];
+    statusCodes?: number[];
   };
   canonicalUrl?: string;
   canonicalMismatch?: boolean;

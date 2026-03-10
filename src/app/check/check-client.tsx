@@ -162,6 +162,18 @@ function generateReportText(report: CheckReport): string {
     lines.push(`スクリプト: ${p.totalScriptCount}件（defer: ${p.deferScriptCount}, async: ${p.asyncScriptCount}）`);
   }
 
+  if (report.imageOptimization) {
+    const img = report.imageOptimization;
+    lines.push("");
+    lines.push("--- 画像最適化 ---");
+    lines.push(`画像数: ${img.totalImages}枚`);
+    if (img.webpCount > 0) lines.push(`WebP: ${img.webpCount}枚`);
+    if (img.avifCount > 0) lines.push(`AVIF: ${img.avifCount}枚`);
+    lines.push(`次世代フォーマット使用率: ${img.modernFormatRatio}%`);
+    if (img.srcsetCount > 0) lines.push(`srcset（レスポンシブ画像）: ${img.srcsetCount}枚`);
+    if (img.pictureElementCount > 0) lines.push(`<picture>要素: ${img.pictureElementCount}件`);
+  }
+
   if (report.contentLanguage || (report.hreflangTags && report.hreflangTags.length > 0)) {
     lines.push("");
     lines.push("--- 多言語対応 ---");
@@ -173,6 +185,9 @@ function generateReportText(report: CheckReport): string {
     lines.push("");
     lines.push("--- リダイレクト ---");
     lines.push(`リダイレクト回数: ${report.redirectChain.hops}回`);
+    if (report.redirectChain.statusCodes?.length) {
+      lines.push(`ステータスコード: ${report.redirectChain.statusCodes.map((c) => `${c} (${c === 301 ? "恒久" : c === 302 ? "一時" : c === 307 ? "一時" : c === 308 ? "恒久" : ""})`).join(" → ")}`);
+    }
     lines.push(`最終URL: ${report.redirectChain.finalUrl}`);
     if (report.redirectChain.hasHttpToHttps) lines.push("HTTP→HTTPSリダイレクト: あり");
     if (report.redirectChain.hasWwwRedirect) lines.push("wwwリダイレクト: あり");
@@ -1394,6 +1409,66 @@ export function CheckPageClient() {
             </div>
           )}
 
+          {/* Image optimization */}
+          {report.imageOptimization && (
+            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+              <h2 className="mb-3 text-lg font-semibold text-white">画像最適化</h2>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="rounded-lg bg-white/[0.03] p-3">
+                  <p className="text-xs text-white/40">次世代フォーマット</p>
+                  <p className={`text-lg font-bold ${
+                    report.imageOptimization.modernFormatRatio >= 50
+                      ? "text-green-400"
+                      : report.imageOptimization.modernFormatRatio > 0
+                      ? "text-yellow-400"
+                      : "text-white/30"
+                  }`}>
+                    {report.imageOptimization.modernFormatRatio}%
+                  </p>
+                  <p className="text-xs text-white/30">
+                    WebP: {report.imageOptimization.webpCount} / AVIF: {report.imageOptimization.avifCount}
+                  </p>
+                </div>
+                <div className="rounded-lg bg-white/[0.03] p-3">
+                  <p className="text-xs text-white/40">レスポンシブ画像</p>
+                  <p className={`text-lg font-bold ${
+                    report.imageOptimization.srcsetCount > 0 ? "text-green-400" : "text-white/30"
+                  }`}>
+                    {report.imageOptimization.srcsetCount}/{report.imageOptimization.totalImages}
+                  </p>
+                  <p className="text-xs text-white/30">
+                    {report.imageOptimization.srcsetCount > 0 ? "srcset属性で最適サイズ配信" : "srcset未使用"}
+                  </p>
+                </div>
+                <div className="rounded-lg bg-white/[0.03] p-3">
+                  <p className="text-xs text-white/40">{`<picture>`}要素</p>
+                  <p className={`text-lg font-bold ${
+                    report.imageOptimization.pictureElementCount > 0 ? "text-green-400" : "text-white/30"
+                  }`}>
+                    {report.imageOptimization.pictureElementCount}件
+                  </p>
+                  <p className="text-xs text-white/30">
+                    {report.imageOptimization.pictureElementCount > 0
+                      ? "フォーマットフォールバック対応"
+                      : "picture要素で次世代フォーマット配信を推奨"}
+                  </p>
+                </div>
+                <div className="rounded-lg bg-white/[0.03] p-3">
+                  <p className="text-xs text-white/40">画像数</p>
+                  <p className="text-lg font-bold text-white/60">
+                    {report.imageOptimization.totalImages}枚
+                  </p>
+                  <p className="text-xs text-white/30">ページ内の総画像数</p>
+                </div>
+              </div>
+              {report.imageOptimization.modernFormatRatio === 0 && report.imageOptimization.totalImages > 0 && (
+                <p className="mt-3 text-xs text-yellow-400/70">
+                  WebP/AVIF等の次世代画像フォーマットを使用するとファイルサイズが30〜50%削減でき、ページ速度が向上します。
+                </p>
+              )}
+            </div>
+          )}
+
           {/* Detected technologies */}
           {report.detectedTech && report.detectedTech.length > 0 && (
             <div className="rounded-lg border border-white/10 bg-white/5 p-6">
@@ -1491,6 +1566,16 @@ export function CheckPageClient() {
                     {report.redirectChain.chain.map((u, i) => (
                       <div key={i} className="flex items-center gap-2 text-xs">
                         <span className="text-white/30">{i === 0 ? "開始" : i === report.redirectChain!.chain.length - 1 ? "最終" : `${i}回目`}</span>
+                        {i > 0 && report.redirectChain!.statusCodes?.[i - 1] && (
+                          <span className={`rounded px-1.5 py-0.5 text-[10px] font-mono ${
+                            report.redirectChain!.statusCodes[i - 1] === 301 || report.redirectChain!.statusCodes[i - 1] === 308
+                              ? "bg-green-500/10 text-green-400"
+                              : "bg-yellow-500/10 text-yellow-400"
+                          }`}>
+                            {report.redirectChain!.statusCodes[i - 1]}
+                            {report.redirectChain!.statusCodes[i - 1] === 301 ? " 恒久" : report.redirectChain!.statusCodes[i - 1] === 302 ? " 一時" : report.redirectChain!.statusCodes[i - 1] === 307 ? " 一時" : report.redirectChain!.statusCodes[i - 1] === 308 ? " 恒久" : ""}
+                          </span>
+                        )}
                         <span className="text-white/50 truncate">{u}</span>
                       </div>
                     ))}
@@ -1515,6 +1600,40 @@ export function CheckPageClient() {
               </p>
             </div>
           )}
+
+          {/* Score breakdown chart */}
+          <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+            <h2 className="mb-4 text-lg font-semibold text-white">スコア内訳</h2>
+            <div className="space-y-3">
+              {report.results.map((r) => {
+                const pct = r.maxScore > 0 ? Math.round((r.score / r.maxScore) * 100) : 0;
+                return (
+                  <div key={r.id}>
+                    <div className="mb-1 flex items-center justify-between text-sm">
+                      <Link href={`/check/${r.id}`} className="cursor-pointer text-white/70 transition-all duration-200 hover:text-white">
+                        {r.message.split(":")[0]}
+                      </Link>
+                      <span className={`font-mono text-xs ${r.status === "pass" ? "text-green-400" : r.status === "warn" ? "text-yellow-400" : "text-red-400"}`}>
+                        {r.score}/{r.maxScore}
+                      </span>
+                    </div>
+                    <div className="h-2 w-full rounded-full bg-white/5">
+                      <div
+                        className={`h-2 rounded-full transition-all duration-500 ${
+                          r.status === "pass" ? "bg-green-500" : r.status === "warn" ? "bg-yellow-500" : "bg-red-500"
+                        }`}
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
+              <span className="text-sm font-semibold text-white">合計</span>
+              <span className="font-mono text-sm font-bold text-white">{report.totalScore}/{report.maxScore}</span>
+            </div>
+          </div>
 
           {/* Grade explanation */}
           <div className="rounded-lg border border-white/10 bg-white/5 p-6">

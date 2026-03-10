@@ -158,15 +158,32 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "AI Check",
-              url: "https://ai-check.ezoai.jp",
-              description:
-                "AI検索対応度チェッカー & GEO対策ツール。URLを入力するだけでAI検索最適化を実現。",
-              sameAs: ["https://github.com/Michey0495/web-url-a"],
-            }),
+            __html: JSON.stringify([
+              {
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                name: "AI Check",
+                url: "https://ai-check.ezoai.jp",
+                description:
+                  "AI検索対応度チェッカー & GEO対策ツール。URLを入力するだけでAI検索最適化を実現。",
+                sameAs: ["https://github.com/Michey0495/web-url-a"],
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                name: "AI Check",
+                url: "https://ai-check.ezoai.jp",
+                description: "AI検索対応度チェッカー & GEO対策ツール",
+                potentialAction: {
+                  "@type": "SearchAction",
+                  target: {
+                    "@type": "EntryPoint",
+                    urlTemplate: "https://ai-check.ezoai.jp/check?url={search_term_string}",
+                  },
+                  "query-input": "required name=search_term_string",
+                },
+              },
+            ]),
           }}
         />
         <GoogleAnalytics />

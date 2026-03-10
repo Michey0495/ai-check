@@ -72,10 +72,12 @@ type RedirectInfo = {
   hasHttpToHttps: boolean;
   hasWwwRedirect: boolean;
   chain: string[];
+  statusCodes: number[];
 };
 
 async function detectRedirectChain(url: string, maxHops = 5): Promise<RedirectInfo> {
   const chain: string[] = [url];
+  const statusCodes: number[] = [];
   let currentUrl = url;
   let hasHttpToHttps = false;
   let hasWwwRedirect = false;
@@ -93,6 +95,7 @@ async function detectRedirectChain(url: string, maxHops = 5): Promise<RedirectIn
       if (res.status >= 300 && res.status < 400) {
         const location = res.headers.get("location");
         if (!location) break;
+        statusCodes.push(res.status);
         const nextUrl = location.startsWith("http") ? location : new URL(location, currentUrl).toString();
         chain.push(nextUrl);
         // Detect HTTP→HTTPS
@@ -123,6 +126,7 @@ async function detectRedirectChain(url: string, maxHops = 5): Promise<RedirectIn
     hasHttpToHttps,
     hasWwwRedirect,
     chain,
+    statusCodes,
   };
 }
 
@@ -1094,6 +1098,29 @@ export async function POST(request: NextRequest) {
     const contentEncoding = responseHdrs["content-encoding"] ?? "";
     const serverHeader = responseHdrs["server"] ?? "";
 
+    // Image format analysis
+    const imgSrcs = imgTags.map((tag) => {
+      const srcMatch = tag.match(/\bsrc=["']([^"']+)["']/i);
+      return srcMatch?.[1] ?? "";
+    }).filter(Boolean);
+    const srcsetSrcs = imgTags.flatMap((tag) => {
+      const srcsetMatch = tag.match(/\bsrcset=["']([^"']+)["']/i);
+      return srcsetMatch ? srcsetMatch[1].split(",").map((s) => s.trim().split(/\s+/)[0]) : [];
+    });
+    const allImageSrcs = [...imgSrcs, ...srcsetSrcs];
+    // Also check <picture><source> and <source> elements
+    const sourceSrcs = (html.match(/<source[^>]*(?:srcset|src)=["']([^"']+)["']/gi) ?? []).flatMap((tag) => {
+      const m = tag.match(/(?:srcset|src)=["']([^"']+)["']/i);
+      return m ? m[1].split(",").map((s) => s.trim().split(/\s+/)[0]) : [];
+    });
+    const allSrcsForFormat = [...allImageSrcs, ...sourceSrcs];
+    const webpCount = allSrcsForFormat.filter((s) => /\.webp(\?|$)/i.test(s) || /image\/webp/i.test(s)).length;
+    const avifCount = allSrcsForFormat.filter((s) => /\.avif(\?|$)/i.test(s) || /image\/avif/i.test(s)).length;
+    // Check <picture> element usage (next-gen format delivery)
+    const pictureElementCount = (html.match(/<picture[\s>]/gi) ?? []).length;
+    // Check srcset usage for responsive images
+    const srcsetCount = imgTags.filter((tag) => /\bsrcset=/i.test(tag)).length;
+
     // Performance hints analysis
     const preconnectCount = (html.match(/<link[^>]*rel=["']preconnect["']/gi) ?? []).length;
     const prefetchCount = (html.match(/<link[^>]*rel=["'](?:dns-prefetch|prefetch|preload)["']/gi) ?? []).length;
@@ -1251,6 +1278,14 @@ export async function POST(request: NextRequest) {
         asyncScriptCount,
         totalScriptCount,
       },
+      imageOptimization: imgCount > 0 ? {
+        totalImages: imgCount,
+        webpCount,
+        avifCount,
+        pictureElementCount,
+        srcsetCount,
+        modernFormatRatio: allImageSrcs.length > 0 ? Math.round(((webpCount + avifCount) / allImageSrcs.length) * 100) : 0,
+      } : undefined,
       contentLanguage: contentLanguage || undefined,
       hreflangTags: hreflangTags.length > 0 ? hreflangTags : undefined,
       detectedTech: detectedTech.length > 0 ? detectedTech : undefined,
