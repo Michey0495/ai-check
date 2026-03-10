@@ -161,6 +161,8 @@ export type CheckReport = {
     fbAppId?: string;
     ogSiteName?: string;
   };
+  contentEncoding?: string;
+  serverHeader?: string;
   coreWebVitals?: {
     lcpCandidate?: string; // e.g. "img", "h1", "video"
     lcpImageCount: number; // above-fold large images without explicit dimensions

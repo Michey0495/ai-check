@@ -947,6 +947,10 @@ export async function POST(request: NextRequest) {
     const hasReferrerPolicy = !!responseHdrs["referrer-policy"];
     const secHeaderScore = [hasHsts, hasCsp, hasXFrameOptions, hasXContentTypeOptions, hasReferrerPolicy].filter(Boolean).length;
 
+    // Content encoding / server detection
+    const contentEncoding = responseHdrs["content-encoding"] ?? "";
+    const serverHeader = responseHdrs["server"] ?? "";
+
     // Performance hints analysis
     const preconnectCount = (html.match(/<link[^>]*rel=["']preconnect["']/gi) ?? []).length;
     const prefetchCount = (html.match(/<link[^>]*rel=["'](?:dns-prefetch|prefetch|preload)["']/gi) ?? []).length;
@@ -1104,6 +1108,8 @@ export async function POST(request: NextRequest) {
       ogImageAccessible,
       pwaManifest,
       socialMeta: hasSocialMeta ? socialMeta : undefined,
+      contentEncoding: contentEncoding || undefined,
+      serverHeader: serverHeader || undefined,
       coreWebVitals: {
         lcpCandidate: lcpCandidate,
         lcpImageCount: imgsWithoutDimensions,

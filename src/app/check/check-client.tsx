@@ -169,6 +169,13 @@ function generateReportText(report: CheckReport): string {
     if (report.hreflangTags && report.hreflangTags.length > 0) lines.push(`hreflang: ${report.hreflangTags.join(", ")}`);
   }
 
+  if (report.contentEncoding || report.serverHeader) {
+    lines.push("");
+    lines.push("--- サーバー情報 ---");
+    if (report.contentEncoding) lines.push(`コンテンツ圧縮: ${report.contentEncoding}`);
+    if (report.serverHeader) lines.push(`Server: ${report.serverHeader}`);
+  }
+
   if (report.detectedTech && report.detectedTech.length > 0) {
     lines.push("");
     lines.push("--- 検出テクノロジー ---");
@@ -944,6 +951,16 @@ export function CheckPageClient() {
                   OG画像: {report.ogImageAccessible ? "アクセス可" : "アクセス不可"}
                 </span>
               )}
+              {report.contentEncoding && (
+                <span className="rounded-full bg-cyan-500/10 px-3 py-1 text-xs text-cyan-400">
+                  圧縮: {report.contentEncoding}
+                </span>
+              )}
+              {report.serverHeader && (
+                <span className="rounded-full bg-white/5 px-3 py-1 text-xs text-white/50">
+                  Server: {report.serverHeader}
+                </span>
+              )}
               {report.detectedTech && report.detectedTech.length > 0 && (
                 <span className="rounded-full bg-purple-500/10 px-3 py-1 text-xs text-purple-400">
                   {report.detectedTech.filter(t => !["Google Analytics", "Microsoft Clarity"].includes(t)).slice(0, 3).join(" / ") || report.detectedTech[0]}
@@ -1016,6 +1033,14 @@ export function CheckPageClient() {
                 onClick={handleRecheck}
               >
                 再チェック
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="no-print cursor-pointer border-white/10 bg-white/5 text-white/70 transition-all duration-200 hover:bg-white/10 hover:text-white"
+                onClick={() => window.print()}
+              >
+                印刷 / PDF
               </Button>
             </div>
           </div>
