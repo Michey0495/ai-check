@@ -91,6 +91,12 @@ export const metadata: Metadata = {
     "canonical URL チェック",
     "AI検索 リダイレクト",
     "GEOスコア リダイレクト分析",
+    "GEO対策 始め方",
+    "AI検索 スコア",
+    "llms.txt ジェネレーター",
+    "agent.json 作り方",
+    "AI検索 無料診断",
+    "Google AI Mode 日本",
   ],
   openGraph: {
     title: "AI Check - AI検索対応度チェッカー & GEO対策ツール",
