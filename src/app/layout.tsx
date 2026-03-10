@@ -77,6 +77,9 @@ export const metadata: Metadata = {
     "Copilot 対策",
     "AI検索 トラフィック",
     "GEO 無料診断",
+    "AI検索 引用されない",
+    "llms.txt 自動生成",
+    "AI検索 対策ツール 無料",
   ],
   openGraph: {
     title: "AI Check - AI検索対応度チェッカー & GEO対策ツール",
