@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import type { CheckResult, CheckReport } from "@/lib/check-indicators";
 import { getGrade } from "@/lib/check-indicators";
 import { corsHeaders, corsOptionsResponse } from "@/lib/cors";
+import * as https from "https";
+import * as tls from "tls";
 
 export async function OPTIONS() {
   return corsOptionsResponse();
@@ -122,6 +124,84 @@ async function detectRedirectChain(url: string, maxHops = 5): Promise<RedirectIn
     hasWwwRedirect,
     chain,
   };
+}
+
+type SslCertInfo = {
+  issuer: string;
+  validFrom: string;
+  validTo: string;
+  daysRemaining: number;
+  protocol: string;
+  subjectAltNames?: string[];
+};
+
+async function detectSslCertificate(hostname: string): Promise<SslCertInfo | undefined> {
+  if (isPrivateHostname(hostname)) return undefined;
+  return new Promise((resolve) => {
+    const socket = tls.connect(
+      { host: hostname, port: 443, servername: hostname, timeout: 5000 },
+      () => {
+        try {
+          const cert = socket.getPeerCertificate();
+          const protocol = socket.getProtocol() ?? "unknown";
+          if (!cert || !cert.valid_from) {
+            socket.destroy();
+            resolve(undefined);
+            return;
+          }
+          const validFrom = new Date(cert.valid_from).toISOString();
+          const validTo = new Date(cert.valid_to).toISOString();
+          const daysRemaining = Math.floor(
+            (new Date(cert.valid_to).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+          );
+          const rawIssuer = cert.issuer?.O ?? cert.issuer?.CN ?? "unknown";
+          const issuerOrg = Array.isArray(rawIssuer) ? rawIssuer[0] : rawIssuer;
+          // Extract SAN (Subject Alternative Names)
+          const sanStr = cert.subjectaltname ?? "";
+          const subjectAltNames = sanStr
+            ? sanStr.split(",").map((s: string) => s.trim().replace("DNS:", "")).filter(Boolean).slice(0, 10)
+            : undefined;
+          socket.destroy();
+          resolve({
+            issuer: issuerOrg,
+            validFrom,
+            validTo,
+            daysRemaining,
+            protocol,
+            subjectAltNames,
+          });
+        } catch {
+          socket.destroy();
+          resolve(undefined);
+        }
+      }
+    );
+    socket.on("error", () => { socket.destroy(); resolve(undefined); });
+    socket.on("timeout", () => { socket.destroy(); resolve(undefined); });
+  });
+}
+
+async function detectHttpVersion(url: string): Promise<string | undefined> {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== "https:") return "HTTP/1.1";
+    if (isPrivateHostname(parsed.hostname)) return undefined;
+    return new Promise((resolve) => {
+      const req = https.request(
+        { hostname: parsed.hostname, port: 443, path: parsed.pathname, method: "HEAD", timeout: 5000 },
+        (res) => {
+          const version = res.httpVersion ? `HTTP/${res.httpVersion}` : undefined;
+          res.destroy();
+          resolve(version);
+        }
+      );
+      req.on("error", () => resolve(undefined));
+      req.on("timeout", () => { req.destroy(); resolve(undefined); });
+      req.end();
+    });
+  } catch {
+    return undefined;
+  }
 }
 
 type FetchResult = { ok: boolean; text: string; headers?: Record<string, string> };
@@ -781,7 +861,7 @@ export async function POST(request: NextRequest) {
     const startTime = Date.now();
 
     // Fetch all resources concurrently
-    const [robotsRes, llmsRes, llmsFullRes, pageRes, sitemapRes, agentRes, manifestRes, redirectInfo] = await Promise.all([
+    const [robotsRes, llmsRes, llmsFullRes, pageRes, sitemapRes, agentRes, manifestRes, redirectInfo, sslCertificate, httpVersion] = await Promise.all([
       safeFetch(`${baseUrl}/robots.txt`),
       safeFetch(`${baseUrl}/llms.txt`),
       safeFetch(`${baseUrl}/llms-full.txt`),
@@ -790,6 +870,8 @@ export async function POST(request: NextRequest) {
       safeFetch(`${baseUrl}/.well-known/agent.json`),
       safeFetch(`${baseUrl}/manifest.json`),
       detectRedirectChain(url),
+      parsedUrl.protocol === "https:" ? detectSslCertificate(parsedUrl.hostname) : Promise.resolve(undefined),
+      detectHttpVersion(url),
     ]);
 
     // If main page is unreachable, return a clear error
@@ -1180,6 +1262,8 @@ export async function POST(request: NextRequest) {
       canonicalMismatch: canonicalMismatch || undefined,
       contentEncoding: contentEncoding || undefined,
       serverHeader: serverHeader || undefined,
+      httpVersion: httpVersion || undefined,
+      sslCertificate: sslCertificate || undefined,
       coreWebVitals: {
         lcpCandidate: lcpCandidate,
         lcpImageCount: imgsWithoutDimensions,

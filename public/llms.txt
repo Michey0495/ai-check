@@ -75,6 +75,8 @@
 - 印刷/PDF対応レポート出力（チェック結果を印刷・PDF保存に最適化したスタイルで出力）
 - リダイレクトチェーン分析（HTTP→HTTPSリダイレクト検出、wwwリダイレクト検出、リダイレクト回数・最終URL表示）
 - canonical URL検出・不一致警告（アクセスURLとcanonical URLの整合性チェック）
+- SSL/TLS証明書分析（発行元、有効期限、残り日数、TLSプロトコルバージョン、SAN対象ドメイン検出）
+- HTTPプロトコルバージョン検出（HTTP/1.1, HTTP/2の判定）
 
 ## API
 - GET /api/check?url=URL: URLのGEOスコアチェック（GETメソッド対応、ブラウザから直接アクセス可）。CORS対応

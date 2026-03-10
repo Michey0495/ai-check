@@ -172,6 +172,15 @@ export type CheckReport = {
   canonicalMismatch?: boolean;
   contentEncoding?: string;
   serverHeader?: string;
+  httpVersion?: string; // e.g. "HTTP/2", "HTTP/1.1"
+  sslCertificate?: {
+    issuer: string;
+    validFrom: string;
+    validTo: string;
+    daysRemaining: number;
+    protocol: string; // e.g. "TLSv1.3"
+    subjectAltNames?: string[];
+  };
   coreWebVitals?: {
     lcpCandidate?: string; // e.g. "img", "h1", "video"
     lcpImageCount: number; // above-fold large images without explicit dimensions

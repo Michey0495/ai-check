@@ -185,11 +185,22 @@ function generateReportText(report: CheckReport): string {
     if (report.canonicalMismatch) lines.push("⚠ canonical URLとアクセスURLが一致しません");
   }
 
-  if (report.contentEncoding || report.serverHeader) {
+  if (report.contentEncoding || report.serverHeader || report.httpVersion) {
     lines.push("");
     lines.push("--- サーバー情報 ---");
+    if (report.httpVersion) lines.push(`HTTPプロトコル: ${report.httpVersion}`);
     if (report.contentEncoding) lines.push(`コンテンツ圧縮: ${report.contentEncoding}`);
     if (report.serverHeader) lines.push(`Server: ${report.serverHeader}`);
+  }
+
+  if (report.sslCertificate) {
+    lines.push("");
+    lines.push("--- SSL/TLS証明書 ---");
+    lines.push(`発行元: ${report.sslCertificate.issuer}`);
+    lines.push(`プロトコル: ${report.sslCertificate.protocol}`);
+    lines.push(`有効期限: ${new Date(report.sslCertificate.validTo).toLocaleDateString("ja-JP")}`);
+    lines.push(`残り日数: ${report.sslCertificate.daysRemaining}日`);
+    if (report.sslCertificate.daysRemaining < 30) lines.push("⚠ 証明書の有効期限が30日以内です。更新を検討してください。");
   }
 
   if (report.detectedTech && report.detectedTech.length > 0) {
@@ -978,6 +989,16 @@ export function CheckPageClient() {
                   canonical不一致
                 </span>
               )}
+              {report.httpVersion && (
+                <span className={`rounded-full px-3 py-1 text-xs ${report.httpVersion.includes("2") || report.httpVersion.includes("3") ? "bg-green-500/10 text-green-400" : "bg-yellow-500/10 text-yellow-400"}`}>
+                  {report.httpVersion}
+                </span>
+              )}
+              {report.sslCertificate && (
+                <span className={`rounded-full px-3 py-1 text-xs ${report.sslCertificate.daysRemaining > 30 ? "bg-green-500/10 text-green-400" : report.sslCertificate.daysRemaining > 7 ? "bg-yellow-500/10 text-yellow-400" : "bg-red-500/10 text-red-400"}`}>
+                  SSL: {report.sslCertificate.protocol} ({report.sslCertificate.daysRemaining}日)
+                </span>
+              )}
               {report.contentEncoding && (
                 <span className="rounded-full bg-primary/10 px-3 py-1 text-xs text-primary">
                   圧縮: {report.contentEncoding}
@@ -1153,6 +1174,78 @@ export function CheckPageClient() {
                 <p className="mt-3 text-xs text-white/40">
                   セキュリティヘッダーの追加により、サイトの信頼性が向上し、AI検索エンジンからの評価にも好影響があります。
                 </p>
+              )}
+            </div>
+          )}
+
+          {/* SSL/TLS Certificate */}
+          {report.sslCertificate && (
+            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+              <div className="mb-3 flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-white">SSL/TLS証明書</h2>
+                <span className={`rounded-full px-3 py-1 text-xs ${
+                  report.sslCertificate.daysRemaining > 30 ? "bg-green-500/10 text-green-400"
+                    : report.sslCertificate.daysRemaining > 7 ? "bg-yellow-500/10 text-yellow-400"
+                    : "bg-red-500/10 text-red-400"
+                }`}>
+                  {report.sslCertificate.daysRemaining > 30 ? "有効" : report.sslCertificate.daysRemaining > 0 ? "期限間近" : "期限切れ"}
+                </span>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="rounded-lg bg-white/[0.03] p-3">
+                  <p className="text-xs text-white/40">発行元</p>
+                  <p className="text-sm font-medium text-white">{report.sslCertificate.issuer}</p>
+                </div>
+                <div className="rounded-lg bg-white/[0.03] p-3">
+                  <p className="text-xs text-white/40">プロトコル</p>
+                  <p className={`text-sm font-medium ${report.sslCertificate.protocol.includes("1.3") ? "text-green-400" : "text-white"}`}>
+                    {report.sslCertificate.protocol}
+                  </p>
+                </div>
+                <div className="rounded-lg bg-white/[0.03] p-3">
+                  <p className="text-xs text-white/40">有効期限</p>
+                  <p className="text-sm font-medium text-white">
+                    {new Date(report.sslCertificate.validTo).toLocaleDateString("ja-JP")}
+                  </p>
+                </div>
+                <div className="rounded-lg bg-white/[0.03] p-3">
+                  <p className="text-xs text-white/40">残り日数</p>
+                  <p className={`text-lg font-bold ${
+                    report.sslCertificate.daysRemaining > 30 ? "text-green-400"
+                      : report.sslCertificate.daysRemaining > 7 ? "text-yellow-400"
+                      : "text-red-400"
+                  }`}>
+                    {report.sslCertificate.daysRemaining}日
+                  </p>
+                </div>
+              </div>
+              {report.sslCertificate.subjectAltNames && report.sslCertificate.subjectAltNames.length > 0 && (
+                <div className="mt-3">
+                  <p className="text-xs text-white/40 mb-1">SAN (対象ドメイン)</p>
+                  <div className="flex flex-wrap gap-1">
+                    {report.sslCertificate.subjectAltNames.map((san) => (
+                      <span key={san} className="rounded bg-white/5 px-2 py-0.5 text-xs text-white/60">{san}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {report.sslCertificate.daysRemaining <= 30 && (
+                <p className="mt-3 text-xs text-yellow-400/80">
+                  SSL証明書の有効期限が{report.sslCertificate.daysRemaining}日以内です。早めに更新を行ってください。
+                </p>
+              )}
+              {report.httpVersion && (
+                <div className="mt-3 flex items-center gap-2">
+                  <span className="text-xs text-white/40">HTTPプロトコル:</span>
+                  <span className={`rounded-full px-2 py-0.5 text-xs ${
+                    report.httpVersion.includes("2") || report.httpVersion.includes("3") ? "bg-green-500/10 text-green-400" : "bg-yellow-500/10 text-yellow-400"
+                  }`}>
+                    {report.httpVersion}
+                  </span>
+                  {!report.httpVersion.includes("2") && !report.httpVersion.includes("3") && (
+                    <span className="text-xs text-white/30">HTTP/2以上への移行を推奨</span>
+                  )}
+                </div>
               )}
             </div>
           )}
