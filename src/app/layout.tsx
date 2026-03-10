@@ -97,6 +97,11 @@ export const metadata: Metadata = {
     "agent.json 作り方",
     "AI検索 無料診断",
     "Google AI Mode 日本",
+    "GEO対策 MCP",
+    "AI検索 MCP Server",
+    "GEO チェッカー 無料",
+    "AI検索 対応 チェック",
+    "llms.txt 無料 生成ツール",
   ],
   openGraph: {
     title: "AI Check - AI検索対応度チェッカー & GEO対策ツール",
