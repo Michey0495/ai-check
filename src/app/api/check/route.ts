@@ -721,13 +721,14 @@ export async function POST(request: NextRequest) {
     const startTime = Date.now();
 
     // Fetch all resources concurrently
-    const [robotsRes, llmsRes, llmsFullRes, pageRes, sitemapRes, agentRes] = await Promise.all([
+    const [robotsRes, llmsRes, llmsFullRes, pageRes, sitemapRes, agentRes, manifestRes] = await Promise.all([
       safeFetch(`${baseUrl}/robots.txt`),
       safeFetch(`${baseUrl}/llms.txt`),
       safeFetch(`${baseUrl}/llms-full.txt`),
       safeFetch(url, 15000, true),
       safeFetch(`${baseUrl}/sitemap.xml`),
       safeFetch(`${baseUrl}/.well-known/agent.json`),
+      safeFetch(`${baseUrl}/manifest.json`),
     ]);
 
     // If main page is unreachable, return a clear error
@@ -1012,6 +1013,49 @@ export async function POST(request: NextRequest) {
     // fetchpriority="high" on images
     const hasFetchPriority = allImgTags.some((tag) => /fetchpriority=["']high["']/i.test(tag));
 
+    // PWA manifest detection
+    let pwaManifest: CheckReport["pwaManifest"];
+    // Check for manifest link in HTML first, then fallback to /manifest.json
+    const manifestLinkMatch = html.match(/<link[^>]*rel=["']manifest["'][^>]*href=["']([^"']+)["']/i);
+    const manifestSource = manifestLinkMatch
+      ? (manifestLinkMatch[1].startsWith("http") ? manifestLinkMatch[1] : `${baseUrl}${manifestLinkMatch[1].startsWith("/") ? "" : "/"}${manifestLinkMatch[1]}`)
+      : null;
+    const manifestText = manifestSource
+      ? (await safeFetch(manifestSource)).text
+      : (manifestRes.ok ? manifestRes.text : "");
+    if (manifestText) {
+      try {
+        const manifest = JSON.parse(manifestText);
+        pwaManifest = {
+          exists: true,
+          hasName: !!(manifest.name || manifest.short_name),
+          hasIcons: Array.isArray(manifest.icons) && manifest.icons.length > 0,
+          hasStartUrl: !!manifest.start_url,
+          hasDisplay: !!manifest.display,
+          hasThemeColor: !!manifest.theme_color,
+        };
+      } catch {
+        pwaManifest = { exists: true, hasName: false, hasIcons: false, hasStartUrl: false, hasDisplay: false, hasThemeColor: false };
+      }
+    }
+
+    // Social meta extraction
+    const twitterSiteMatch = html.match(/<meta[^>]*name=["']twitter:site["'][^>]*content=["']([^"']+)["']/i)
+      ?? html.match(/<meta[^>]*content=["']([^"']+)["'][^>]*name=["']twitter:site["']/i);
+    const twitterCreatorMatch = html.match(/<meta[^>]*name=["']twitter:creator["'][^>]*content=["']([^"']+)["']/i)
+      ?? html.match(/<meta[^>]*content=["']([^"']+)["'][^>]*name=["']twitter:creator["']/i);
+    const fbAppIdMatch = html.match(/<meta[^>]*property=["']fb:app_id["'][^>]*content=["']([^"']+)["']/i)
+      ?? html.match(/<meta[^>]*content=["']([^"']+)["'][^>]*property=["']fb:app_id["']/i);
+    const ogSiteNameMatch = html.match(/<meta[^>]*property=["']og:site_name["'][^>]*content=["']([^"']+)["']/i)
+      ?? html.match(/<meta[^>]*content=["']([^"']+)["'][^>]*property=["']og:site_name["']/i);
+    const socialMeta: CheckReport["socialMeta"] = {
+      twitterSite: twitterSiteMatch?.[1],
+      twitterCreator: twitterCreatorMatch?.[1],
+      fbAppId: fbAppIdMatch?.[1],
+      ogSiteName: ogSiteNameMatch?.[1],
+    };
+    const hasSocialMeta = !!(socialMeta.twitterSite || socialMeta.fbAppId || socialMeta.ogSiteName);
+
     const report: CheckReport = {
       url,
       totalScore,
@@ -1058,6 +1102,8 @@ export async function POST(request: NextRequest) {
       hreflangTags: hreflangTags.length > 0 ? hreflangTags : undefined,
       detectedTech: detectedTech.length > 0 ? detectedTech : undefined,
       ogImageAccessible,
+      pwaManifest,
+      socialMeta: hasSocialMeta ? socialMeta : undefined,
       coreWebVitals: {
         lcpCandidate: lcpCandidate,
         lcpImageCount: imgsWithoutDimensions,

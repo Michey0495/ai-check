@@ -194,6 +194,31 @@ function generateReportText(report: CheckReport): string {
     lines.push(`アクセス可否: ${report.ogImageAccessible ? "OK" : "アクセス不可（URLを確認してください）"}`);
   }
 
+  if (report.pwaManifest?.exists) {
+    lines.push("");
+    lines.push("--- PWA対応 ---");
+    const items = [
+      report.pwaManifest.hasName ? "名前: 設定済み" : "名前: 未設定",
+      report.pwaManifest.hasIcons ? "アイコン: 設定済み" : "アイコン: 未設定",
+      report.pwaManifest.hasStartUrl ? "start_url: 設定済み" : "start_url: 未設定",
+      report.pwaManifest.hasDisplay ? "display: 設定済み" : "display: 未設定",
+      report.pwaManifest.hasThemeColor ? "テーマカラー: 設定済み" : "テーマカラー: 未設定",
+    ];
+    lines.push(items.join("、"));
+  }
+
+  if (report.socialMeta) {
+    const parts: string[] = [];
+    if (report.socialMeta.ogSiteName) parts.push(`og:site_name: ${report.socialMeta.ogSiteName}`);
+    if (report.socialMeta.twitterSite) parts.push(`twitter:site: ${report.socialMeta.twitterSite}`);
+    if (report.socialMeta.fbAppId) parts.push(`fb:app_id: ${report.socialMeta.fbAppId}`);
+    if (parts.length > 0) {
+      lines.push("");
+      lines.push("--- ソーシャルメタ ---");
+      parts.forEach((p) => lines.push(p));
+    }
+  }
+
   const failItems = report.results.filter((r) => r.status === "fail");
   const warnItems = report.results.filter((r) => r.status === "warn");
 
@@ -1110,6 +1135,68 @@ export function CheckPageClient() {
               </div>
               <p className="mt-3 text-xs text-white/40">
                 HTMLソースとレスポンスヘッダーから検出されたフレームワーク・CMS・ツールです。
+              </p>
+            </div>
+          )}
+
+          {/* PWA Manifest */}
+          {report.pwaManifest?.exists && (
+            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+              <h2 className="mb-3 text-lg font-semibold text-white">PWA対応状況</h2>
+              <div className="grid gap-2 sm:grid-cols-5">
+                {([
+                  { label: "アプリ名", ok: report.pwaManifest.hasName },
+                  { label: "アイコン", ok: report.pwaManifest.hasIcons },
+                  { label: "start_url", ok: report.pwaManifest.hasStartUrl },
+                  { label: "display", ok: report.pwaManifest.hasDisplay },
+                  { label: "テーマカラー", ok: report.pwaManifest.hasThemeColor },
+                ] as const).map((item) => (
+                  <div key={item.label} className="flex items-center gap-2 rounded-lg bg-white/5 px-3 py-2">
+                    <span className={item.ok ? "text-green-400" : "text-white/30"}>
+                      {item.ok ? "+" : "-"}
+                    </span>
+                    <span className="text-sm text-white/60">{item.label}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-3 text-xs text-white/40">
+                Web App Manifest（manifest.json）のプロパティ設定状況です。
+              </p>
+            </div>
+          )}
+
+          {/* Social Meta */}
+          {report.socialMeta && (
+            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+              <h2 className="mb-3 text-lg font-semibold text-white">ソーシャルメタ情報</h2>
+              <div className="space-y-2">
+                {report.socialMeta.ogSiteName && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="text-white/40">og:site_name:</span>
+                    <span className="text-white/70">{report.socialMeta.ogSiteName}</span>
+                  </div>
+                )}
+                {report.socialMeta.twitterSite && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="text-white/40">twitter:site:</span>
+                    <span className="text-white/70">{report.socialMeta.twitterSite}</span>
+                  </div>
+                )}
+                {report.socialMeta.twitterCreator && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="text-white/40">twitter:creator:</span>
+                    <span className="text-white/70">{report.socialMeta.twitterCreator}</span>
+                  </div>
+                )}
+                {report.socialMeta.fbAppId && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="text-white/40">fb:app_id:</span>
+                    <span className="text-white/70">{report.socialMeta.fbAppId}</span>
+                  </div>
+                )}
+              </div>
+              <p className="mt-3 text-xs text-white/40">
+                SNSシェア時のブランド認証・帰属に使用されるメタタグです。
               </p>
             </div>
           )}

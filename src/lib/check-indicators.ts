@@ -147,6 +147,20 @@ export type CheckReport = {
   hreflangTags?: string[];
   detectedTech?: string[];
   ogImageAccessible?: boolean;
+  pwaManifest?: {
+    exists: boolean;
+    hasName: boolean;
+    hasIcons: boolean;
+    hasStartUrl: boolean;
+    hasDisplay: boolean;
+    hasThemeColor: boolean;
+  };
+  socialMeta?: {
+    twitterSite?: string;
+    twitterCreator?: string;
+    fbAppId?: string;
+    ogSiteName?: string;
+  };
   coreWebVitals?: {
     lcpCandidate?: string; // e.g. "img", "h1", "video"
     lcpImageCount: number; // above-fold large images without explicit dimensions

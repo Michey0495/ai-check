@@ -29,6 +29,119 @@ type CompareResult = {
   loading: boolean;
 };
 
+const INDICATOR_SHORT_NAMES = [
+  "クローラー",
+  "llms.txt",
+  "構造化",
+  "メタタグ",
+  "構造",
+  "SSR",
+  "サイトマップ",
+];
+
+const CHART_COLORS = [
+  "#60a5fa", // blue
+  "#f472b6", // pink
+  "#4ade80", // green
+  "#facc15", // yellow
+  "#c084fc", // purple
+];
+
+function RadarChart({ reports }: { reports: { url: string; report: CheckReport }[] }) {
+  const cx = 150;
+  const cy = 150;
+  const r = 110;
+  const levels = 4;
+  const n = 7; // 7 indicators
+
+  const angleStep = (2 * Math.PI) / n;
+  const startAngle = -Math.PI / 2;
+
+  function point(angle: number, radius: number) {
+    return {
+      x: cx + radius * Math.cos(angle),
+      y: cy + radius * Math.sin(angle),
+    };
+  }
+
+  // Grid lines
+  const gridPaths = Array.from({ length: levels }, (_, i) => {
+    const lr = (r * (i + 1)) / levels;
+    const pts = Array.from({ length: n }, (__, j) => point(startAngle + j * angleStep, lr));
+    return pts.map((p, j) => `${j === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ") + " Z";
+  });
+
+  // Axis lines
+  const axes = Array.from({ length: n }, (_, i) => point(startAngle + i * angleStep, r));
+
+  // Data polygons
+  const dataPolygons = reports.map((rpt, idx) => {
+    const pts = rpt.report.results.map((result, i) => {
+      const pct = result.maxScore > 0 ? result.score / result.maxScore : 0;
+      return point(startAngle + i * angleStep, r * pct);
+    });
+    const d = pts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ") + " Z";
+    return { d, color: CHART_COLORS[idx % CHART_COLORS.length] };
+  });
+
+  // Labels
+  const labels = INDICATOR_SHORT_NAMES.map((name, i) => {
+    const p = point(startAngle + i * angleStep, r + 22);
+    let anchor: "middle" | "end" | "start" = "middle";
+    if (p.x < cx - 10) anchor = "end";
+    else if (p.x > cx + 10) anchor = "start";
+    return { ...p, name, anchor };
+  });
+
+  return (
+    <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+      <h2 className="mb-4 text-xl font-bold text-white">レーダーチャート</h2>
+      <div className="flex flex-col items-center gap-4 lg:flex-row lg:items-start">
+        <svg viewBox="0 0 300 300" className="w-full max-w-[300px] shrink-0">
+          {/* Grid */}
+          {gridPaths.map((d, i) => (
+            <path key={i} d={d} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
+          ))}
+          {/* Axes */}
+          {axes.map((p, i) => (
+            <line key={i} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+          ))}
+          {/* Data */}
+          {dataPolygons.map((poly, i) => (
+            <g key={i}>
+              <path d={poly.d} fill={poly.color} fillOpacity="0.15" stroke={poly.color} strokeWidth="2" />
+              {reports[i].report.results.map((result, j) => {
+                const pct = result.maxScore > 0 ? result.score / result.maxScore : 0;
+                const p = point(startAngle + j * angleStep, r * pct);
+                return <circle key={j} cx={p.x} cy={p.y} r="3" fill={poly.color} />;
+              })}
+            </g>
+          ))}
+          {/* Labels */}
+          {labels.map((l, i) => (
+            <text key={i} x={l.x} y={l.y} textAnchor={l.anchor} fill="rgba(255,255,255,0.5)" fontSize="10" dominantBaseline="middle">
+              {l.name}
+            </text>
+          ))}
+        </svg>
+        {/* Legend */}
+        <div className="flex flex-wrap gap-3 lg:flex-col">
+          {reports.map((rpt, i) => {
+            let hostname: string;
+            try { hostname = new URL(rpt.report.url).hostname; } catch { hostname = rpt.report.url; }
+            return (
+              <div key={i} className="flex items-center gap-2">
+                <span className="inline-block h-3 w-3 rounded-full" style={{ backgroundColor: CHART_COLORS[i % CHART_COLORS.length] }} />
+                <span className="text-xs text-white/60">{hostname}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ScoreBar({ score, maxScore, status }: { score: number; maxScore: number; status: string }) {
   const pct = (score / maxScore) * 100;
   const color = status === "pass" ? "#4ade80" : status === "warn" ? "#facc15" : "#f87171";
@@ -237,6 +350,11 @@ export function CompareClient() {
               </div>
             ))}
           </div>
+
+          {/* Radar Chart */}
+          {reports.length >= 2 && (
+            <RadarChart reports={reports.map((r) => ({ url: r.url, report: r.report! }))} />
+          )}
 
           {/* Export */}
           {reports.length >= 2 && (

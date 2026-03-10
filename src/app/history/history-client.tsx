@@ -29,6 +29,91 @@ function getServerSnapshot(): string {
   return "[]";
 }
 
+function ScoreTrendChart({ entries }: { entries: HistoryEntry[] }) {
+  // Sort by date ascending for the chart
+  const sorted = [...entries]
+    .sort((a, b) => new Date(a.checkedAt).getTime() - new Date(b.checkedAt).getTime())
+    .slice(-20); // last 20 entries
+
+  if (sorted.length < 2) return null;
+
+  const w = 600;
+  const h = 200;
+  const px = 40; // padding x
+  const py = 20; // padding y
+  const chartW = w - px * 2;
+  const chartH = h - py * 2;
+
+  const scores = sorted.map((e) => (e.maxScore > 0 ? Math.round((e.totalScore / e.maxScore) * 100) : 0));
+  const minScore = Math.max(0, Math.min(...scores) - 10);
+  const maxScore = Math.min(100, Math.max(...scores) + 10);
+  const range = maxScore - minScore || 1;
+
+  const points = scores.map((s, i) => ({
+    x: px + (i / (sorted.length - 1)) * chartW,
+    y: py + chartH - ((s - minScore) / range) * chartH,
+    score: s,
+    date: sorted[i].checkedAt,
+    grade: sorted[i].grade,
+  }));
+
+  const pathD = points.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ");
+  const areaD = pathD + ` L${points[points.length - 1].x},${py + chartH} L${points[0].x},${py + chartH} Z`;
+
+  // Grid lines
+  const gridLines = [0, 25, 50, 75, 100].filter((v) => v >= minScore && v <= maxScore);
+
+  return (
+    <div className="mb-8 rounded-lg border border-white/10 bg-white/5 p-4">
+      <p className="mb-3 text-sm text-white/50">スコア推移</p>
+      <svg viewBox={`0 0 ${w} ${h}`} className="w-full" preserveAspectRatio="xMidYMid meet">
+        {/* Grid */}
+        {gridLines.map((v) => {
+          const y = py + chartH - ((v - minScore) / range) * chartH;
+          return (
+            <g key={v}>
+              <line x1={px} y1={y} x2={w - px} y2={y} stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+              <text x={px - 6} y={y} fill="rgba(255,255,255,0.3)" fontSize="10" textAnchor="end" dominantBaseline="middle">
+                {v}
+              </text>
+            </g>
+          );
+        })}
+        {/* Area fill */}
+        <path d={areaD} fill="url(#trendGradient)" />
+        <defs>
+          <linearGradient id="trendGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="rgba(96,165,250,0.3)" />
+            <stop offset="100%" stopColor="rgba(96,165,250,0)" />
+          </linearGradient>
+        </defs>
+        {/* Line */}
+        <path d={pathD} fill="none" stroke="#60a5fa" strokeWidth="2" strokeLinejoin="round" />
+        {/* Points */}
+        {points.map((p, i) => (
+          <g key={i}>
+            <circle cx={p.x} cy={p.y} r="4" fill="#000" stroke="#60a5fa" strokeWidth="2" />
+            {/* Show score on first, last, and every 5th point */}
+            {(i === 0 || i === points.length - 1 || i % 5 === 0) && (
+              <text x={p.x} y={p.y - 10} fill="rgba(255,255,255,0.5)" fontSize="9" textAnchor="middle">
+                {p.score}
+              </text>
+            )}
+          </g>
+        ))}
+        {/* Date labels */}
+        {points
+          .filter((_, i) => i === 0 || i === points.length - 1 || (points.length > 6 && i === Math.floor(points.length / 2)))
+          .map((p, i) => (
+            <text key={i} x={p.x} y={h - 2} fill="rgba(255,255,255,0.25)" fontSize="8" textAnchor="middle">
+              {new Date(p.date).toLocaleDateString("ja-JP", { month: "short", day: "numeric" })}
+            </text>
+          ))}
+      </svg>
+    </div>
+  );
+}
+
 const gradeColors: Record<string, string> = {
   A: "bg-green-500/20 text-green-400 border-green-500/30",
   B: "bg-blue-500/20 text-blue-400 border-blue-500/30",
@@ -164,6 +249,9 @@ export function HistoryClient() {
           </div>
         </div>
       )}
+
+      {/* Score Trend Chart */}
+      <ScoreTrendChart entries={entries} />
 
       {/* Controls */}
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
