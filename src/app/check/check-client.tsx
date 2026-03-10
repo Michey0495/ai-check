@@ -483,6 +483,110 @@ const indicatorTips: Record<string, { tip: string; guide?: string }> = {
   },
 };
 
+function ScoreSimulator({ report }: { report: CheckReport }) {
+  const improvableItems = report.results.filter((r) => r.status !== "pass");
+  const [fixed, setFixed] = useState<Set<string>>(new Set());
+
+  if (improvableItems.length === 0) return null;
+
+  const simulatedScore = report.results.reduce((sum, r) => {
+    if (fixed.has(r.id)) return sum + r.maxScore;
+    return sum + r.score;
+  }, 0);
+  const simulatedPct = Math.round((simulatedScore / report.maxScore) * 100);
+  const currentPct = Math.round((report.totalScore / report.maxScore) * 100);
+  const improvement = simulatedPct - currentPct;
+  const simulatedGrade = simulatedPct >= 90 ? "A" : simulatedPct >= 75 ? "B" : simulatedPct >= 60 ? "C" : simulatedPct >= 40 ? "D" : "F";
+
+  const gradeColors: Record<string, string> = {
+    A: "text-green-400", B: "text-blue-400", C: "text-yellow-400", D: "text-orange-400", F: "text-red-400",
+  };
+
+  const toggle = (id: string) => {
+    setFixed((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  return (
+    <div className="rounded-lg border border-primary/20 bg-primary/5 p-6">
+      <div className="mb-4 flex items-start justify-between">
+        <div>
+          <h2 className="text-xl font-bold text-white">改善シミュレーター</h2>
+          <p className="mt-1 text-sm text-white/50">
+            項目を選択すると、改善後の予測スコアを確認できます
+          </p>
+        </div>
+        {fixed.size > 0 && (
+          <div className="text-right">
+            <p className={`text-2xl font-bold ${gradeColors[simulatedGrade]}`}>
+              {simulatedGrade} ({simulatedPct})
+            </p>
+            <p className="text-xs text-green-400">+{improvement}pt</p>
+          </div>
+        )}
+      </div>
+      <div className="space-y-2">
+        {improvableItems.map((item) => {
+          const potential = item.maxScore - item.score;
+          const isFixed = fixed.has(item.id);
+          return (
+            <button
+              key={item.id}
+              onClick={() => toggle(item.id)}
+              className={`flex w-full cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 text-left transition-all duration-200 ${
+                isFixed
+                  ? "border-green-500/30 bg-green-500/10"
+                  : "border-white/10 bg-white/5 hover:border-white/20"
+              }`}
+            >
+              <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border text-xs ${
+                isFixed
+                  ? "border-green-500/50 bg-green-500/20 text-green-400"
+                  : "border-white/20 text-transparent"
+              }`}>
+                {isFixed ? "+" : ""}
+              </span>
+              <span className={`flex-1 text-sm ${isFixed ? "text-green-400" : "text-white/70"}`}>
+                {item.message}
+              </span>
+              <span className="text-xs text-white/30">+{potential}pt</span>
+            </button>
+          );
+        })}
+      </div>
+      {fixed.size > 0 && (
+        <div className="mt-4 rounded border border-white/5 bg-black/20 px-4 py-3">
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-white/40">
+              現在: {currentPct}/100 ({report.grade})
+            </p>
+            <p className="text-xs text-white/40">→</p>
+            <p className={`text-xs font-medium ${gradeColors[simulatedGrade]}`}>
+              予測: {simulatedPct}/100 ({simulatedGrade})
+            </p>
+          </div>
+          <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/10">
+            <div className="relative h-full">
+              <div
+                className="absolute h-full rounded-full bg-white/20"
+                style={{ width: `${simulatedPct}%`, transition: "width 0.3s ease-out" }}
+              />
+              <div
+                className="absolute h-full rounded-full bg-primary/60"
+                style={{ width: `${currentPct}%` }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function AllFixCodes({ report }: { report: CheckReport }) {
   const [open, setOpen] = useState(false);
   const codesWithNames = report.results
@@ -613,6 +717,20 @@ export function CheckPageClient() {
     const a = document.createElement("a");
     a.href = blobUrl;
     a.download = `ai-check-report-${new Date().toISOString().split("T")[0]}.txt`;
+    a.click();
+    URL.revokeObjectURL(blobUrl);
+  }, [report]);
+
+  const handleDownloadJson = useCallback(() => {
+    if (!report) return;
+    const json = JSON.stringify(report, null, 2);
+    const blob = new Blob([json], { type: "application/json;charset=utf-8" });
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = blobUrl;
+    let hostname = "site";
+    try { hostname = new URL(report.url).hostname; } catch { /* use default */ }
+    a.download = `ai-check-${hostname}-${new Date().toISOString().split("T")[0]}.json`;
     a.click();
     URL.revokeObjectURL(blobUrl);
   }, [report]);
@@ -848,6 +966,14 @@ export function CheckPageClient() {
                 onClick={handleDownloadReport}
               >
                 テキストで保存
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="cursor-pointer border-white/10 bg-white/5 text-white/70 transition-all duration-200 hover:bg-white/10 hover:text-white"
+                onClick={handleDownloadJson}
+              >
+                JSONで保存
               </Button>
               {report.results.some((r) => r.code) && (
                 <Button
@@ -1229,6 +1355,8 @@ export function CheckPageClient() {
           </div>
 
           <QuickFixGuide report={report} />
+
+          <ScoreSimulator report={report} />
 
           <CheckHistory currentUrl={report.url} />
 

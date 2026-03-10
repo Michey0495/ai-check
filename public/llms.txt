@@ -67,10 +67,14 @@
 - ソーシャルメタ検出（twitter:site、twitter:creator、fb:app_id、og:site_name）
 - 比較ページ レーダーチャート（7指標をビジュアル比較）
 - 履歴ページ スコア推移チャート（過去のスコア変動をSVGグラフで表示）
+- 改善シミュレーター（失敗項目を選択して改善後の予測スコアを確認）
+- JSONエクスポート（チェック結果をJSON形式でダウンロード）
+- バッチチェックAPI（最大10件のURLを一括チェック）
 
 ## API
 - GET /api/check?url=URL: URLのGEOスコアチェック（GETメソッド対応、ブラウザから直接アクセス可）。CORS対応
 - POST /api/check: URLのGEOスコアチェック（パラメータ: url）。レスポンスにresponseTimeMs、アクセシビリティ情報を含む。CORS対応
+- POST /api/check/batch: 複数URLの一括GEOスコアチェック（パラメータ: urls配列、最大10件）。CORS対応
 - POST /api/generate: ファイル生成（パラメータ: type, data）。CORS対応
 - POST /api/mcp: MCP Server (JSON-RPC 2.0) - 5ツール: check_geo_score, generate_llms_txt, generate_robots_txt, generate_json_ld, generate_agent_json。CORS対応
 - GET /api/badge?url=URL&style=flat|card: GEOスコアバッジ（SVG画像）

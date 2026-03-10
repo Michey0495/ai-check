@@ -104,6 +104,37 @@ const endpoints = [
     notes: null,
   },
   {
+    method: "POST",
+    path: "/api/check/batch",
+    description: "複数URLのGEOスコアを一括チェック（最大10件）",
+    request: `{
+  "urls": [
+    "https://example.com",
+    "https://example.org"
+  ]
+}`,
+    response: `{
+  "results": [
+    {
+      "url": "https://example.com",
+      "status": "ok",
+      "totalScore": 65,
+      "maxScore": 100,
+      "grade": "C",
+      "results": [...],
+      "checkedAt": "2026-03-11T00:00:00.000Z"
+    },
+    {
+      "url": "https://example.org",
+      "status": "ok",
+      ...
+    }
+  ],
+  "count": 2
+}`,
+    notes: "最大10件まで。レート制限はURL単位で適用。",
+  },
+  {
     method: "GET",
     path: "/api/badge",
     description: "GEOスコアバッジ（SVG画像）を生成。READMEやサイトに埋め込み可能。",

@@ -2,7 +2,7 @@
   "name": "AI Check",
   "description": "WebサイトのAI検索対応度をチェックし、llms.txt・robots.txt・JSON-LD構造化データ・agent.jsonを自動生成するツール",
   "url": "https://ai-check.ezoai.jp",
-  "version": "2.7.0",
+  "version": "2.8.0",
   "capabilities": [
     "GEOスコアチェック（7指標 + llms-full.txt検出 + スキーマタイプ識別 + noindex検出）",
     "AIクローラー検出（GPTBot, ChatGPT-User, ClaudeBot, anthropic-ai, PerplexityBot, Google-Extended, Bytespider, CCBot, Applebot-Extended, cohere-ai）",
@@ -48,11 +48,15 @@
     "PWA manifest.json検出・プロパティ検証",
     "ソーシャルメタ検出（twitter:site, fb:app_id, og:site_name）",
     "比較ページ レーダーチャート（7指標ビジュアル比較）",
-    "履歴ページ スコア推移チャート"
+    "履歴ページ スコア推移チャート",
+    "改善シミュレーター（改善後の予測スコアをインタラクティブに確認）",
+    "JSONエクスポート（チェック結果をJSON形式でダウンロード）",
+    "バッチチェックAPI（最大10件のURLを一括チェック）"
   ],
   "endpoints": {
     "mcp": "https://ai-check.ezoai.jp/api/mcp",
     "check": "https://ai-check.ezoai.jp/api/check",
+    "check_batch": "https://ai-check.ezoai.jp/api/check/batch",
     "generate": "https://ai-check.ezoai.jp/api/generate",
     "badge": "https://ai-check.ezoai.jp/api/badge"
   },
