@@ -124,7 +124,8 @@ export function LlmsTxtGenerator() {
         </div>
         <Button
           onClick={generate}
-          className="w-full cursor-pointer bg-primary text-primary-foreground transition-all duration-200 hover:bg-primary/80"
+          disabled={!siteName.trim() || !siteUrl.trim()}
+          className="w-full cursor-pointer bg-primary text-primary-foreground transition-all duration-200 hover:bg-primary/80 disabled:cursor-not-allowed disabled:opacity-50"
         >
           生成
         </Button>

@@ -724,7 +724,11 @@ export function CheckPageClient() {
                     src={report.ogImage}
                     alt={report.siteTitle || "Site preview"}
                     className="h-full w-full object-cover"
-                    onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                    onError={(e) => {
+                      const img = e.target as HTMLImageElement;
+                      const container = img.parentElement;
+                      if (container) container.style.display = "none";
+                    }}
                   />
                 </div>
               )}
@@ -752,7 +756,7 @@ export function CheckPageClient() {
 
           <div className="text-center">
             {!report.ogImage && !report.siteTitle && (
-              <p className="mb-4 text-sm text-white/50">{report.url}</p>
+              <p className="mb-4 truncate text-sm text-white/50">{report.url}</p>
             )}
             <ScoreCircle
               score={report.totalScore}

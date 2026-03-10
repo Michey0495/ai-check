@@ -13,7 +13,10 @@ export function UrlCheckForm({ size = "lg" }: { size?: "lg" | "sm" }) {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    if (!url.trim()) return;
+    if (!url.trim()) {
+      setError("URLを入力してください。");
+      return;
+    }
     let normalized = url.trim();
     if (!/^https?:\/\//i.test(normalized)) {
       normalized = "https://" + normalized;
