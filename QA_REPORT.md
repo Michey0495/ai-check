@@ -1,48 +1,101 @@
 # QA Report - web-url-a (AI Check)
 
-Date: 2026-03-11
+**Date:** 2026-03-11
+**Project:** AI Check (GEO Score Analyzer)
+**Domain:** ai-check.ezoai.jp
 
-## Checklist
+## Build & Lint
 
-- [x] `npm run build` 成功 (42 pages, 0 errors)
-- [x] `npm run lint` エラーなし
-- [x] レスポンシブ対応（モバイル・デスクトップ）- Tailwind responsive classes throughout
-- [x] favicon, OGP設定 - Dynamic icon/apple-icon, OG images, full metadata
-- [x] 404ページ - `not-found.tsx` with navigation links
-- [x] ローディング状態の表示 - `loading.tsx` with aria-label
-- [x] エラー状態の表示 - `error.tsx` + `global-error.tsx` with retry
-
-## SEO Status
-
-- Metadata: Complete (title, description, OGP, Twitter Card)
-- JSON-LD: Organization, WebApplication, FAQPage, HowTo, BreadcrumbList
-- robots.txt: AI crawler friendly (GPTBot, ClaudeBot, etc.)
-- llms.txt: Comprehensive AI-readable site description
-- agent.json: A2A Agent Card with MCP tools
-- sitemap.xml: 44 routes with priorities
-- manifest.json: PWA configuration
+| Check | Status |
+|-------|--------|
+| `npm run build` | PASS |
+| `npm run lint` | PASS (0 errors) |
 
 ## Issues Found & Fixed
 
-### 1. Long URL overflow (check-client.tsx:755)
-- **Problem**: URL displayed without truncation when no OG image/title present
-- **Fix**: Added `truncate` class
+### HIGH: Batch API missing timeout (fixed)
+- **File:** `src/app/api/check/batch/route.ts`
+- **Problem:** Internal fetch to `/api/check` had no AbortSignal timeout, risking indefinite hangs
+- **Fix:** Added `signal: AbortSignal.timeout(25000)` to batch internal fetches
 
-### 2. Empty input silent failure (url-check-form.tsx:16)
-- **Problem**: Empty URL submission silently returned with no feedback
-- **Fix**: Added error message "URLを入力してください。"
+### MEDIUM: Generate route missing maxDuration (fixed)
+- **File:** `src/app/api/generate/route.ts`
+- **Problem:** No `maxDuration` export, could theoretically run indefinitely on edge
+- **Fix:** Added `export const maxDuration = 10`
 
-### 3. Generator buttons clickable with empty required fields
-- **Problem**: llms-txt, agent-json, json-ld generators allowed clicking with empty required fields
-- **Fix**: Added `disabled` prop with visual feedback
-- **Files**: `generate/llms-txt/generator-client.tsx`, `generate/agent-json/generator-client.tsx`, `generate/json-ld/generator-client.tsx`
+### MEDIUM: PWA grid layout broken on tablets (fixed)
+- **File:** `src/app/check/check-client.tsx`
+- **Problem:** `sm:grid-cols-5` caused cramped 5-column layout on 640-768px screens
+- **Fix:** Changed to `grid-cols-2 sm:grid-cols-3 md:grid-cols-5` for progressive breakpoints
 
-### 4. OG image error handling (check-client.tsx:727)
-- **Problem**: Failed OG image hid only the img element, leaving empty aspect-ratio container
-- **Fix**: Hide the parent container on error
+### MEDIUM: Grade explanation grid broken on tablets (fixed)
+- **File:** `src/app/check/check-client.tsx`
+- **Problem:** Same 5-column issue as PWA grid
+- **Fix:** Changed to `grid-cols-2 sm:grid-cols-3 md:grid-cols-5`
 
-## Known Minor Issues (Not Fixed - Low Priority)
+### LOW: Global error button barely visible (fixed)
+- **File:** `src/app/global-error.tsx`
+- **Problem:** `bg-white/10` button too subtle on black background
+- **Fix:** Added `border border-white/20` for better visibility
 
-- `console.error` in `api/feedback/route.ts` - acceptable for server-side error logging
-- localStorage QuotaExceededError silently caught - edge case, acceptable
-- Clipboard API `.catch(() => {})` - graceful degradation, acceptable
+### LOW: Global error missing role="alert" (fixed)
+- **File:** `src/app/global-error.tsx`
+- **Problem:** Missing WCAG alert role for screen readers
+- **Fix:** Added `role="alert"` to error container
+
+### LOW: 404 page grid on small tablets (fixed)
+- **File:** `src/app/not-found.tsx`
+- **Problem:** Cards too narrow at 640px with `sm:grid-cols-3`
+- **Fix:** Added explicit `grid-cols-1` base for single column before sm breakpoint
+
+## Checklist
+
+- [x] `npm run build` success
+- [x] `npm run lint` no errors
+- [x] Responsive layout (mobile/tablet/desktop grids fixed)
+- [x] favicon (favicon.ico + dynamic icon.tsx + apple-icon.tsx)
+- [x] OGP (opengraph-image.tsx + per-page metadata)
+- [x] 404 page (custom not-found.tsx with navigation cards)
+- [x] Loading state (loading.tsx with spinner)
+- [x] Error state (error.tsx + global-error.tsx with reset)
+
+## SEO Status
+
+| Item | Status |
+|------|--------|
+| Page metadata (title, description) | All 22 pages have unique metadata |
+| OGP images | Dynamic generation (1200x630) |
+| Structured data (JSON-LD) | Organization, BreadcrumbList, HowTo, FAQPage, SoftwareApplication, CollectionPage |
+| robots.txt | 10 AI crawlers explicitly allowed |
+| sitemap.xml | 43 URLs with priority/changeFrequency |
+| llms.txt | Comprehensive AI site description |
+| .well-known/agent.json | A2A v2.8.0 with 49 capabilities, 5 MCP tools |
+| manifest.json | PWA-ready |
+
+## API Security
+
+| Check | Status |
+|-------|--------|
+| SSRF protection | Private IP/hostname blocking |
+| Rate limiting | Per-IP limits (5-30 req/min per endpoint) |
+| Input validation | URL length (2048), protocol (http/https), payload size (50KB) |
+| XSS prevention | SVG escaping, JSON.stringify for schema |
+| Timeout protection | AbortSignal on all external fetches |
+| CORS | Proper headers on all API routes |
+
+## Accessibility
+
+| Check | Status |
+|-------|--------|
+| Skip-to-content link | Present in root layout |
+| role="alert" on errors | error.tsx + global-error.tsx |
+| Semantic HTML | Proper headings, landmarks |
+| Color contrast | White on black (#000) base, accent colors for status |
+| Focus states | Present on interactive elements |
+
+## Performance Notes
+
+- All pages default to Server Components; "use client" only where needed (11 components)
+- check-client.tsx is large (1,540 lines) but functional; splitting would add complexity without clear benefit
+- Edge-rendered OG images for fast social preview generation
+- Rate limiting with memory cleanup prevents unbounded growth

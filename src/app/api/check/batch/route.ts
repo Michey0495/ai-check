@@ -73,6 +73,7 @@ export async function POST(request: NextRequest) {
               "x-forwarded-for": request.headers.get("x-forwarded-for") ?? "unknown",
             },
             body: JSON.stringify({ url }),
+            signal: AbortSignal.timeout(25000),
           });
           const data = await res.json();
           return { url, status: res.ok ? ("ok" as const) : ("error" as const), ...data };

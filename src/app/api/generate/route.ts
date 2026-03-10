@@ -5,6 +5,8 @@ function sanitizeLine(str: string): string {
   return str.replace(/[\r\n]/g, " ").trim();
 }
 
+export const maxDuration = 10;
+
 export async function OPTIONS() {
   return corsOptionsResponse();
 }

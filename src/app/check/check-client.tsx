@@ -1273,7 +1273,7 @@ export function CheckPageClient() {
           {report.pwaManifest?.exists && (
             <div className="rounded-lg border border-white/10 bg-white/5 p-6">
               <h2 className="mb-3 text-lg font-semibold text-white">PWA対応状況</h2>
-              <div className="grid gap-2 sm:grid-cols-5">
+              <div className="grid gap-2 grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
                 {([
                   { label: "アプリ名", ok: report.pwaManifest.hasName },
                   { label: "アイコン", ok: report.pwaManifest.hasIcons },
@@ -1334,7 +1334,7 @@ export function CheckPageClient() {
           {/* Grade explanation */}
           <div className="rounded-lg border border-white/10 bg-white/5 p-6">
             <h2 className="mb-3 text-lg font-semibold text-white">スコアの見方</h2>
-            <div className="grid gap-2 sm:grid-cols-5">
+            <div className="grid gap-2 grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
               {([
                 { grade: "A", range: "90-100", desc: "AI検索に十分対応済み", color: "text-green-400", bg: "bg-green-500/10" },
                 { grade: "B", range: "75-89", desc: "概ね対応、微調整で完璧に", color: "text-blue-400", bg: "bg-blue-500/10" },
