@@ -1,6 +1,6 @@
 # QA Report - web-url-a (AI Check)
 
-**Date:** 2026-03-11 (Night 29 QA Pass)
+**Date:** 2026-03-11 (Night 30 QA Pass)
 **Project:** AI Check (GEO Score Analyzer)
 **Domain:** ai-check.ezoai.jp
 
@@ -8,8 +8,16 @@
 
 | Check | Status |
 |-------|--------|
-| `npm run build` | PASS (43 static pages, all routes compiled) |
-| `npm run lint` | PASS (0 errors) |
+| `npm run build` | PASS (43 static pages, compiled in 7.0s) |
+| `npm run lint` | PASS (0 errors, 1 warning) |
+
+## Night 30 Fixes
+
+### MEDIUM: Lint error - setState in useEffect
+- **File:** `src/components/recent-checks.tsx`
+- **Issue:** `setHistory()` called synchronously inside `useEffect`, causing ESLint `react-hooks/set-state-in-effect` error
+- **Fix:** Moved localStorage read to `useState` lazy initializer, removed unused `useEffect` import
+- **Result:** Lint error resolved, eliminates unnecessary re-render on mount
 
 ## Previous Issues Fixed (Night 27)
 

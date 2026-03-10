@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 
 type HistoryEntry = {
@@ -34,16 +34,15 @@ function getGradeBg(grade: string) {
 }
 
 export function RecentChecks() {
-  const [history, setHistory] = useState<HistoryEntry[]>([]);
-
-  useEffect(() => {
+  const [history, setHistory] = useState<HistoryEntry[]>(() => {
+    if (typeof window === "undefined") return [];
     try {
       const stored = JSON.parse(localStorage.getItem(HISTORY_KEY) ?? "[]") as HistoryEntry[];
-      setHistory(stored.slice(0, 5));
+      return stored.slice(0, 5);
     } catch {
-      // ignore
+      return [];
     }
-  }, []);
+  });
 
   if (history.length === 0) return null;
 
