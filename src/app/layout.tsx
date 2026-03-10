@@ -68,6 +68,11 @@ export const metadata: Metadata = {
     "AI Overview 対策",
     "AI検索 CTR",
     "GEO対策 無料",
+    "GEO対策 チェッカー",
+    "LLM最適化",
+    "AI Overview 対策",
+    "Applebot",
+    "AI検索 引用",
   ],
   openGraph: {
     title: "AI Check - AI検索対応度チェッカー & GEO対策ツール",
