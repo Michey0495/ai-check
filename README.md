@@ -338,3 +338,13 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - UX: テキストレポートにサーバー情報セクション追加（圧縮・Server）
 - UX: 印刷/PDF対応追加（チェック結果ページに「印刷 / PDF」ボタン、@media printスタイルで白背景・読みやすい配色に最適化）
 - AI公開チャネル: agent.json v2.9.0に更新、llms.txtに圧縮検出・Server検出・印刷対応情報追記
+
+### Night 31 (完了)
+- チェック強化: リダイレクトチェーン分析追加（HTTP→HTTPSリダイレクト検出、www正規化検出、リダイレクト回数・最終URL・チェーン全体を表示）
+- チェック強化: canonical URL検出・不一致警告追加（アクセスURLとcanonical URLの整合性チェック）
+- UX: チェック結果に「リダイレクト & canonical URL」セクション追加（リダイレクトチェーンの可視化、canonical不一致の警告）
+- UX: チェック結果のサイト情報バッジにリダイレクト回数・canonical不一致を表示
+- UX: テキストレポートにリダイレクト・canonical情報を追加
+- UX: トップページに「最近のチェック」セクション追加（localStorage履歴から直近5件を表示、再チェックへの導線）
+- SEO: 新規キーワード4件追加（リダイレクト チェック、canonical URL チェック、AI検索 リダイレクト、GEOスコア リダイレクト分析）
+- AI公開チャネル: agent.json v3.1.0に更新、llms.txtにリダイレクト・canonical情報追記

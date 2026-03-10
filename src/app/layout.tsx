@@ -87,6 +87,10 @@ export const metadata: Metadata = {
     "GEO対策 2026",
     "AI Mode 対策",
     "AIに引用されるサイト",
+    "リダイレクト チェック",
+    "canonical URL チェック",
+    "AI検索 リダイレクト",
+    "GEOスコア リダイレクト分析",
   ],
   openGraph: {
     title: "AI Check - AI検索対応度チェッカー & GEO対策ツール",

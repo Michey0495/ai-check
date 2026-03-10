@@ -161,6 +161,15 @@ export type CheckReport = {
     fbAppId?: string;
     ogSiteName?: string;
   };
+  redirectChain?: {
+    hops: number;
+    finalUrl: string;
+    hasHttpToHttps: boolean;
+    hasWwwRedirect: boolean;
+    chain: string[];
+  };
+  canonicalUrl?: string;
+  canonicalMismatch?: boolean;
   contentEncoding?: string;
   serverHeader?: string;
   coreWebVitals?: {

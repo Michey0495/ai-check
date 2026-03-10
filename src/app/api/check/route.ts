@@ -64,6 +64,66 @@ function isPrivateIPv4(ip: string): boolean {
   return false;
 }
 
+type RedirectInfo = {
+  hops: number;
+  finalUrl: string;
+  hasHttpToHttps: boolean;
+  hasWwwRedirect: boolean;
+  chain: string[];
+};
+
+async function detectRedirectChain(url: string, maxHops = 5): Promise<RedirectInfo> {
+  const chain: string[] = [url];
+  let currentUrl = url;
+  let hasHttpToHttps = false;
+  let hasWwwRedirect = false;
+
+  for (let i = 0; i < maxHops; i++) {
+    try {
+      const parsed = new URL(currentUrl);
+      if (isPrivateHostname(parsed.hostname)) break;
+      const res = await fetch(currentUrl, {
+        method: "HEAD",
+        redirect: "manual",
+        signal: AbortSignal.timeout(5000),
+        headers: { "User-Agent": "AI-Check-Bot/1.0" },
+      });
+      if (res.status >= 300 && res.status < 400) {
+        const location = res.headers.get("location");
+        if (!location) break;
+        const nextUrl = location.startsWith("http") ? location : new URL(location, currentUrl).toString();
+        chain.push(nextUrl);
+        // Detect HTTP→HTTPS
+        if (currentUrl.startsWith("http://") && nextUrl.startsWith("https://")) {
+          hasHttpToHttps = true;
+        }
+        // Detect www redirect (either direction)
+        const curHost = new URL(currentUrl).hostname;
+        const nextHost = new URL(nextUrl).hostname;
+        if (
+          (curHost.startsWith("www.") && !nextHost.startsWith("www.") && curHost.slice(4) === nextHost) ||
+          (!curHost.startsWith("www.") && nextHost.startsWith("www.") && "www." + curHost === nextHost)
+        ) {
+          hasWwwRedirect = true;
+        }
+        currentUrl = nextUrl;
+      } else {
+        break;
+      }
+    } catch {
+      break;
+    }
+  }
+
+  return {
+    hops: chain.length - 1,
+    finalUrl: currentUrl,
+    hasHttpToHttps,
+    hasWwwRedirect,
+    chain,
+  };
+}
+
 type FetchResult = { ok: boolean; text: string; headers?: Record<string, string> };
 
 async function safeFetch(url: string, timeoutMs = 10000, returnHeaders = false): Promise<FetchResult> {
@@ -721,7 +781,7 @@ export async function POST(request: NextRequest) {
     const startTime = Date.now();
 
     // Fetch all resources concurrently
-    const [robotsRes, llmsRes, llmsFullRes, pageRes, sitemapRes, agentRes, manifestRes] = await Promise.all([
+    const [robotsRes, llmsRes, llmsFullRes, pageRes, sitemapRes, agentRes, manifestRes, redirectInfo] = await Promise.all([
       safeFetch(`${baseUrl}/robots.txt`),
       safeFetch(`${baseUrl}/llms.txt`),
       safeFetch(`${baseUrl}/llms-full.txt`),
@@ -729,6 +789,7 @@ export async function POST(request: NextRequest) {
       safeFetch(`${baseUrl}/sitemap.xml`),
       safeFetch(`${baseUrl}/.well-known/agent.json`),
       safeFetch(`${baseUrl}/manifest.json`),
+      detectRedirectChain(url),
     ]);
 
     // If main page is unreachable, return a clear error
@@ -1060,6 +1121,12 @@ export async function POST(request: NextRequest) {
     };
     const hasSocialMeta = !!(socialMeta.twitterSite || socialMeta.fbAppId || socialMeta.ogSiteName);
 
+    // Canonical URL detection
+    const canonicalMatch = html.match(/<link[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)["']/i)
+      ?? html.match(/<link[^>]*href=["']([^"']+)["'][^>]*rel=["']canonical["']/i);
+    const canonicalUrl = canonicalMatch?.[1];
+    const canonicalMismatch = canonicalUrl ? (canonicalUrl !== url && canonicalUrl !== url.replace(/\/$/, "") && canonicalUrl !== url + "/") : undefined;
+
     const report: CheckReport = {
       url,
       totalScore,
@@ -1108,6 +1175,9 @@ export async function POST(request: NextRequest) {
       ogImageAccessible,
       pwaManifest,
       socialMeta: hasSocialMeta ? socialMeta : undefined,
+      redirectChain: redirectInfo.hops > 0 ? redirectInfo : undefined,
+      canonicalUrl: canonicalUrl || undefined,
+      canonicalMismatch: canonicalMismatch || undefined,
       contentEncoding: contentEncoding || undefined,
       serverHeader: serverHeader || undefined,
       coreWebVitals: {

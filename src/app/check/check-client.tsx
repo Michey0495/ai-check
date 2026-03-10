@@ -169,6 +169,22 @@ function generateReportText(report: CheckReport): string {
     if (report.hreflangTags && report.hreflangTags.length > 0) lines.push(`hreflang: ${report.hreflangTags.join(", ")}`);
   }
 
+  if (report.redirectChain) {
+    lines.push("");
+    lines.push("--- リダイレクト ---");
+    lines.push(`リダイレクト回数: ${report.redirectChain.hops}回`);
+    lines.push(`最終URL: ${report.redirectChain.finalUrl}`);
+    if (report.redirectChain.hasHttpToHttps) lines.push("HTTP→HTTPSリダイレクト: あり");
+    if (report.redirectChain.hasWwwRedirect) lines.push("wwwリダイレクト: あり");
+  }
+
+  if (report.canonicalUrl) {
+    lines.push("");
+    lines.push("--- canonical URL ---");
+    lines.push(`canonical: ${report.canonicalUrl}`);
+    if (report.canonicalMismatch) lines.push("⚠ canonical URLとアクセスURLが一致しません");
+  }
+
   if (report.contentEncoding || report.serverHeader) {
     lines.push("");
     lines.push("--- サーバー情報 ---");
@@ -952,8 +968,18 @@ export function CheckPageClient() {
                   OG画像: {report.ogImageAccessible ? "アクセス可" : "アクセス不可"}
                 </span>
               )}
+              {report.redirectChain && report.redirectChain.hops > 0 && (
+                <span className={`rounded-full px-3 py-1 text-xs ${report.redirectChain.hops <= 1 ? "bg-green-500/10 text-green-400" : report.redirectChain.hops <= 2 ? "bg-yellow-500/10 text-yellow-400" : "bg-red-500/10 text-red-400"}`}>
+                  リダイレクト: {report.redirectChain.hops}回{report.redirectChain.hasHttpToHttps ? " (HTTPS)" : ""}
+                </span>
+              )}
+              {report.canonicalMismatch && (
+                <span className="rounded-full bg-yellow-500/10 px-3 py-1 text-xs text-yellow-400">
+                  canonical不一致
+                </span>
+              )}
               {report.contentEncoding && (
-                <span className="rounded-full bg-cyan-500/10 px-3 py-1 text-xs text-cyan-400">
+                <span className="rounded-full bg-primary/10 px-3 py-1 text-xs text-primary">
                   圧縮: {report.contentEncoding}
                 </span>
               )}
@@ -1353,6 +1379,46 @@ export function CheckPageClient() {
               </div>
               <p className="mt-3 text-xs text-white/40">
                 SNSシェア時のブランド認証・帰属に使用されるメタタグです。
+              </p>
+            </div>
+          )}
+
+          {/* Redirect Chain & Canonical */}
+          {(report.redirectChain || report.canonicalUrl) && (
+            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+              <h2 className="mb-3 text-lg font-semibold text-white">リダイレクト & canonical URL</h2>
+              {report.redirectChain && report.redirectChain.hops > 0 && (
+                <div className="mb-4">
+                  <p className="mb-2 text-sm text-white/60">
+                    リダイレクト: <span className={report.redirectChain.hops <= 1 ? "text-green-400" : report.redirectChain.hops <= 2 ? "text-yellow-400" : "text-red-400"}>{report.redirectChain.hops}回</span>
+                    {report.redirectChain.hasHttpToHttps && <span className="ml-2 rounded bg-green-500/10 px-2 py-0.5 text-xs text-green-400">HTTP→HTTPS</span>}
+                    {report.redirectChain.hasWwwRedirect && <span className="ml-2 rounded bg-blue-500/10 px-2 py-0.5 text-xs text-blue-400">www正規化</span>}
+                  </p>
+                  <div className="space-y-1">
+                    {report.redirectChain.chain.map((u, i) => (
+                      <div key={i} className="flex items-center gap-2 text-xs">
+                        <span className="text-white/30">{i === 0 ? "開始" : i === report.redirectChain!.chain.length - 1 ? "最終" : `${i}回目`}</span>
+                        <span className="text-white/50 truncate">{u}</span>
+                      </div>
+                    ))}
+                  </div>
+                  {report.redirectChain.hops >= 3 && (
+                    <p className="mt-2 text-xs text-yellow-400/70">リダイレクトが3回以上あります。ページ読み込み速度に影響する可能性があります。</p>
+                  )}
+                </div>
+              )}
+              {report.canonicalUrl && (
+                <div>
+                  <p className="text-sm text-white/60">
+                    canonical: <span className="text-white/70">{report.canonicalUrl}</span>
+                  </p>
+                  {report.canonicalMismatch && (
+                    <p className="mt-1 text-xs text-yellow-400/70">canonical URLとアクセスURLが異なります。SEOの正規化設定を確認してください。</p>
+                  )}
+                </div>
+              )}
+              <p className="mt-3 text-xs text-white/40">
+                リダイレクトチェーンが長いとクローラーの巡回効率が低下します。canonical URLは検索エンジンに正規ページを指定します。
               </p>
             </div>
           )}

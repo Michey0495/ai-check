@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { UrlCheckForm } from "@/components/url-check-form";
 import { FaqAccordion } from "@/components/faq-accordion";
+import { RecentChecks } from "@/components/recent-checks";
 import { CHECK_INDICATORS, GENERATOR_TYPES } from "@/lib/check-indicators";
 
 const faqData = [
@@ -63,7 +64,7 @@ const jsonLd = {
     url: "https://ezoai.jp",
   },
   datePublished: "2026-03-06",
-  dateModified: "2026-03-12",
+  dateModified: "2026-03-11",
   // NOTE: aggregateRating は実データが無いため設置禁止（Google ガイドライン違反）
 };
 
@@ -184,6 +185,9 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* Recent Checks */}
+      <RecentChecks />
 
       {/* Supported AI Engines */}
       <section className="py-8">
