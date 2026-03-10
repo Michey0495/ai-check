@@ -31,4 +31,10 @@ Allow: /
 User-agent: Bytespider
 Allow: /
 
+User-agent: CCBot
+Allow: /
+
+User-agent: Diffbot
+Allow: /
+
 Sitemap: https://ai-check.ezoai.jp/sitemap.xml
