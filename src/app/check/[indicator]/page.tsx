@@ -733,9 +733,9 @@ export default async function IndicatorPage({
           {generatorLink && (
             <Link
               href={generatorLink.path}
-              className="cursor-pointer rounded-lg border border-cyan-400/20 bg-white/5 p-5 transition-all duration-200 hover:border-cyan-400/40 hover:bg-white/10"
+              className="cursor-pointer rounded-lg border border-primary/20 bg-white/5 p-5 transition-all duration-200 hover:border-primary/40 hover:bg-white/10"
             >
-              <p className="font-semibold text-cyan-400">{generatorLink.name} ジェネレーター</p>
+              <p className="font-semibold text-primary">{generatorLink.name} ジェネレーター</p>
               <p className="mt-1 text-sm text-white/50">{generatorLink.description}</p>
             </Link>
           )}

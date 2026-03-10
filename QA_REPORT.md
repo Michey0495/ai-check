@@ -1,6 +1,6 @@
 # QA Report - web-url-a (AI Check)
 
-**Date:** 2026-03-11 (Night 28 QA Pass)
+**Date:** 2026-03-11 (Night 29 QA Pass)
 **Project:** AI Check (GEO Score Analyzer)
 **Domain:** ai-check.ezoai.jp
 
@@ -8,7 +8,7 @@
 
 | Check | Status |
 |-------|--------|
-| `npm run build` | PASS (all 36 routes compiled) |
+| `npm run build` | PASS (43 static pages, all routes compiled) |
 | `npm run lint` | PASS (0 errors) |
 
 ## Previous Issues Fixed (Night 27)
@@ -33,9 +33,14 @@
 - **File:** `src/app/not-found.tsx`
 - **Fix:** Explicit `grid-cols-1` base class
 
-## Night 28 QA Results
+## Night 29 QA Results
 
-### No new issues found
+### Fixed: Design system violation in /check/[indicator]
+- **File:** `src/app/check/[indicator]/page.tsx` (line 736)
+- **Issue:** Used `border-cyan-400/20` and `text-cyan-400` instead of primary color
+- **Fix:** Replaced with `border-primary/20` and `text-primary`
+
+### Full audit - no other issues found
 
 Full audit of the following areas revealed no defects:
 
@@ -65,7 +70,7 @@ Full audit of the following areas revealed no defects:
 | OGP images | Dynamic generation (1200x630) |
 | Structured data (JSON-LD) | Organization, BreadcrumbList, HowTo, FAQPage, WebApplication |
 | robots.txt | 10 AI crawlers explicitly allowed |
-| sitemap.xml | 43 URLs with priority/changeFrequency |
+| sitemap.xml | 44 URLs with priority/changeFrequency |
 | llms.txt | Comprehensive AI site description |
 | .well-known/agent.json | A2A Agent Card with MCP tools |
 | manifest.json | PWA-ready |
