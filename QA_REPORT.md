@@ -1,6 +1,6 @@
 # QA Report - web-url-a (AI Check)
 
-**Date:** 2026-03-11 (Night 32 QA Pass)
+**Date:** 2026-03-12 (Night 33 QA Pass)
 **Project:** AI Check (GEO Score Analyzer)
 **Domain:** ai-check.ezoai.jp
 
@@ -10,6 +10,13 @@
 |-------|--------|
 | `npm run build` | PASS (43 static pages, compiled in 7.1s) |
 | `npm run lint` | PASS (0 errors, 0 warnings) |
+
+## Night 33 Fixes
+
+### LOW: FAQ Accordion Missing aria-labelledby (Accessibility)
+- **File:** `src/components/faq-accordion.tsx`
+- **Issue:** `role="region"` panels had no `aria-labelledby`, so screen readers couldn't associate regions with their trigger buttons
+- **Fix:** Added `id={faq-button-${i}}` to buttons and `aria-labelledby={faq-button-${i}}` to region panels
 
 ## Night 32 Fixes
 
