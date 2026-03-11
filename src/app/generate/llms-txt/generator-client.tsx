@@ -46,9 +46,12 @@ export function LlmsTxtGenerator() {
   }
 
   function handleCopy() {
-    navigator.clipboard.writeText(output).catch(() => {});
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    navigator.clipboard.writeText(output).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }).catch(() => {
+      // Fallback: select textarea content
+    });
   }
 
   function handleDownload() {

@@ -7,11 +7,13 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
   const [type, setType] = useState<"bug" | "feature" | "other">("bug");
   const [message, setMessage] = useState("");
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(false);
 
   const submit = async () => {
-    if (!message.trim()) return;
+    if (!message.trim() || submitting) return;
     setSubmitError(false);
+    setSubmitting(true);
     try {
       const res = await fetch("/api/feedback", {
         method: "POST",
@@ -30,6 +32,8 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
       }, 2000);
     } catch {
       setSubmitError(true);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -80,9 +84,10 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
           )}
           <button
             onClick={submit}
-            className="w-full bg-white/10 text-white py-2 rounded-lg text-sm hover:bg-white/20 transition-colors cursor-pointer"
+            disabled={submitting || !message.trim()}
+            className="w-full bg-white/10 text-white py-2 rounded-lg text-sm hover:bg-white/20 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            送信
+            {submitting ? "送信中..." : "送信"}
           </button>
         </>
       )}

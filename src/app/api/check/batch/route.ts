@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     for (const url of urls) {
       if (typeof url !== "string" || !url.trim()) {
         return NextResponse.json(
-          { error: `無効なURLが含まれています: ${url}`, errorCode: "INVALID_URL" },
+          { error: "無効なURLが含まれています。すべてのURLを文字列で指定してください。", errorCode: "INVALID_URL" },
           { status: 400, headers: corsHeaders() }
         );
       }

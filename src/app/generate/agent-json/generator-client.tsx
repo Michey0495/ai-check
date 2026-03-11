@@ -41,9 +41,10 @@ export function AgentJsonGenerator() {
   }
 
   function handleCopy() {
-    navigator.clipboard.writeText(output).catch(() => {});
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    navigator.clipboard.writeText(output).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }).catch(() => {});
   }
 
   function handleDownload() {

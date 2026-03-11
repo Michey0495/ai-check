@@ -50,9 +50,10 @@ export function BadgeGenerator() {
     } else {
       text = `<a href="${checkUrl}"><img src="${badgeUrl}" alt="GEO Score" /></a>`;
     }
-    navigator.clipboard.writeText(text).catch(() => {});
-    setCopied(type);
-    setTimeout(() => setCopied(null), 2000);
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(type);
+      setTimeout(() => setCopied(null), 2000);
+    }).catch(() => {});
   }
 
   return (
