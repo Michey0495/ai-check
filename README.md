@@ -392,4 +392,5 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - UX: 開発者ページにAPI Playground追加（ブラウザからAPIを直接テスト、レスポンスタイム表示、6エンドポイント対応）
 - UX: URL入力フォームにオートコンプリート追加（チェック履歴からURL候補を表示、キーボード操作対応）
 - UX: グローバルキーボードショートカット追加（Ctrl+K / Cmd+K でURL入力にフォーカス）
+- 開発者ページ: 全REST APIエンドポイントにcurlコマンドコピーボタン追加
 - AI公開チャネル: agent.json v3.6.0に更新、llms.txtにAPI Playground・オートコンプリート・ショートカット情報追記
