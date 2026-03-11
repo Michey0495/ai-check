@@ -13,6 +13,7 @@ import {
   getPreviousScore,
   saveToHistory,
   generateReportText,
+  generateMarkdownReport,
 } from "./check-utils";
 import {
   ScoreCircle,
@@ -25,6 +26,8 @@ import {
   AllFixCodes,
 } from "./check-sections";
 import {
+  AiCrawlerStatusSection,
+  ExternalResourcesSection,
   AccessibilitySection,
   SecurityHeadersSection,
   SslCertificateSection,
@@ -129,6 +132,20 @@ export function CheckPageClient() {
     let hostname = "site";
     try { hostname = new URL(report.url).hostname; } catch { /* use default */ }
     a.download = `ai-check-${hostname}-${new Date().toISOString().split("T")[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(blobUrl);
+  }, [report]);
+
+  const handleDownloadMarkdown = useCallback(() => {
+    if (!report) return;
+    const md = generateMarkdownReport(report);
+    const blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = blobUrl;
+    let hostname = "site";
+    try { hostname = new URL(report.url).hostname; } catch { /* use default */ }
+    a.download = `ai-check-${hostname}-${new Date().toISOString().split("T")[0]}.md`;
     a.click();
     URL.revokeObjectURL(blobUrl);
   }, [report]);
@@ -409,6 +426,14 @@ export function CheckPageClient() {
               >
                 JSONで保存
               </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="cursor-pointer border-white/10 bg-white/5 text-white/70 transition-all duration-200 hover:bg-white/10 hover:text-white"
+                onClick={handleDownloadMarkdown}
+              >
+                Markdownで保存
+              </Button>
               {report.results.some((r) => r.code) && (
                 <Button
                   variant="outline"
@@ -464,6 +489,7 @@ export function CheckPageClient() {
 
           <SectionNav report={report} />
 
+          <AiCrawlerStatusSection report={report} />
           <AccessibilitySection report={report} />
           <SecurityHeadersSection report={report} />
           <SslCertificateSection report={report} />
@@ -480,6 +506,7 @@ export function CheckPageClient() {
           <DuplicateMetaTagsSection report={report} />
           <OgPreviewSection report={report} />
           <HeadingTreeSection report={report} />
+          <ExternalResourcesSection report={report} />
 
           {/* Score breakdown chart */}
           <div id="sec-score-breakdown" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">

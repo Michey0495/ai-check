@@ -278,6 +278,7 @@ export function SectionNav({ report }: { report: CheckReport }) {
       { id: "sec-simulator", label: "シミュレーター", exists: report.results.some((r) => r.status !== "pass") },
       { id: "sec-detail", label: "詳細結果", exists: true },
       { id: "sec-fix-codes", label: "改善コード", exists: report.results.some((r) => r.code) },
+      { id: "sec-ai-crawlers", label: "AIクローラー", exists: !!(report.aiCrawlerStatus && report.aiCrawlerStatus.length > 0) },
       { id: "sec-accessibility", label: "アクセシビリティ", exists: !!(report.accessibility && (report.accessibility.imgCount > 0 || report.accessibility.ariaLandmarks > 0)) },
       { id: "sec-security", label: "セキュリティ", exists: !!report.securityHeaders },
       { id: "sec-ssl", label: "SSL/TLS", exists: !!report.sslCertificate },
@@ -294,6 +295,7 @@ export function SectionNav({ report }: { report: CheckReport }) {
       { id: "sec-dup-meta", label: "重複メタタグ", exists: !!(report.duplicateMetaTags && report.duplicateMetaTags.length > 0) },
       { id: "sec-og-preview", label: "シェアプレビュー", exists: !!(report.ogPreview || report.ogImage) },
       { id: "sec-heading-tree", label: "見出し構造", exists: !!(report.headingTree && report.headingTree.length > 0) },
+      { id: "sec-ext-resources", label: "外部リソース", exists: !!report.externalResourceCount },
     ];
     return s.filter((x) => x.exists);
   }, [report]);

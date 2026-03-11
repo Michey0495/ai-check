@@ -423,3 +423,25 @@ export function analyzeI18n(html: string, responseHdrs: Record<string, string>) 
   }).filter(Boolean);
   return { contentLanguage, hreflangTags };
 }
+
+export function analyzeExternalResources(html: string, baseUrl: string) {
+  const cssLinks = html.match(/<link[^>]*rel=["']stylesheet["'][^>]*href=["']([^"']+)["']/gi) ?? [];
+  let externalCss = 0;
+  for (const link of cssLinks) {
+    const hrefMatch = link.match(/href=["']([^"']+)["']/i);
+    if (hrefMatch) {
+      const href = hrefMatch[1];
+      if (href.startsWith("http") && !href.startsWith(baseUrl)) externalCss++;
+    }
+  }
+  const scriptTags = html.match(/<script[^>]*src=["']([^"']+)["'][^>]*>/gi) ?? [];
+  let externalJs = 0;
+  for (const tag of scriptTags) {
+    const srcMatch = tag.match(/src=["']([^"']+)["']/i);
+    if (srcMatch) {
+      const src = srcMatch[1];
+      if (src.startsWith("http") && !src.startsWith(baseUrl)) externalJs++;
+    }
+  }
+  return { externalCss, externalJs, totalExternal: externalCss + externalJs };
+}

@@ -33,6 +33,23 @@ function validateJsonLdItem(item: Record<string, unknown>): { type: string; vali
   return { type, valid: missing.length === 0, missing };
 }
 
+export const AI_CRAWLERS = ["GPTBot", "ChatGPT-User", "ClaudeBot", "anthropic-ai", "PerplexityBot", "Google-Extended", "Bytespider", "CCBot", "Applebot-Extended", "cohere-ai"];
+
+export function analyzeAiCrawlerStatus(robotsText: string | null): { name: string; allowed: boolean }[] {
+  if (robotsText === null || robotsText === "") {
+    return AI_CRAWLERS.map((name) => ({ name, allowed: true }));
+  }
+  const hasGlobalBlock = /User-agent:\s*\*\s*\n(?:(?!User-agent:)[^\n]*\n)*?\s*Disallow:\s*\/\s*$/im.test(robotsText);
+  return AI_CRAWLERS.map((c) => {
+    const escaped = c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const hasSpecificAllow = new RegExp(`User-agent:\\s*${escaped}\\s*\\n(?:(?!User-agent:)[^\\n]*\\n)*?\\s*Allow:\\s*/`, "i").test(robotsText);
+    if (hasSpecificAllow) return { name: c, allowed: true };
+    const pattern = new RegExp(`User-agent:\\s*${escaped}\\s*\\n(?:(?!User-agent:)[^\\n]*\\n)*?\\s*Disallow:\\s*/`, "i");
+    if (pattern.test(robotsText)) return { name: c, allowed: false };
+    return { name: c, allowed: !hasGlobalBlock };
+  });
+}
+
 export function checkRobotsTxt(robotsText: string | null, baseUrl: string): CheckResult {
   if (robotsText === null) {
     return {

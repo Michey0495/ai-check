@@ -37,6 +37,8 @@ import {
   analyzeDuplicateMetaTags,
   analyzeCanonical,
   analyzeI18n,
+  analyzeAiCrawlerStatus,
+  analyzeExternalResources,
 } from "@/lib/check-engine";
 
 export async function OPTIONS() {
@@ -220,6 +222,8 @@ export async function POST(request: NextRequest) {
     const headingTree = analyzeHeadingTree(html);
     const duplicateMetaTags = analyzeDuplicateMetaTags(html);
     const { canonicalUrl, canonicalMismatch } = analyzeCanonical(html, url);
+    const aiCrawlerStatus = analyzeAiCrawlerStatus(robotsRes.ok ? robotsRes.text : null);
+    const externalResourceCount = analyzeExternalResources(html, baseUrl);
 
     const report: CheckReport = {
       url,
@@ -272,6 +276,8 @@ export async function POST(request: NextRequest) {
       headingTree,
       duplicateMetaTags,
       dnsResolutionMs: dnsResolutionMs ?? undefined,
+      aiCrawlerStatus,
+      externalResourceCount: externalResourceCount.totalExternal > 0 ? externalResourceCount : undefined,
     };
 
     return NextResponse.json(report, {

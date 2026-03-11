@@ -232,6 +232,15 @@ export type CheckReport = {
     count: number;
   }[];
   dnsResolutionMs?: number;
+  aiCrawlerStatus?: {
+    name: string;
+    allowed: boolean;
+  }[];
+  externalResourceCount?: {
+    externalCss: number;
+    externalJs: number;
+    totalExternal: number;
+  };
 };
 
 export function getGrade(score: number, maxScore: number): CheckReport["grade"] {

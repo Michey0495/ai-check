@@ -2,6 +2,106 @@
 
 import type { CheckReport } from "@/lib/check-indicators";
 
+const AI_CRAWLER_LABELS: Record<string, string> = {
+  GPTBot: "ChatGPT",
+  "ChatGPT-User": "ChatGPT (User)",
+  ClaudeBot: "Claude",
+  "anthropic-ai": "Anthropic",
+  PerplexityBot: "Perplexity",
+  "Google-Extended": "Gemini",
+  Bytespider: "ByteDance",
+  CCBot: "Common Crawl",
+  "Applebot-Extended": "Apple AI",
+  "cohere-ai": "Cohere",
+};
+
+export function AiCrawlerStatusSection({ report }: { report: CheckReport }) {
+  if (!report.aiCrawlerStatus || report.aiCrawlerStatus.length === 0) return null;
+
+  const allowedCount = report.aiCrawlerStatus.filter((c) => c.allowed).length;
+  const totalCount = report.aiCrawlerStatus.length;
+
+  return (
+    <div id="sec-ai-crawlers" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-white">AIクローラー個別ステータス</h2>
+        <span className={`rounded-full px-3 py-1 text-xs ${
+          allowedCount === totalCount ? "bg-green-500/10 text-green-400"
+            : allowedCount > 0 ? "bg-yellow-500/10 text-yellow-400"
+            : "bg-red-500/10 text-red-400"
+        }`}>
+          {allowedCount}/{totalCount} 許可
+        </span>
+      </div>
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+        {report.aiCrawlerStatus.map((crawler) => (
+          <div
+            key={crawler.name}
+            className={`rounded-lg p-3 text-center ${
+              crawler.allowed ? "bg-green-500/5" : "bg-red-500/5"
+            }`}
+          >
+            <p className={`text-sm font-medium ${crawler.allowed ? "text-green-400" : "text-red-400"}`}>
+              {crawler.allowed ? "+" : "-"}
+            </p>
+            <p className="mt-1 text-xs font-medium text-white/70">
+              {AI_CRAWLER_LABELS[crawler.name] ?? crawler.name}
+            </p>
+            <p className="text-[10px] text-white/30">{crawler.name}</p>
+          </div>
+        ))}
+      </div>
+      {allowedCount < totalCount && (
+        <p className="mt-3 text-xs text-white/40">
+          ブロックされているクローラーがあります。robots.txtで個別にAllowを設定するか、グローバルブロック（Disallow: /）を解除してください。
+        </p>
+      )}
+    </div>
+  );
+}
+
+export function ExternalResourcesSection({ report }: { report: CheckReport }) {
+  if (!report.externalResourceCount) return null;
+
+  const { externalCss, externalJs, totalExternal } = report.externalResourceCount;
+
+  return (
+    <div id="sec-ext-resources" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-white">外部リソース</h2>
+        <span className={`rounded-full px-3 py-1 text-xs ${
+          totalExternal <= 5 ? "bg-green-500/10 text-green-400"
+            : totalExternal <= 15 ? "bg-yellow-500/10 text-yellow-400"
+            : "bg-red-500/10 text-red-400"
+        }`}>
+          {totalExternal}件
+        </span>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-3">
+        <div className="rounded-lg bg-white/[0.03] p-3 text-center">
+          <p className="text-lg font-bold text-white">{externalCss}</p>
+          <p className="text-xs text-white/40">外部CSS</p>
+        </div>
+        <div className="rounded-lg bg-white/[0.03] p-3 text-center">
+          <p className="text-lg font-bold text-white">{externalJs}</p>
+          <p className="text-xs text-white/40">外部JavaScript</p>
+        </div>
+        <div className="rounded-lg bg-white/[0.03] p-3 text-center">
+          <p className={`text-lg font-bold ${
+            totalExternal <= 5 ? "text-green-400" : totalExternal <= 15 ? "text-yellow-400" : "text-red-400"
+          }`}>{totalExternal}</p>
+          <p className="text-xs text-white/40">合計</p>
+        </div>
+      </div>
+      {totalExternal > 10 && (
+        <p className="mt-3 text-xs text-white/40">
+          外部リソースが多いとページ読み込み速度に影響します。不要なリソースの削除やセルフホスティングを検討してください。
+        </p>
+      )}
+    </div>
+  );
+}
+
 export function AccessibilitySection({ report }: { report: CheckReport }) {
   if (!report.accessibility || (report.accessibility.imgCount === 0 && report.accessibility.ariaLandmarks === 0)) return null;
 
