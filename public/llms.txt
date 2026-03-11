@@ -80,6 +80,9 @@
 - 画像最適化分析（WebP/AVIF次世代フォーマット検出率、srcset/picture要素の利用状況表示）
 - リダイレクトステータスコード詳細（301恒久/302一時/307/308の判別、SEOへの影響表示）
 - スコア内訳バーチャート（7指標の獲得ポイントをプログレスバーで可視化）
+- コンテンツ分析（単語数、文字数、段落数、テキスト/HTML比率、平均文長の計測）
+- RSS/Atomフィード検出（HTMLからRSS/Atomフィードリンクを検出、フィードURL表示）
+- ファビコン分析（favicon、apple-touch-icon、SVGアイコン、複数サイズ検出、manifest icons対応状況）
 
 ## API
 - GET /api/check?url=URL: URLのGEOスコアチェック（GETメソッド対応、ブラウザから直接アクセス可）。CORS対応

@@ -268,6 +268,36 @@ function generateReportText(report: CheckReport): string {
     }
   }
 
+  if (report.contentMetrics && report.contentMetrics.wordCount > 0) {
+    lines.push("");
+    lines.push("--- コンテンツ分析 ---");
+    lines.push(`単語数: ${report.contentMetrics.wordCount.toLocaleString()}`);
+    lines.push(`文字数: ${report.contentMetrics.charCount.toLocaleString()}`);
+    lines.push(`段落数: ${report.contentMetrics.paragraphCount}`);
+    lines.push(`テキスト/HTML比率: ${report.contentMetrics.textToHtmlRatio}%`);
+    lines.push(`平均文長: ${report.contentMetrics.averageSentenceLength}語/文`);
+  }
+
+  if (report.feedDetection) {
+    lines.push("");
+    lines.push("--- フィード検出 ---");
+    if (report.feedDetection.hasRss) lines.push("RSS: あり");
+    if (report.feedDetection.hasAtom) lines.push("Atom: あり");
+    if (report.feedDetection.feedUrls.length > 0) {
+      report.feedDetection.feedUrls.forEach((u) => lines.push(`  ${u}`));
+    }
+  }
+
+  if (report.faviconAnalysis) {
+    lines.push("");
+    lines.push("--- ファビコン分析 ---");
+    lines.push(`favicon: ${report.faviconAnalysis.hasFavicon ? "あり" : "なし"}`);
+    lines.push(`apple-touch-icon: ${report.faviconAnalysis.hasAppleTouchIcon ? "あり" : "なし"}`);
+    lines.push(`SVGアイコン: ${report.faviconAnalysis.hasSvgIcon ? "あり" : "なし"}`);
+    if (report.faviconAnalysis.sizes.length > 0) lines.push(`サイズ: ${report.faviconAnalysis.sizes.join(", ")}`);
+    lines.push(`manifest icons: ${report.faviconAnalysis.hasWebManifestIcons ? "あり" : "なし"}`);
+  }
+
   const failItems = report.results.filter((r) => r.status === "fail");
   const warnItems = report.results.filter((r) => r.status === "warn");
 
@@ -1029,6 +1059,16 @@ export function CheckPageClient() {
                   {report.detectedTech.filter(t => !["Google Analytics", "Microsoft Clarity"].includes(t)).slice(0, 3).join(" / ") || report.detectedTech[0]}
                 </span>
               )}
+              {report.contentMetrics && report.contentMetrics.wordCount > 0 && (
+                <span className={`rounded-full px-3 py-1 text-xs ${report.contentMetrics.textToHtmlRatio >= 25 ? "bg-green-500/10 text-green-400" : report.contentMetrics.textToHtmlRatio >= 10 ? "bg-yellow-500/10 text-yellow-400" : "bg-red-500/10 text-red-400"}`}>
+                  テキスト比率: {report.contentMetrics.textToHtmlRatio}%
+                </span>
+              )}
+              {report.feedDetection && (
+                <span className="rounded-full bg-green-500/10 px-3 py-1 text-xs text-green-400">
+                  フィード: {[report.feedDetection.hasRss && "RSS", report.feedDetection.hasAtom && "Atom"].filter(Boolean).join("+")}
+                </span>
+              )}
             </div>
             <div className="mt-4 flex flex-wrap justify-center gap-3">
               <Button
@@ -1597,6 +1637,96 @@ export function CheckPageClient() {
               )}
               <p className="mt-3 text-xs text-white/40">
                 リダイレクトチェーンが長いとクローラーの巡回効率が低下します。canonical URLは検索エンジンに正規ページを指定します。
+              </p>
+            </div>
+          )}
+
+          {/* Content Readability Metrics */}
+          {report.contentMetrics && report.contentMetrics.wordCount > 0 && (
+            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+              <h2 className="mb-3 text-lg font-semibold text-white">コンテンツ分析</h2>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
+                <div className="text-center">
+                  <p className="text-lg font-bold text-white">{report.contentMetrics.wordCount.toLocaleString()}</p>
+                  <p className="text-xs text-white/40">単語数</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-lg font-bold text-white">{report.contentMetrics.charCount.toLocaleString()}</p>
+                  <p className="text-xs text-white/40">文字数</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-lg font-bold text-white">{report.contentMetrics.paragraphCount}</p>
+                  <p className="text-xs text-white/40">段落数</p>
+                </div>
+                <div className="text-center">
+                  <p className={`text-lg font-bold ${report.contentMetrics.textToHtmlRatio >= 25 ? "text-green-400" : report.contentMetrics.textToHtmlRatio >= 10 ? "text-yellow-400" : "text-red-400"}`}>
+                    {report.contentMetrics.textToHtmlRatio}%
+                  </p>
+                  <p className="text-xs text-white/40">テキスト/HTML比率</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-lg font-bold text-white">{report.contentMetrics.averageSentenceLength}</p>
+                  <p className="text-xs text-white/40">平均文長（語数）</p>
+                </div>
+              </div>
+              <p className="mt-3 text-xs text-white/40">
+                テキスト/HTML比率が高いほどコンテンツ密度が高く、AI検索エンジンが有用な情報を抽出しやすくなります。推奨: 25%以上。
+              </p>
+            </div>
+          )}
+
+          {/* RSS/Atom Feed Detection */}
+          {report.feedDetection && (
+            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+              <h2 className="mb-3 text-lg font-semibold text-white">フィード検出</h2>
+              <div className="flex flex-wrap gap-2">
+                {report.feedDetection.hasRss && (
+                  <span className="rounded bg-green-500/10 px-3 py-1 text-sm text-green-400">RSS</span>
+                )}
+                {report.feedDetection.hasAtom && (
+                  <span className="rounded bg-green-500/10 px-3 py-1 text-sm text-green-400">Atom</span>
+                )}
+              </div>
+              {report.feedDetection.feedUrls.length > 0 && (
+                <div className="mt-2 space-y-1">
+                  {report.feedDetection.feedUrls.map((u, i) => (
+                    <p key={i} className="truncate text-xs text-white/50">{u}</p>
+                  ))}
+                </div>
+              )}
+              <p className="mt-3 text-xs text-white/40">
+                RSS/Atomフィードは、AIクローラーやアグリゲーターがコンテンツの更新を検知するために利用します。
+              </p>
+            </div>
+          )}
+
+          {/* Favicon Completeness */}
+          {report.faviconAnalysis && (
+            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+              <h2 className="mb-3 text-lg font-semibold text-white">ファビコン分析</h2>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-5">
+                {[
+                  { label: "favicon", ok: report.faviconAnalysis.hasFavicon },
+                  { label: "apple-touch-icon", ok: report.faviconAnalysis.hasAppleTouchIcon },
+                  { label: "SVGアイコン", ok: report.faviconAnalysis.hasSvgIcon },
+                  { label: "サイズ指定", ok: report.faviconAnalysis.sizes.length > 0 },
+                  { label: "manifest icons", ok: report.faviconAnalysis.hasWebManifestIcons },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-center gap-2 text-sm">
+                    <span className={item.ok ? "text-green-400" : "text-white/30"}>
+                      {item.ok ? "\u2713" : "\u2015"}
+                    </span>
+                    <span className="text-white/60">{item.label}</span>
+                  </div>
+                ))}
+              </div>
+              {report.faviconAnalysis.sizes.length > 0 && (
+                <p className="mt-2 text-xs text-white/50">
+                  検出サイズ: {report.faviconAnalysis.sizes.join(", ")}
+                </p>
+              )}
+              <p className="mt-3 text-xs text-white/40">
+                複数サイズのファビコンとapple-touch-iconを設定すると、ブラウザ・検索結果・ブックマークでの表示品質が向上します。
               </p>
             </div>
           )}

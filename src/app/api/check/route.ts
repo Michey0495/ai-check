@@ -1236,6 +1236,54 @@ export async function POST(request: NextRequest) {
     const canonicalUrl = canonicalMatch?.[1];
     const canonicalMismatch = canonicalUrl ? (canonicalUrl !== url && canonicalUrl !== url.replace(/\/$/, "") && canonicalUrl !== url + "/") : undefined;
 
+    // Content readability metrics
+    const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+    const bodyHtml = bodyMatch?.[1] ?? html;
+    const textOnly = bodyHtml
+      .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
+      .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    const charCount = textOnly.length;
+    const words = textOnly.split(/\s+/).filter((w) => w.length > 0);
+    const wordCount = words.length;
+    const htmlBytes = new TextEncoder().encode(html).length;
+    const textBytes = new TextEncoder().encode(textOnly).length;
+    const textToHtmlRatio = htmlBytes > 0 ? Math.round((textBytes / htmlBytes) * 10000) / 100 : 0;
+    const paragraphs = bodyHtml.match(/<p[^>]*>/gi) ?? [];
+    const paragraphCount = paragraphs.length;
+    const sentences = textOnly.split(/[.!?。！？]+/).filter((s) => s.trim().length > 0);
+    const averageSentenceLength = sentences.length > 0 ? Math.round(wordCount / sentences.length) : 0;
+
+    // RSS/Atom feed detection
+    const rssLinks = html.match(/<link[^>]*type=["']application\/rss\+xml["'][^>]*>/gi) ?? [];
+    const atomLinks = html.match(/<link[^>]*type=["']application\/atom\+xml["'][^>]*>/gi) ?? [];
+    const feedUrls: string[] = [];
+    for (const link of [...rssLinks, ...atomLinks]) {
+      const hrefMatch = link.match(/href=["']([^"']+)["']/i);
+      if (hrefMatch) {
+        const feedHref = hrefMatch[1].startsWith("http") ? hrefMatch[1] : `${baseUrl}${hrefMatch[1].startsWith("/") ? "" : "/"}${hrefMatch[1]}`;
+        feedUrls.push(feedHref);
+      }
+    }
+    const hasRss = rssLinks.length > 0;
+    const hasAtom = atomLinks.length > 0;
+
+    // Favicon completeness analysis
+    const faviconLinks = html.match(/<link[^>]*rel=["'][^"']*icon[^"']*["'][^>]*>/gi) ?? [];
+    const hasAppleTouchIcon = faviconLinks.some((l) => /apple-touch-icon/i.test(l));
+    const hasSvgIcon = faviconLinks.some((l) => /type=["']image\/svg\+xml["']/i.test(l) || /\.svg/i.test(l));
+    const faviconSizes: string[] = [];
+    for (const link of faviconLinks) {
+      const sizeMatch = link.match(/sizes=["']([^"']+)["']/i);
+      if (sizeMatch) {
+        faviconSizes.push(...sizeMatch[1].split(/\s+/));
+      }
+    }
+    const hasManifestIcons = pwaManifest?.hasIcons ?? false;
+    const hasFaviconLink = faviconLinks.length > 0 || !!faviconMatch;
+
     const report: CheckReport = {
       url,
       totalScore,
@@ -1307,6 +1355,25 @@ export async function POST(request: NextRequest) {
         inlineCssSize,
         hasViewportMeta: /<meta[^>]*name=["']viewport["']/i.test(html),
         hasFetchPriority,
+      },
+      contentMetrics: {
+        wordCount,
+        charCount,
+        paragraphCount,
+        textToHtmlRatio,
+        averageSentenceLength,
+      },
+      feedDetection: (hasRss || hasAtom) ? {
+        hasRss,
+        hasAtom,
+        feedUrls,
+      } : undefined,
+      faviconAnalysis: {
+        hasFavicon: hasFaviconLink,
+        hasAppleTouchIcon,
+        hasSvgIcon,
+        sizes: faviconSizes,
+        hasWebManifestIcons: hasManifestIcons,
       },
     };
 

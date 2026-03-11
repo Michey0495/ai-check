@@ -199,6 +199,25 @@ export type CheckReport = {
     hasViewportMeta: boolean;
     hasFetchPriority: boolean; // fetchpriority="high" on LCP image
   };
+  contentMetrics?: {
+    wordCount: number;
+    charCount: number;
+    paragraphCount: number;
+    textToHtmlRatio: number; // percentage
+    averageSentenceLength: number; // words per sentence
+  };
+  feedDetection?: {
+    hasRss: boolean;
+    hasAtom: boolean;
+    feedUrls: string[];
+  };
+  faviconAnalysis?: {
+    hasFavicon: boolean;
+    hasAppleTouchIcon: boolean;
+    hasSvgIcon: boolean;
+    sizes: string[]; // e.g. ["16x16", "32x32", "180x180"]
+    hasWebManifestIcons: boolean;
+  };
 };
 
 export function getGrade(score: number, maxScore: number): CheckReport["grade"] {
