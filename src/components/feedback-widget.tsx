@@ -73,7 +73,7 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
             onChange={(e) => setMessage(e.target.value)}
             aria-label="フィードバック内容"
             placeholder="ご意見をお聞かせください..."
-            className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-white placeholder:text-white/30 h-24 resize-none mb-3 focus:outline-none focus:border-white/20"
+            className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-white placeholder:text-white/50 h-24 resize-none mb-3 focus:outline-none focus:border-white/20"
           />
           {submitError && (
             <p className="text-red-400 text-xs mb-2">送信に失敗しました。もう一度お試しください。</p>

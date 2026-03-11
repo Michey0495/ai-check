@@ -48,7 +48,7 @@ export function UrlCheckForm({ size = "lg" }: { size?: "lg" | "sm" }) {
           aria-invalid={!!error}
           aria-describedby={error ? "url-error" : undefined}
           maxLength={2048}
-          className={`flex-1 border-white/10 bg-white/5 text-white placeholder:text-white/30 ${
+          className={`flex-1 border-white/10 bg-white/5 text-white placeholder:text-white/50 ${
             isLg ? "h-14 text-lg" : "h-10"
           } ${error ? "border-red-500/50" : ""}`}
         />

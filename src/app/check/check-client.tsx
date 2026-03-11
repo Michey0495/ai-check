@@ -21,6 +21,32 @@ type HistoryEntry = {
 const HISTORY_KEY = "aicheck-history";
 const MAX_HISTORY = 20;
 
+const GRADE_COLORS: Record<string, string> = {
+  A: "text-green-400",
+  B: "text-blue-400",
+  C: "text-yellow-400",
+  D: "text-orange-400",
+  F: "text-red-400",
+};
+
+const STROKE_COLORS: Record<string, string> = {
+  A: "#4ade80",
+  B: "#60a5fa",
+  C: "#facc15",
+  D: "#fb923c",
+  F: "#f87171",
+};
+
+const DOWNLOAD_NAME_MAP: Record<string, string> = {
+  "robots-txt": "robots.txt",
+  "llms-txt": "llms.txt",
+  "structured-data": "schema.jsonld",
+  "meta-tags": "meta-tags.html",
+  "content-structure": "content-structure.html",
+  "ssr": "ssr-guide.txt",
+  "sitemap": "sitemap.xml",
+};
+
 function getHistory(): HistoryEntry[] {
   if (typeof window === "undefined") return [];
   try {
@@ -58,20 +84,6 @@ function saveToHistory(report: CheckReport) {
 
 function ScoreCircle({ score, maxScore, grade }: { score: number; maxScore: number; grade: string }) {
   const pct = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
-  const gradeColors: Record<string, string> = {
-    A: "text-green-400",
-    B: "text-blue-400",
-    C: "text-yellow-400",
-    D: "text-orange-400",
-    F: "text-red-400",
-  };
-  const strokeColors: Record<string, string> = {
-    A: "#4ade80",
-    B: "#60a5fa",
-    C: "#facc15",
-    D: "#fb923c",
-    F: "#f87171",
-  };
 
   const radius = 56;
   const circumference = 2 * Math.PI * radius;
@@ -84,7 +96,7 @@ function ScoreCircle({ score, maxScore, grade }: { score: number; maxScore: numb
           <circle cx="72" cy="72" r={radius} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
           <circle
             cx="72" cy="72" r={radius} fill="none"
-            stroke={strokeColors[grade] ?? "#fff"}
+            stroke={STROKE_COLORS[grade] ?? "#fff"}
             strokeWidth="8"
             strokeLinecap="round"
             strokeDasharray={circumference}
@@ -93,7 +105,7 @@ function ScoreCircle({ score, maxScore, grade }: { score: number; maxScore: numb
           />
         </svg>
         <div className="text-center">
-          <span className={`text-4xl font-bold ${gradeColors[grade] ?? "text-white"}`}>{grade}</span>
+          <span className={`text-4xl font-bold ${GRADE_COLORS[grade] ?? "text-white"}`}>{grade}</span>
           <div className="text-sm text-white/50">{pct}/100</div>
         </div>
       </div>
@@ -419,13 +431,6 @@ function CheckHistory({ currentUrl }: { currentUrl: string }) {
 
   if (history.length === 0) return null;
 
-  const gradeColors: Record<string, string> = {
-    A: "text-green-400",
-    B: "text-blue-400",
-    C: "text-yellow-400",
-    D: "text-orange-400",
-    F: "text-red-400",
-  };
 
   return (
     <div className="space-y-4">
@@ -444,7 +449,7 @@ function CheckHistory({ currentUrl }: { currentUrl: string }) {
               </p>
             </div>
             <div className="ml-4 text-right">
-              <span className={`text-lg font-bold ${gradeColors[entry.grade] ?? "text-white"}`}>
+              <span className={`text-lg font-bold ${GRADE_COLORS[entry.grade] ?? "text-white"}`}>
                 {entry.grade}
               </span>
               <p className="text-xs text-white/30">
@@ -602,10 +607,6 @@ function ScoreSimulator({ report }: { report: CheckReport }) {
   const improvement = simulatedPct - currentPct;
   const simulatedGrade = simulatedPct >= 90 ? "A" : simulatedPct >= 75 ? "B" : simulatedPct >= 60 ? "C" : simulatedPct >= 40 ? "D" : "F";
 
-  const gradeColors: Record<string, string> = {
-    A: "text-green-400", B: "text-blue-400", C: "text-yellow-400", D: "text-orange-400", F: "text-red-400",
-  };
-
   const toggle = (id: string) => {
     setFixed((prev) => {
       const next = new Set(prev);
@@ -626,7 +627,7 @@ function ScoreSimulator({ report }: { report: CheckReport }) {
         </div>
         {fixed.size > 0 && (
           <div className="text-right">
-            <p className={`text-2xl font-bold ${gradeColors[simulatedGrade]}`}>
+            <p className={`text-2xl font-bold ${GRADE_COLORS[simulatedGrade]}`}>
               {simulatedGrade} ({simulatedPct})
             </p>
             <p className="text-xs text-green-400">+{improvement}pt</p>
@@ -669,7 +670,7 @@ function ScoreSimulator({ report }: { report: CheckReport }) {
               現在: {currentPct}/100 ({report.grade})
             </p>
             <p className="text-xs text-white/40">→</p>
-            <p className={`text-xs font-medium ${gradeColors[simulatedGrade]}`}>
+            <p className={`text-xs font-medium ${GRADE_COLORS[simulatedGrade]}`}>
               予測: {simulatedPct}/100 ({simulatedGrade})
             </p>
           </div>
@@ -845,16 +846,7 @@ export function CheckPageClient() {
     const files: { name: string; content: string }[] = [];
     for (const r of report.results) {
       if (r.code) {
-        const nameMap: Record<string, string> = {
-          "robots-txt": "robots.txt",
-          "llms-txt": "llms.txt",
-          "structured-data": "schema.jsonld",
-          "meta-tags": "meta-tags.html",
-          "content-structure": "content-structure.html",
-          "ssr": "ssr-guide.txt",
-          "sitemap": "sitemap.xml",
-        };
-        files.push({ name: nameMap[r.id] ?? `${r.id}.txt`, content: r.code });
+        files.push({ name: DOWNLOAD_NAME_MAP[r.id] ?? `${r.id}.txt`, content: r.code });
       }
     }
     files.push({ name: "report.txt", content: generateReportText(report) });

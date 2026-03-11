@@ -1,6 +1,6 @@
 # QA Report - web-url-a (AI Check)
 
-**Date:** 2026-03-12 (Night 33 QA Pass)
+**Date:** 2026-03-12 (Night 34 QA Pass)
 **Project:** AI Check (GEO Score Analyzer)
 **Domain:** ai-check.ezoai.jp
 
@@ -8,8 +8,25 @@
 
 | Check | Status |
 |-------|--------|
-| `npm run build` | PASS (43 static pages, compiled in 7.1s) |
+| `npm run build` | PASS (43 static pages, compiled in 7.3s) |
 | `npm run lint` | PASS (0 errors, 0 warnings) |
+
+## Night 34 Fixes
+
+### MEDIUM: Stats Grid Still Not Responsive (Regression)
+- **File:** `src/app/page.tsx:175`
+- **Issue:** Previous fix had reverted; hero stats grid was back to `grid-cols-3` without mobile breakpoint
+- **Fix:** Re-applied `grid-cols-1 sm:grid-cols-3`
+
+### MEDIUM: Placeholder Text Contrast Below WCAG AA
+- **Files:** `src/components/url-check-form.tsx:51`, `src/components/feedback-widget.tsx:76`
+- **Issue:** `placeholder:text-white/30` (30% opacity on dark bg) failed WCAG AA contrast ratio
+- **Fix:** Changed to `placeholder:text-white/50`
+
+### MEDIUM: Inline Objects Recreated on Every Render
+- **File:** `src/app/check/check-client.tsx`
+- **Issue:** `gradeColors`, `strokeColors`, `nameMap` were declared inside components, causing unnecessary object allocation on each render
+- **Fix:** Extracted to module-level constants (`GRADE_COLORS`, `STROKE_COLORS`, `DOWNLOAD_NAME_MAP`)
 
 ## Night 33 Fixes
 

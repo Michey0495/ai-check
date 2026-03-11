@@ -172,7 +172,7 @@ export default function Home() {
         <div className="mt-4 flex items-center justify-center gap-4 text-sm text-white/40">
           <span>無料 / 登録不要 / 30秒で結果表示</span>
         </div>
-        <div className="mx-auto mt-12 grid max-w-3xl grid-cols-3 gap-4">
+        <div className="mx-auto mt-12 grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3">
           {[
             { stat: "25%", label: "AI検索の市場シェア（2026年）" },
             { stat: "89%", label: "AI検索に未対応のWebサイト" },
