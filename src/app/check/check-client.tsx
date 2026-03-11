@@ -298,6 +298,31 @@ function generateReportText(report: CheckReport): string {
     lines.push(`manifest icons: ${report.faviconAnalysis.hasWebManifestIcons ? "あり" : "なし"}`);
   }
 
+  if (report.ogPreview) {
+    lines.push("");
+    lines.push("--- OGプレビュー ---");
+    if (report.ogPreview.ogTitle) lines.push(`og:title: ${report.ogPreview.ogTitle}`);
+    if (report.ogPreview.ogDescription) lines.push(`og:description: ${report.ogPreview.ogDescription}`);
+    if (report.ogPreview.ogUrl) lines.push(`og:url: ${report.ogPreview.ogUrl}`);
+    if (report.ogImage) lines.push(`og:image: ${report.ogImage}`);
+  }
+
+  if (report.headingTree && report.headingTree.length > 0) {
+    lines.push("");
+    lines.push("--- 見出し構造 ---");
+    for (const h of report.headingTree) {
+      lines.push(`${"  ".repeat(h.level - 1)}h${h.level}: ${h.text}`);
+    }
+  }
+
+  if (report.duplicateMetaTags && report.duplicateMetaTags.length > 0) {
+    lines.push("");
+    lines.push("--- 重複メタタグ警告 ---");
+    for (const d of report.duplicateMetaTags) {
+      lines.push(`${d.tag}: ${d.count}個検出（推奨: 1個）`);
+    }
+  }
+
   const failItems = report.results.filter((r) => r.status === "fail");
   const warnItems = report.results.filter((r) => r.status === "warn");
 
@@ -1727,6 +1752,97 @@ export function CheckPageClient() {
               )}
               <p className="mt-3 text-xs text-white/40">
                 複数サイズのファビコンとapple-touch-iconを設定すると、ブラウザ・検索結果・ブックマークでの表示品質が向上します。
+              </p>
+            </div>
+          )}
+
+          {/* Duplicate Meta Tag Warning */}
+          {report.duplicateMetaTags && report.duplicateMetaTags.length > 0 && (
+            <div className="rounded-lg border border-yellow-500/20 bg-yellow-500/5 p-6">
+              <h2 className="mb-3 text-lg font-semibold text-yellow-400">重複メタタグ検出</h2>
+              <div className="space-y-2">
+                {report.duplicateMetaTags.map((d) => (
+                  <div key={d.tag} className="flex items-center gap-2 text-sm">
+                    <span className="text-yellow-400">!</span>
+                    <span className="text-white/70">
+                      <span className="font-mono text-yellow-300">&lt;{d.tag}&gt;</span> が {d.count} 個検出されました（推奨: 1個）
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-3 text-xs text-white/40">
+                重複したメタタグは検索エンジンの混乱を招き、意図しないタグが優先される可能性があります。各メタタグはページ内に1つだけ設置してください。
+              </p>
+            </div>
+          )}
+
+          {/* OG / Social Preview Card */}
+          {(report.ogPreview || report.ogImage) && (
+            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+              <h2 className="mb-3 text-lg font-semibold text-white">ソーシャルシェアプレビュー</h2>
+              <p className="mb-4 text-xs text-white/40">SNS（X/Twitter、LINE、Facebook等）でシェアされた際の表示イメージ</p>
+              <div className="mx-auto max-w-lg overflow-hidden rounded-xl border border-white/10 bg-black">
+                {report.ogImage && (
+                  <div className="aspect-[1200/630] w-full overflow-hidden bg-white/5">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={report.ogImage.startsWith("http") ? report.ogImage : `${new URL(report.url).origin}${report.ogImage.startsWith("/") ? "" : "/"}${report.ogImage}`}
+                      alt="OG画像プレビュー"
+                      className="h-full w-full object-cover"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                    />
+                  </div>
+                )}
+                <div className="p-4">
+                  <p className="mb-1 truncate text-xs text-white/40">
+                    {(() => { try { return new URL(report.ogPreview?.ogUrl ?? report.url).hostname; } catch { return report.url; } })()}
+                  </p>
+                  <p className="mb-1 truncate text-sm font-semibold text-white">
+                    {report.ogPreview?.ogTitle ?? report.siteTitle ?? "(og:title 未設定)"}
+                  </p>
+                  <p className="line-clamp-2 text-xs text-white/50">
+                    {report.ogPreview?.ogDescription ?? "(og:description 未設定)"}
+                  </p>
+                </div>
+              </div>
+              {(!report.ogPreview?.ogTitle || !report.ogPreview?.ogDescription || !report.ogImage) && (
+                <div className="mt-3 space-y-1">
+                  {!report.ogPreview?.ogTitle && (
+                    <p className="text-xs text-yellow-400">og:title が未設定です。SNSシェア時にページタイトルが表示されない可能性があります。</p>
+                  )}
+                  {!report.ogPreview?.ogDescription && (
+                    <p className="text-xs text-yellow-400">og:description が未設定です。SNSシェア時に説明文が表示されません。</p>
+                  )}
+                  {!report.ogImage && (
+                    <p className="text-xs text-yellow-400">og:image が未設定です。SNSシェア時にサムネイル画像が表示されません。</p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Heading Hierarchy Tree */}
+          {report.headingTree && report.headingTree.length > 0 && (
+            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+              <h2 className="mb-3 text-lg font-semibold text-white">見出し構造ツリー</h2>
+              <div className="space-y-0.5 font-mono text-sm">
+                {report.headingTree.map((h, i) => (
+                  <div key={i} className="flex items-start gap-1">
+                    <span style={{ paddingLeft: `${(h.level - 1) * 16}px` }} className="flex shrink-0 items-center gap-1">
+                      {h.level > 1 && <span className="text-white/20">{"└".padStart(1)}</span>}
+                      <span className={`inline-block w-6 shrink-0 rounded px-1 text-center text-xs font-bold ${
+                        h.level === 1 ? "bg-primary/20 text-primary" : h.level === 2 ? "bg-blue-500/20 text-blue-400" : "bg-white/10 text-white/50"
+                      }`}>
+                        h{h.level}
+                      </span>
+                    </span>
+                    <span className="truncate text-white/70">{h.text}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-3 text-xs text-white/40">
+                見出しは h1 → h2 → h3 の順で階層的に使用し、h1はページ内に1つだけ配置するのが推奨です。
+                AIクローラーは見出し構造からコンテンツの意味を理解します。
               </p>
             </div>
           )}

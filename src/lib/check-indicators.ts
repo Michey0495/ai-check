@@ -218,6 +218,19 @@ export type CheckReport = {
     sizes: string[]; // e.g. ["16x16", "32x32", "180x180"]
     hasWebManifestIcons: boolean;
   };
+  ogPreview?: {
+    ogTitle?: string;
+    ogDescription?: string;
+    ogUrl?: string;
+  };
+  headingTree?: {
+    level: number;
+    text: string;
+  }[];
+  duplicateMetaTags?: {
+    tag: string;
+    count: number;
+  }[];
 };
 
 export function getGrade(score: number, maxScore: number): CheckReport["grade"] {

@@ -1284,6 +1284,42 @@ export async function POST(request: NextRequest) {
     const hasManifestIcons = pwaManifest?.hasIcons ?? false;
     const hasFaviconLink = faviconLinks.length > 0 || !!faviconMatch;
 
+    // OG preview data extraction
+    const ogTitleMatch = html.match(/<meta[^>]*property=["']og:title["'][^>]*content=["']([^"']+)["']/i)
+      ?? html.match(/<meta[^>]*content=["']([^"']+)["'][^>]*property=["']og:title["']/i);
+    const ogDescMatch = html.match(/<meta[^>]*property=["']og:description["'][^>]*content=["']([^"']+)["']/i)
+      ?? html.match(/<meta[^>]*content=["']([^"']+)["'][^>]*property=["']og:description["']/i);
+    const ogUrlMatch = html.match(/<meta[^>]*property=["']og:url["'][^>]*content=["']([^"']+)["']/i)
+      ?? html.match(/<meta[^>]*content=["']([^"']+)["'][^>]*property=["']og:url["']/i);
+    const ogPreview = (ogTitleMatch || ogDescMatch) ? {
+      ogTitle: ogTitleMatch?.[1]?.trim(),
+      ogDescription: ogDescMatch?.[1]?.trim(),
+      ogUrl: ogUrlMatch?.[1]?.trim(),
+    } : undefined;
+
+    // Heading tree extraction (level + text, max 30 headings)
+    const headingTreeMatches = [...html.matchAll(/<h([1-6])[^>]*>([\s\S]*?)<\/h\1>/gi)];
+    const headingTree = headingTreeMatches.slice(0, 30).map((m) => ({
+      level: parseInt(m[1]),
+      text: m[2].replace(/<[^>]+>/g, "").trim().slice(0, 100),
+    })).filter((h) => h.text.length > 0);
+
+    // Duplicate meta tag detection
+    const duplicateMetaTags: { tag: string; count: number }[] = [];
+    const titleTagCount = (html.match(/<title[^>]*>/gi) ?? []).length;
+    if (titleTagCount > 1) duplicateMetaTags.push({ tag: "title", count: titleTagCount });
+    const descTagCount = (html.match(/<meta[^>]*name=["']description["']/gi) ?? []).length
+      + (html.match(/<meta[^>]*content=["'][^"']+["'][^>]*name=["']description["']/gi) ?? []).filter(
+        (m) => !(html.match(/<meta[^>]*name=["']description["']/gi) ?? []).some((o) => o === m)
+      ).length;
+    if (descTagCount > 1) duplicateMetaTags.push({ tag: "meta description", count: descTagCount });
+    const ogTitleTagCount = (html.match(/property=["']og:title["']/gi) ?? []).length;
+    if (ogTitleTagCount > 1) duplicateMetaTags.push({ tag: "og:title", count: ogTitleTagCount });
+    const ogDescTagCount = (html.match(/property=["']og:description["']/gi) ?? []).length;
+    if (ogDescTagCount > 1) duplicateMetaTags.push({ tag: "og:description", count: ogDescTagCount });
+    const canonicalTagCount = (html.match(/<link[^>]*rel=["']canonical["']/gi) ?? []).length;
+    if (canonicalTagCount > 1) duplicateMetaTags.push({ tag: "canonical", count: canonicalTagCount });
+
     const report: CheckReport = {
       url,
       totalScore,
@@ -1375,6 +1411,9 @@ export async function POST(request: NextRequest) {
         sizes: faviconSizes,
         hasWebManifestIcons: hasManifestIcons,
       },
+      ogPreview,
+      headingTree: headingTree.length > 0 ? headingTree : undefined,
+      duplicateMetaTags: duplicateMetaTags.length > 0 ? duplicateMetaTags : undefined,
     };
 
     return NextResponse.json(report, {

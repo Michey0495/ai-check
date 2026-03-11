@@ -2,7 +2,7 @@
   "name": "AI Check",
   "description": "WebサイトのAI検索対応度をチェックし、llms.txt・robots.txt・JSON-LD構造化データ・agent.jsonを自動生成するツール",
   "url": "https://ai-check.ezoai.jp",
-  "version": "3.4.0",
+  "version": "3.5.0",
   "dateUpdated": "2026-03-12",
   "capabilities": [
     "GEOスコアチェック（7指標 + llms-full.txt検出 + スキーマタイプ識別 + noindex検出）",
@@ -69,7 +69,10 @@
     "WebSite SearchActionスキーマ対応",
     "コンテンツ分析（単語数、文字数、段落数、テキスト/HTML比率、平均文長）",
     "RSS/Atomフィード検出（フィードURL表示）",
-    "ファビコン分析（favicon、apple-touch-icon、SVGアイコン、サイズ検出、manifest icons）"
+    "ファビコン分析（favicon、apple-touch-icon、SVGアイコン、サイズ検出、manifest icons）",
+    "ソーシャルシェアプレビュー（OGタグに基づくSNS表示イメージのビジュアル確認）",
+    "見出し構造ツリー表示（h1〜h6の階層構造をツリー形式で可視化）",
+    "重複メタタグ検出（title、description、og:title、og:description、canonicalの重複警告）"
   ],
   "endpoints": {
     "mcp": "https://ai-check.ezoai.jp/api/mcp",

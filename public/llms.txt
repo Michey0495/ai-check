@@ -83,6 +83,9 @@
 - コンテンツ分析（単語数、文字数、段落数、テキスト/HTML比率、平均文長の計測）
 - RSS/Atomフィード検出（HTMLからRSS/Atomフィードリンクを検出、フィードURL表示）
 - ファビコン分析（favicon、apple-touch-icon、SVGアイコン、複数サイズ検出、manifest icons対応状況）
+- ソーシャルシェアプレビュー（og:title、og:description、og:imageに基づくSNS表示イメージのビジュアル確認）
+- 見出し構造ツリー表示（h1〜h6の全見出しを階層ツリー形式で可視化、最大30個）
+- 重複メタタグ検出（title、meta description、og:title、og:description、canonicalの重複を警告）
 
 ## API
 - GET /api/check?url=URL: URLのGEOスコアチェック（GETメソッド対応、ブラウザから直接アクセス可）。CORS対応
