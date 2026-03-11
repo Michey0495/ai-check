@@ -146,6 +146,7 @@ export function UrlCheckForm({ size = "lg" }: { size?: "lg" | "sm" }) {
             aria-describedby={error ? "url-error" : undefined}
             aria-autocomplete="list"
             aria-expanded={showSuggestions}
+            aria-controls={showSuggestions ? "url-suggestions" : undefined}
             autoComplete="off"
             maxLength={2048}
             className={`w-full border-white/10 bg-white/5 text-white placeholder:text-white/50 ${
@@ -154,6 +155,7 @@ export function UrlCheckForm({ size = "lg" }: { size?: "lg" | "sm" }) {
           />
           {showSuggestions && suggestions.length > 0 && (
             <ul
+              id="url-suggestions"
               role="listbox"
               className="absolute left-0 right-0 top-full z-50 mt-1 overflow-hidden rounded-lg border border-white/10 bg-black/95 py-1 shadow-xl backdrop-blur-sm"
             >
@@ -172,7 +174,7 @@ export function UrlCheckForm({ size = "lg" }: { size?: "lg" | "sm" }) {
                   <span className="font-mono text-xs">{s}</span>
                 </li>
               ))}
-              <li className="border-t border-white/5 px-3 py-1.5 text-xs text-white/20">
+              <li role="none" className="border-t border-white/5 px-3 py-1.5 text-xs text-white/20">
                 チェック履歴から候補を表示
               </li>
             </ul>

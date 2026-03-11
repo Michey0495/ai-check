@@ -1,6 +1,6 @@
 # QA Report - web-url-a (AI Check)
 
-**Date:** 2026-03-12 (Night 39 QA Pass)
+**Date:** 2026-03-12 (Night 40 QA Pass)
 **Project:** AI Check (GEO Score Analyzer)
 **Domain:** ai-check.ezoai.jp
 
@@ -10,6 +10,25 @@
 |-------|--------|
 | `npm run build` | PASS (44 static pages) |
 | `npm run lint` | PASS (0 errors, 0 warnings) |
+
+## Night 40 Fixes
+
+### CRITICAL: Redundant public/robots.txt with wrong domain
+- **File:** `public/robots.txt` (deleted)
+- **Issue:** Static `public/robots.txt` referenced `web-url-a.ezoai.jp` instead of `ai-check.ezoai.jp`. Dynamic `src/app/robots.ts` already generates the correct robots.txt.
+- **Fix:** Deleted `public/robots.txt` to eliminate confusion. Dynamic `robots.ts` handles this correctly with 13 AI crawler rules.
+
+### MEDIUM: URL suggestions listbox missing aria-controls
+- **File:** `src/components/url-check-form.tsx`
+- **Fix:** Added `aria-controls="url-suggestions"` to input and `id="url-suggestions"` to listbox. Added `role="none"` to non-selectable footer item.
+
+### MEDIUM: Badge style selector missing ARIA attributes
+- **File:** `src/app/generate/badge/generator-client.tsx`
+- **Fix:** Added `role="radio"` and `aria-checked` to radiogroup buttons.
+
+### LOW: Badge generator clipboard copy silent failure
+- **File:** `src/app/generate/badge/generator-client.tsx`
+- **Fix:** Added feedback state update in clipboard catch handler.
 
 ## Night 39 Fixes
 
@@ -109,7 +128,7 @@
 | Page metadata (title, description) | All pages have unique metadata |
 | OGP images | Dynamic generation (1200x630) |
 | Structured data (JSON-LD) | Organization + WebSite + WebApplication + FAQ + HowTo + BreadcrumbList |
-| robots.txt | 12 AI crawlers explicitly allowed |
+| robots.txt | 13 AI crawlers explicitly allowed (dynamic robots.ts) |
 | sitemap.xml | 44 URLs with priority/changeFrequency |
 | llms.txt | Comprehensive AI site description |
 | .well-known/agent.json | A2A Agent Card with MCP tools |

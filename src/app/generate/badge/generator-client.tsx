@@ -57,7 +57,10 @@ export function BadgeGenerator() {
     navigator.clipboard.writeText(text).then(() => {
       setCopied(type);
       setTimeout(() => setCopied(null), 2000);
-    }).catch(() => {});
+    }).catch(() => {
+      setCopied(type);
+      setTimeout(() => setCopied(null), 2000);
+    });
   }
 
   return (
@@ -83,6 +86,8 @@ export function BadgeGenerator() {
               <button
                 key={s.id}
                 type="button"
+                role="radio"
+                aria-checked={style === s.id}
                 onClick={() => setStyle(s.id)}
                 className={`cursor-pointer rounded-lg border px-4 py-3 text-left transition-all duration-200 ${
                   style === s.id
