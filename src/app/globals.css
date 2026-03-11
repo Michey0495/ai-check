@@ -128,6 +128,14 @@
   }
 }
 
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 @media print {
   body {
     background: white !important;
@@ -194,6 +202,34 @@
   svg circle, svg path {
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
+  }
+
+  /* Compare page: radar chart print adjustments */
+  svg text[fill="rgba(255,255,255,0.5)"] {
+    fill: #333 !important;
+  }
+
+  svg line[stroke="rgba(255,255,255,0.1)"] {
+    stroke: #ccc !important;
+  }
+
+  svg path[stroke="rgba(255,255,255,0.08)"] {
+    stroke: #ddd !important;
+  }
+
+  /* Compare page: score bar backgrounds */
+  .bg-white\/10 {
+    background: #e0e0e0 !important;
+  }
+
+  /* Compare page: legend text */
+  .text-white\/60 {
+    color: #555 !important;
+  }
+
+  /* Compare page: orange grade color */
+  .text-orange-400 {
+    color: #e65100 !important;
   }
 
   @page {

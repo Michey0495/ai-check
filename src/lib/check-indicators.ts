@@ -231,6 +231,7 @@ export type CheckReport = {
     tag: string;
     count: number;
   }[];
+  dnsResolutionMs?: number;
 };
 
 export function getGrade(score: number, maxScore: number): CheckReport["grade"] {

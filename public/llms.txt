@@ -89,6 +89,10 @@
 - API Playground（開発者ページからブラウザ上でAPI直接テスト、レスポンスタイム表示）
 - URL入力オートコンプリート（チェック履歴からURL候補を表示、キーボード操作対応）
 - キーボードショートカット（Ctrl+K / Cmd+K でURL入力にフォーカス）
+- セクションナビゲーション（チェック結果ページの全セクションをスクロール連動する目次バーで表示、IntersectionObserverによるアクティブハイライト）
+- DNS解決時間計測（dnsResolutionMs: DNS名前解決に要した時間をミリ秒で表示）
+- APIレート制限情報ヘッダー（X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Resetをレスポンスヘッダーに付与）
+- 比較ページ印刷/PDF対応（チェック結果と同様の印刷最適化スタイル）
 
 ## API
 - GET /api/check?url=URL: URLのGEOスコアチェック（GETメソッド対応、ブラウザから直接アクセス可）。CORS対応

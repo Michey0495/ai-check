@@ -263,7 +263,7 @@ export function CompareClient() {
         複数サイトのAI検索対応度を比較。自サイトと競合を横並びでチェック。
       </p>
 
-      <div className="mx-auto max-w-2xl space-y-3">
+      <div className="no-print mx-auto max-w-2xl space-y-3">
         {urls.map((url, i) => (
           <div key={i} className="flex items-center gap-3">
             <span className="w-16 text-right text-sm text-white/40">
@@ -358,11 +358,19 @@ export function CompareClient() {
 
           {/* Export */}
           {reports.length >= 2 && (
-            <div className="flex justify-end">
+            <div className="flex justify-end gap-2">
               <Button
                 variant="outline"
                 size="sm"
-                className="cursor-pointer border-white/10 bg-white/5 text-white/70 transition-all duration-200 hover:bg-white/10 hover:text-white"
+                className="no-print cursor-pointer border-white/10 bg-white/5 text-white/70 transition-all duration-200 hover:bg-white/10 hover:text-white"
+                onClick={() => window.print()}
+              >
+                印刷 / PDF
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="no-print cursor-pointer border-white/10 bg-white/5 text-white/70 transition-all duration-200 hover:bg-white/10 hover:text-white"
                 onClick={handleExportCSV}
               >
                 CSVでエクスポート

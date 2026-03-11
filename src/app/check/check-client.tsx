@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo, useSyncExternalStore } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef, useSyncExternalStore } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { UrlCheckForm } from "@/components/url-check-form";
@@ -127,13 +127,14 @@ function generateReportText(report: CheckReport): string {
   const pct = Math.round((report.totalScore / report.maxScore) * 100);
   const htmlSizeText = report.htmlSizeKB != null ? ` | HTML: ${report.htmlSizeKB}KB` : "";
   const httpsText = report.isHttps !== undefined ? ` | ${report.isHttps ? "HTTPS" : "HTTP"}` : "";
+  const dnsText = report.dnsResolutionMs != null ? ` | DNS: ${report.dnsResolutionMs}ms` : "";
   const linkText = report.internalLinkCount != null ? ` | 内部リンク: ${report.internalLinkCount}件 / 外部リンク: ${report.externalLinkCount ?? 0}件` : "";
   const lines = [
     `AI Check - GEOスコアレポート`,
     `================================`,
     `URL: ${report.url}`,
     `スコア: ${pct}/100 (グレード: ${report.grade})`,
-    `チェック日時: ${new Date(report.checkedAt).toLocaleString("ja-JP")}${htmlSizeText}${httpsText}${linkText}`,
+    `チェック日時: ${new Date(report.checkedAt).toLocaleString("ja-JP")}${htmlSizeText}${httpsText}${dnsText}${linkText}`,
     ``,
     `--- 詳細結果 ---`,
   ];
@@ -528,7 +529,7 @@ function QuickFixGuide({ report }: { report: CheckReport }) {
     .reduce((sum, r) => sum + (r.maxScore - r.score), 0);
 
   return (
-    <div className="rounded-lg border border-primary/20 bg-primary/5 p-6">
+    <div id="sec-quick-fix" className="scroll-mt-16 rounded-lg border border-primary/20 bg-primary/5 p-6">
       <h2 className="mb-1 text-xl font-bold text-white">クイック改善ガイド</h2>
       <p className="mb-4 text-sm text-white/50">
         約{totalMinutes}分の作業で最大+{potentialScore}ptの改善が見込めます
@@ -592,6 +593,93 @@ const indicatorTips: Record<string, { tip: string; guide?: string }> = {
   },
 };
 
+type SectionDef = { id: string; label: string; exists: boolean };
+
+function SectionNav({ report }: { report: CheckReport }) {
+  const [activeId, setActiveId] = useState("");
+  const navRef = useRef<HTMLDivElement>(null);
+
+  const sections = useMemo<SectionDef[]>(() => {
+    const s: SectionDef[] = [
+      { id: "sec-score-breakdown", label: "スコア内訳", exists: true },
+      { id: "sec-grade-guide", label: "スコアの見方", exists: true },
+      { id: "sec-quick-fix", label: "クイック改善", exists: report.results.some((r) => r.status !== "pass") },
+      { id: "sec-simulator", label: "シミュレーター", exists: report.results.some((r) => r.status !== "pass") },
+      { id: "sec-detail", label: "詳細結果", exists: true },
+      { id: "sec-fix-codes", label: "改善コード", exists: report.results.some((r) => r.code) },
+      { id: "sec-accessibility", label: "アクセシビリティ", exists: !!(report.accessibility && (report.accessibility.imgCount > 0 || report.accessibility.ariaLandmarks > 0)) },
+      { id: "sec-security", label: "セキュリティ", exists: !!report.securityHeaders },
+      { id: "sec-ssl", label: "SSL/TLS", exists: !!report.sslCertificate },
+      { id: "sec-performance", label: "パフォーマンス", exists: !!report.performanceHints },
+      { id: "sec-cwv", label: "Core Web Vitals", exists: !!report.coreWebVitals },
+      { id: "sec-image-opt", label: "画像最適化", exists: !!report.imageOptimization },
+      { id: "sec-tech", label: "テクノロジー", exists: !!(report.detectedTech && report.detectedTech.length > 0) },
+      { id: "sec-pwa", label: "PWA", exists: !!report.pwaManifest?.exists },
+      { id: "sec-social-meta", label: "ソーシャルメタ", exists: !!report.socialMeta },
+      { id: "sec-redirect", label: "リダイレクト", exists: !!(report.redirectChain || report.canonicalUrl) },
+      { id: "sec-content", label: "コンテンツ分析", exists: !!(report.contentMetrics && report.contentMetrics.wordCount > 0) },
+      { id: "sec-feed", label: "フィード", exists: !!report.feedDetection },
+      { id: "sec-favicon", label: "ファビコン", exists: !!report.faviconAnalysis },
+      { id: "sec-dup-meta", label: "重複メタタグ", exists: !!(report.duplicateMetaTags && report.duplicateMetaTags.length > 0) },
+      { id: "sec-og-preview", label: "シェアプレビュー", exists: !!(report.ogPreview || report.ogImage) },
+      { id: "sec-heading-tree", label: "見出し構造", exists: !!(report.headingTree && report.headingTree.length > 0) },
+    ];
+    return s.filter((x) => x.exists);
+  }, [report]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveId(entry.target.id);
+          }
+        }
+      },
+      { rootMargin: "-80px 0px -60% 0px", threshold: 0.1 }
+    );
+    for (const s of sections) {
+      const el = document.getElementById(s.id);
+      if (el) observer.observe(el);
+    }
+    return () => observer.disconnect();
+  }, [sections]);
+
+  useEffect(() => {
+    if (!navRef.current || !activeId) return;
+    const activeBtn = navRef.current.querySelector(`[data-section="${activeId}"]`);
+    if (activeBtn) {
+      activeBtn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    }
+  }, [activeId]);
+
+  if (sections.length < 3) return null;
+
+  return (
+    <div className="no-print sticky top-0 z-30 -mx-4 border-b border-white/10 bg-black/90 px-4 py-2 backdrop-blur-sm">
+      <div ref={navRef} className="flex gap-1 overflow-x-auto scrollbar-hide">
+        {sections.map((s) => (
+          <button
+            key={s.id}
+            data-section={s.id}
+            onClick={() => {
+              const el = document.getElementById(s.id);
+              if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
+            className={`shrink-0 cursor-pointer rounded-full px-3 py-1 text-xs transition-all duration-200 ${
+              activeId === s.id
+                ? "bg-primary/20 text-primary"
+                : "text-white/40 hover:bg-white/5 hover:text-white/70"
+            }`}
+          >
+            {s.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function ScoreSimulator({ report }: { report: CheckReport }) {
   const improvableItems = report.results.filter((r) => r.status !== "pass");
   const [fixed, setFixed] = useState<Set<string>>(new Set());
@@ -617,7 +705,7 @@ function ScoreSimulator({ report }: { report: CheckReport }) {
   };
 
   return (
-    <div className="rounded-lg border border-primary/20 bg-primary/5 p-6">
+    <div id="sec-simulator" className="scroll-mt-16 rounded-lg border border-primary/20 bg-primary/5 p-6">
       <div className="mb-4 flex items-start justify-between">
         <div>
           <h2 className="text-xl font-bold text-white">改善シミュレーター</h2>
@@ -712,7 +800,7 @@ function AllFixCodes({ report }: { report: CheckReport }) {
   };
 
   return (
-    <div className="rounded-lg border border-white/10 bg-white/5">
+    <div id="sec-fix-codes" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5">
       <button
         onClick={() => setOpen(!open)}
         aria-expanded={open}
@@ -1005,6 +1093,11 @@ export function CheckPageClient() {
                   {report.isHttps ? "HTTPS" : "HTTP（非暗号化）"}
                 </span>
               )}
+              {report.dnsResolutionMs != null && (
+                <span className={`rounded-full px-3 py-1 text-xs ${report.dnsResolutionMs < 100 ? "bg-green-500/10 text-green-400" : report.dnsResolutionMs < 300 ? "bg-yellow-500/10 text-yellow-400" : "bg-red-500/10 text-red-400"}`}>
+                  DNS: {report.dnsResolutionMs}ms
+                </span>
+              )}
               {report.internalLinkCount != null && (
                 <span className="rounded-full bg-white/5 px-3 py-1 text-xs text-white/50">
                   内部リンク: {report.internalLinkCount}件
@@ -1165,9 +1258,11 @@ export function CheckPageClient() {
             </div>
           </div>
 
+          <SectionNav report={report} />
+
           {/* Accessibility summary */}
           {report.accessibility && (report.accessibility.imgCount > 0 || report.accessibility.ariaLandmarks > 0) && (
-            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+            <div id="sec-accessibility" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
               <h2 className="mb-3 text-lg font-semibold text-white">アクセシビリティ概要</h2>
               <div className="grid gap-3 sm:grid-cols-3">
                 {report.accessibility.imgCount > 0 && (
@@ -1215,7 +1310,7 @@ export function CheckPageClient() {
 
           {/* Security headers */}
           {report.securityHeaders && (
-            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+            <div id="sec-security" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
               <div className="mb-3 flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-white">セキュリティヘッダー</h2>
                 <span className={`rounded-full px-3 py-1 text-xs ${
@@ -1252,7 +1347,7 @@ export function CheckPageClient() {
 
           {/* SSL/TLS Certificate */}
           {report.sslCertificate && (
-            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+            <div id="sec-ssl" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
               <div className="mb-3 flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-white">SSL/TLS証明書</h2>
                 <span className={`rounded-full px-3 py-1 text-xs ${
@@ -1324,7 +1419,7 @@ export function CheckPageClient() {
 
           {/* Performance hints */}
           {report.performanceHints && (
-            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+            <div id="sec-performance" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
               <h2 className="mb-3 text-lg font-semibold text-white">パフォーマンスヒント</h2>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 <div className="rounded-lg bg-white/[0.03] p-3">
@@ -1389,7 +1484,7 @@ export function CheckPageClient() {
 
           {/* Core Web Vitals hints */}
           {report.coreWebVitals && (
-            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+            <div id="sec-cwv" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
               <h2 className="mb-3 text-lg font-semibold text-white">Core Web Vitals ヒント</h2>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 <div className="rounded-lg bg-white/[0.03] p-3">
@@ -1468,7 +1563,7 @@ export function CheckPageClient() {
 
           {/* Image optimization */}
           {report.imageOptimization && (
-            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+            <div id="sec-image-opt" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
               <h2 className="mb-3 text-lg font-semibold text-white">画像最適化</h2>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 <div className="rounded-lg bg-white/[0.03] p-3">
@@ -1528,7 +1623,7 @@ export function CheckPageClient() {
 
           {/* Detected technologies */}
           {report.detectedTech && report.detectedTech.length > 0 && (
-            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+            <div id="sec-tech" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
               <h2 className="mb-3 text-lg font-semibold text-white">検出テクノロジー</h2>
               <div className="flex flex-wrap gap-2">
                 {report.detectedTech.map((tech) => (
@@ -1548,7 +1643,7 @@ export function CheckPageClient() {
 
           {/* PWA Manifest */}
           {report.pwaManifest?.exists && (
-            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+            <div id="sec-pwa" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
               <h2 className="mb-3 text-lg font-semibold text-white">PWA対応状況</h2>
               <div className="grid gap-2 grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
                 {([
@@ -1574,7 +1669,7 @@ export function CheckPageClient() {
 
           {/* Social Meta */}
           {report.socialMeta && (
-            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+            <div id="sec-social-meta" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
               <h2 className="mb-3 text-lg font-semibold text-white">ソーシャルメタ情報</h2>
               <div className="space-y-2">
                 {report.socialMeta.ogSiteName && (
@@ -1610,7 +1705,7 @@ export function CheckPageClient() {
 
           {/* Redirect Chain & Canonical */}
           {(report.redirectChain || report.canonicalUrl) && (
-            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+            <div id="sec-redirect" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
               <h2 className="mb-3 text-lg font-semibold text-white">リダイレクト & canonical URL</h2>
               {report.redirectChain && report.redirectChain.hops > 0 && (
                 <div className="mb-4">
@@ -1660,7 +1755,7 @@ export function CheckPageClient() {
 
           {/* Content Readability Metrics */}
           {report.contentMetrics && report.contentMetrics.wordCount > 0 && (
-            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+            <div id="sec-content" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
               <h2 className="mb-3 text-lg font-semibold text-white">コンテンツ分析</h2>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
                 <div className="text-center">
@@ -1694,7 +1789,7 @@ export function CheckPageClient() {
 
           {/* RSS/Atom Feed Detection */}
           {report.feedDetection && (
-            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+            <div id="sec-feed" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
               <h2 className="mb-3 text-lg font-semibold text-white">フィード検出</h2>
               <div className="flex flex-wrap gap-2">
                 {report.feedDetection.hasRss && (
@@ -1719,7 +1814,7 @@ export function CheckPageClient() {
 
           {/* Favicon Completeness */}
           {report.faviconAnalysis && (
-            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+            <div id="sec-favicon" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
               <h2 className="mb-3 text-lg font-semibold text-white">ファビコン分析</h2>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-5">
                 {[
@@ -1750,7 +1845,7 @@ export function CheckPageClient() {
 
           {/* Duplicate Meta Tag Warning */}
           {report.duplicateMetaTags && report.duplicateMetaTags.length > 0 && (
-            <div className="rounded-lg border border-yellow-500/20 bg-yellow-500/5 p-6">
+            <div id="sec-dup-meta" className="scroll-mt-16 rounded-lg border border-yellow-500/20 bg-yellow-500/5 p-6">
               <h2 className="mb-3 text-lg font-semibold text-yellow-400">重複メタタグ検出</h2>
               <div className="space-y-2">
                 {report.duplicateMetaTags.map((d) => (
@@ -1770,7 +1865,7 @@ export function CheckPageClient() {
 
           {/* OG / Social Preview Card */}
           {(report.ogPreview || report.ogImage) && (
-            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+            <div id="sec-og-preview" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
               <h2 className="mb-3 text-lg font-semibold text-white">ソーシャルシェアプレビュー</h2>
               <p className="mb-4 text-xs text-white/40">SNS（X/Twitter、LINE、Facebook等）でシェアされた際の表示イメージ</p>
               <div className="mx-auto max-w-lg overflow-hidden rounded-xl border border-white/10 bg-black">
@@ -1815,7 +1910,7 @@ export function CheckPageClient() {
 
           {/* Heading Hierarchy Tree */}
           {report.headingTree && report.headingTree.length > 0 && (
-            <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+            <div id="sec-heading-tree" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
               <h2 className="mb-3 text-lg font-semibold text-white">見出し構造ツリー</h2>
               <div className="space-y-0.5 font-mono text-sm">
                 {report.headingTree.map((h, i) => (
@@ -1840,7 +1935,7 @@ export function CheckPageClient() {
           )}
 
           {/* Score breakdown chart */}
-          <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+          <div id="sec-score-breakdown" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
             <h2 className="mb-4 text-lg font-semibold text-white">スコア内訳</h2>
             <div className="space-y-3">
               {report.results.map((r) => {
@@ -1874,7 +1969,7 @@ export function CheckPageClient() {
           </div>
 
           {/* Grade explanation */}
-          <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+          <div id="sec-grade-guide" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
             <h2 className="mb-3 text-lg font-semibold text-white">スコアの見方</h2>
             <div className="grid gap-2 grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
               {([
@@ -1904,7 +1999,7 @@ export function CheckPageClient() {
 
           <PriorityActions report={report} />
 
-          <div className="space-y-4">
+          <div id="sec-detail" className="scroll-mt-16 space-y-4">
             <h2 className="text-xl font-bold text-white">詳細結果</h2>
             {report.results.map((r) => (
               <div

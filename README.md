@@ -394,3 +394,10 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - UX: グローバルキーボードショートカット追加（Ctrl+K / Cmd+K でURL入力にフォーカス）
 - 開発者ページ: 全REST APIエンドポイントにcurlコマンドコピーボタン追加
 - AI公開チャネル: agent.json v3.6.0に更新、llms.txtにAPI Playground・オートコンプリート・ショートカット情報追記
+
+### Night 37 (完了)
+- UX: チェック結果ページにセクションナビゲーション追加（スクロール連動するスティッキー目次バー、22セクション対応、IntersectionObserverによるアクティブハイライト）
+- チェック強化: DNS解決時間計測追加（dnsResolutionMs: DNS名前解決に要した時間をミリ秒で計測・表示、速度別の色分けバッジ）
+- API: レート制限情報ヘッダー追加（X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-ResetをAPIレスポンスヘッダーに付与）
+- UX: 比較ページに印刷/PDF対応追加（レーダーチャート・指標別比較テーブルを印刷最適化）
+- AI公開チャネル: agent.json v3.7.0に更新、llms.txtにセクションナビ・DNS計測・レート制限・比較印刷情報追記

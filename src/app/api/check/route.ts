@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import type { CheckResult, CheckReport } from "@/lib/check-indicators";
 import { getGrade } from "@/lib/check-indicators";
 import { corsHeaders, corsOptionsResponse } from "@/lib/cors";
+import * as dns from "dns";
 import * as https from "https";
 import * as tls from "tls";
 
@@ -17,7 +18,7 @@ const RATE_LIMIT = 10;
 const RATE_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX_ENTRIES = 10_000;
 
-function checkRateLimit(ip: string): boolean {
+function checkRateLimit(ip: string): { allowed: boolean; remaining: number; resetAt: number } {
   const now = Date.now();
 
   // Prevent unbounded memory growth: purge expired entries periodically
@@ -29,12 +30,15 @@ function checkRateLimit(ip: string): boolean {
 
   const entry = rateLimitMap.get(ip);
   if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
-    return true;
+    const resetAt = now + RATE_WINDOW_MS;
+    rateLimitMap.set(ip, { count: 1, resetAt });
+    return { allowed: true, remaining: RATE_LIMIT - 1, resetAt };
   }
-  if (entry.count >= RATE_LIMIT) return false;
+  if (entry.count >= RATE_LIMIT) {
+    return { allowed: false, remaining: 0, resetAt: entry.resetAt };
+  }
   entry.count++;
-  return true;
+  return { allowed: true, remaining: RATE_LIMIT - entry.count, resetAt: entry.resetAt };
 }
 
 function isPrivateHostname(hostname: string): boolean {
@@ -203,6 +207,20 @@ async function detectHttpVersion(url: string): Promise<string | undefined> {
       req.on("timeout", () => { req.destroy(); resolve(undefined); });
       req.end();
     });
+  } catch {
+    return undefined;
+  }
+}
+
+async function measureDnsResolution(hostname: string): Promise<number | undefined> {
+  if (isPrivateHostname(hostname)) return undefined;
+  try {
+    const start = Date.now();
+    await Promise.race([
+      dns.promises.resolve(hostname),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("DNS timeout")), 5000)),
+    ]);
+    return Date.now() - start;
   } catch {
     return undefined;
   }
@@ -817,12 +835,18 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const rateLimit = checkRateLimit(ip);
+  const rateLimitHeaders = {
+    "X-RateLimit-Limit": String(RATE_LIMIT),
+    "X-RateLimit-Remaining": String(rateLimit.remaining),
+    "X-RateLimit-Reset": String(Math.ceil(rateLimit.resetAt / 1000)),
+  };
   try {
-    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-    if (!checkRateLimit(ip)) {
+    if (!rateLimit.allowed) {
       return NextResponse.json(
         { error: "リクエスト数が上限を超えました。しばらく待ってから再度お試しください。", errorCode: "RATE_LIMITED" },
-        { status: 429, headers: corsHeaders() }
+        { status: 429, headers: { ...corsHeaders(), ...rateLimitHeaders } }
       );
     }
 
@@ -832,40 +856,40 @@ export async function POST(request: NextRequest) {
     } catch {
       return NextResponse.json(
         { error: "リクエストボディが不正です。JSON形式で送信してください。", errorCode: "INVALID_BODY" },
-        { status: 400, headers: corsHeaders() }
+        { status: 400, headers: { ...corsHeaders(), ...rateLimitHeaders } }
       );
     }
 
     const { url } = body;
 
     if (!url || typeof url !== "string" || !url.trim()) {
-      return NextResponse.json({ error: "URLを入力してください。", errorCode: "MISSING_URL" }, { status: 400, headers: corsHeaders() });
+      return NextResponse.json({ error: "URLを入力してください。", errorCode: "MISSING_URL" }, { status: 400, headers: { ...corsHeaders(), ...rateLimitHeaders } });
     }
 
     if (url.length > 2048) {
-      return NextResponse.json({ error: "URLが長すぎます。2048文字以内にしてください。", errorCode: "URL_TOO_LONG" }, { status: 400, headers: corsHeaders() });
+      return NextResponse.json({ error: "URLが長すぎます。2048文字以内にしてください。", errorCode: "URL_TOO_LONG" }, { status: 400, headers: { ...corsHeaders(), ...rateLimitHeaders } });
     }
 
     let parsedUrl: URL;
     try {
       parsedUrl = new URL(url);
     } catch {
-      return NextResponse.json({ error: "有効なURLを入力してください。", errorCode: "INVALID_URL" }, { status: 400, headers: corsHeaders() });
+      return NextResponse.json({ error: "有効なURLを入力してください。", errorCode: "INVALID_URL" }, { status: 400, headers: { ...corsHeaders(), ...rateLimitHeaders } });
     }
 
     if (!["http:", "https:"].includes(parsedUrl.protocol)) {
-      return NextResponse.json({ error: "http または https のURLを入力してください。", errorCode: "INVALID_PROTOCOL" }, { status: 400, headers: corsHeaders() });
+      return NextResponse.json({ error: "http または https のURLを入力してください。", errorCode: "INVALID_PROTOCOL" }, { status: 400, headers: { ...corsHeaders(), ...rateLimitHeaders } });
     }
 
     if (isPrivateHostname(parsedUrl.hostname)) {
-      return NextResponse.json({ error: "プライベートネットワークのURLはチェックできません。", errorCode: "SSRF_BLOCKED" }, { status: 400, headers: corsHeaders() });
+      return NextResponse.json({ error: "プライベートネットワークのURLはチェックできません。", errorCode: "SSRF_BLOCKED" }, { status: 400, headers: { ...corsHeaders(), ...rateLimitHeaders } });
     }
 
     const baseUrl = parsedUrl.origin;
     const startTime = Date.now();
 
     // Fetch all resources concurrently
-    const [robotsRes, llmsRes, llmsFullRes, pageRes, sitemapRes, agentRes, manifestRes, redirectInfo, sslCertificate, httpVersion] = await Promise.all([
+    const [robotsRes, llmsRes, llmsFullRes, pageRes, sitemapRes, agentRes, manifestRes, redirectInfo, sslCertificate, httpVersion, dnsResolutionMs] = await Promise.all([
       safeFetch(`${baseUrl}/robots.txt`),
       safeFetch(`${baseUrl}/llms.txt`),
       safeFetch(`${baseUrl}/llms-full.txt`),
@@ -876,13 +900,14 @@ export async function POST(request: NextRequest) {
       detectRedirectChain(url),
       parsedUrl.protocol === "https:" ? detectSslCertificate(parsedUrl.hostname) : Promise.resolve(undefined),
       detectHttpVersion(url),
+      measureDnsResolution(parsedUrl.hostname),
     ]);
 
     // If main page is unreachable, return a clear error
     if (!pageRes.ok && pageRes.text === "") {
       return NextResponse.json(
         { error: "対象サイトに接続できませんでした。URLが正しいか、サイトが稼働中かご確認ください。", errorCode: "SITE_UNREACHABLE" },
-        { status: 422, headers: corsHeaders() }
+        { status: 422, headers: { ...corsHeaders(), ...rateLimitHeaders } }
       );
     }
 
@@ -1414,18 +1439,20 @@ export async function POST(request: NextRequest) {
       ogPreview,
       headingTree: headingTree.length > 0 ? headingTree : undefined,
       duplicateMetaTags: duplicateMetaTags.length > 0 ? duplicateMetaTags : undefined,
+      dnsResolutionMs: dnsResolutionMs ?? undefined,
     };
 
     return NextResponse.json(report, {
       headers: {
         "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
         ...corsHeaders(),
+        ...rateLimitHeaders,
       },
     });
   } catch {
     return NextResponse.json(
       { error: "チェック中にエラーが発生しました。", errorCode: "INTERNAL_ERROR" },
-      { status: 500, headers: corsHeaders() }
+      { status: 500, headers: { ...corsHeaders(), ...rateLimitHeaders } }
     );
   }
 }
