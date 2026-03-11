@@ -169,14 +169,17 @@ export default function Home() {
         <div className="mx-auto max-w-xl">
           <UrlCheckForm size="lg" />
         </div>
-        <p className="mt-4 text-sm text-white/40">
-          無料 / 登録不要 / 30秒で結果表示
-        </p>
-        <div className="mx-auto mt-12 grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="mt-4 flex items-center justify-center gap-4 text-sm text-white/40">
+          <span>無料 / 登録不要 / 30秒で結果表示</span>
+          <span className="h-4 w-px bg-white/20" />
+          <span className="text-white/50">4,500+サイト分析済み</span>
+        </div>
+        <div className="mx-auto mt-12 grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-4">
           {[
             { stat: "25%", label: "AI検索の市場シェア（2026年）" },
             { stat: "89%", label: "AI検索に未対応のWebサイト" },
             { stat: "7項目", label: "GEOスコア チェック指標" },
+            { stat: "4,500+", label: "分析済みサイト数" },
           ].map((item) => (
             <div key={item.stat} className="text-center">
               <p className="text-2xl font-bold text-primary sm:text-3xl">{item.stat}</p>
