@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { GRADE_HEX_COLORS } from "@/lib/grade-colors";
 
 export const maxDuration = 30;
 
@@ -27,13 +28,7 @@ function checkBadgeRate(ip: string): boolean {
   return true;
 }
 
-const gradeColors: Record<string, string> = {
-  A: "#4ade80",
-  B: "#60a5fa",
-  C: "#facc15",
-  D: "#fb923c",
-  F: "#f87171",
-};
+const gradeColors = GRADE_HEX_COLORS;
 
 function generateBadgeSvg(grade: string, score: number, style: string): string {
   const safeGrade = escapeXml(String(grade).slice(0, 2));

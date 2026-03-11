@@ -7,6 +7,7 @@ import { UrlCheckForm } from "@/components/url-check-form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { CheckReport } from "@/lib/check-indicators";
+import { GRADE_TEXT_COLORS, GRADE_HEX_COLORS } from "@/lib/grade-colors";
 import { createZip } from "@/lib/zip";
 
 type HistoryEntry = {
@@ -21,21 +22,8 @@ type HistoryEntry = {
 const HISTORY_KEY = "aicheck-history";
 const MAX_HISTORY = 20;
 
-const GRADE_COLORS: Record<string, string> = {
-  A: "text-green-400",
-  B: "text-blue-400",
-  C: "text-yellow-400",
-  D: "text-orange-400",
-  F: "text-red-400",
-};
-
-const STROKE_COLORS: Record<string, string> = {
-  A: "#4ade80",
-  B: "#60a5fa",
-  C: "#facc15",
-  D: "#fb923c",
-  F: "#f87171",
-};
+const GRADE_COLORS = GRADE_TEXT_COLORS;
+const STROKE_COLORS = GRADE_HEX_COLORS;
 
 const DOWNLOAD_NAME_MAP: Record<string, string> = {
   "robots-txt": "robots.txt",

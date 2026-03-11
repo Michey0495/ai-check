@@ -401,3 +401,8 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - API: レート制限情報ヘッダー追加（X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-ResetをAPIレスポンスヘッダーに付与）
 - UX: 比較ページに印刷/PDF対応追加（レーダーチャート・指標別比較テーブルを印刷最適化）
 - AI公開チャネル: agent.json v3.7.0に更新、llms.txtにセクションナビ・DNS計測・レート制限・比較印刷情報追記
+
+### Night 38 (完了)
+- リファクタリング: チェックAPI（1,459行）をモジュール分割（security.ts, network.ts, checkers.ts, analyzers.ts）- 保守性・可読性向上
+- リファクタリング: グレード色定義を共有ユーティリティ（lib/grade-colors.ts）に統合 - check-client, compare-client, history-client, badge APIの重複排除
+- 改善: error.tsx / global-error.tsx にエラーログ出力追加（console.error）、エラーIDの表示、トップへの導線追加

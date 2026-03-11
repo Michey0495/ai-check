@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { CheckReport } from "@/lib/check-indicators";
+import { GRADE_TEXT_COLORS } from "@/lib/grade-colors";
 
 function generateCSV(results: { url: string; report: CheckReport | null; error: string }[]): string {
   const reports = results.filter((r) => r.report !== null);
@@ -158,13 +159,7 @@ function ScoreBar({ score, maxScore, status }: { score: number; maxScore: number
   );
 }
 
-const gradeColors: Record<string, string> = {
-  A: "text-green-400",
-  B: "text-blue-400",
-  C: "text-yellow-400",
-  D: "text-orange-400",
-  F: "text-red-400",
-};
+const gradeColors = GRADE_TEXT_COLORS;
 
 const MAX_URLS = 5;
 

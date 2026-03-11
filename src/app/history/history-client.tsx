@@ -4,6 +4,7 @@ import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { GRADE_BADGE_COLORS } from "@/lib/grade-colors";
 
 type HistoryEntry = {
   url: string;
@@ -114,13 +115,7 @@ function ScoreTrendChart({ entries }: { entries: HistoryEntry[] }) {
   );
 }
 
-const gradeColors: Record<string, string> = {
-  A: "bg-green-500/20 text-green-400 border-green-500/30",
-  B: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  C: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-  D: "bg-orange-500/20 text-orange-400 border-orange-500/30",
-  F: "bg-red-500/20 text-red-400 border-red-500/30",
-};
+const gradeColors = GRADE_BADGE_COLORS;
 
 export function HistoryClient() {
   const raw = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
