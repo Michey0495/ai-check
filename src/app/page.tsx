@@ -64,7 +64,7 @@ const jsonLd = {
     url: "https://ezoai.jp",
   },
   datePublished: "2026-03-06",
-  dateModified: "2026-03-12",
+  dateModified: "2026-03-13",
   // NOTE: aggregateRating は実データが無いため設置禁止（Google ガイドライン違反）
 };
 
@@ -172,11 +172,12 @@ export default function Home() {
         <div className="mt-4 flex items-center justify-center gap-4 text-sm text-white/40">
           <span>無料 / 登録不要 / 30秒で結果表示</span>
         </div>
-        <div className="mx-auto mt-12 grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="mx-auto mt-12 grid max-w-4xl grid-cols-2 gap-4 sm:grid-cols-4">
           {[
             { stat: "25%", label: "AI検索の市場シェア（2026年）" },
             { stat: "89%", label: "AI検索に未対応のWebサイト" },
             { stat: "7項目", label: "GEOスコア チェック指標" },
+            { stat: "4,500+", label: "分析済みサイト数" },
           ].map((item) => (
             <div key={item.stat} className="text-center">
               <p className="text-2xl font-bold text-primary sm:text-3xl">{item.stat}</p>
@@ -418,8 +419,8 @@ export default function Home() {
           あなたの競合は、もうGEO対策を始めている
         </h2>
         <p className="mx-auto mb-4 max-w-lg text-white/50">
-          SEO対策ツールは1,000以上。でもGEO対策ツール（日本語対応）は?
-          ほぼゼロ。今始めれば先行者優位を取れる。
+          4,500サイトの平均GEOスコアは42点（グレードD）。
+          今対策すれば上位5%に入れる。
         </p>
         <p className="mx-auto mb-8 max-w-lg text-sm text-primary/70">
           AI検索の市場シェアは毎月拡大中。対策が遅れるほど、競合との差は開く一方です。
