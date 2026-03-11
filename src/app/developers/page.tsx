@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ApiPlayground } from "./api-playground";
+import { CurlCopy } from "./curl-copy";
 
 export const metadata: Metadata = {
   title: "API / 開発者向けドキュメント",
@@ -22,6 +23,8 @@ const breadcrumbJsonLd = {
     { "@type": "ListItem", position: 2, name: "開発者向けドキュメント", item: "https://ai-check.ezoai.jp/developers" },
   ],
 };
+
+const BASE = "https://ai-check.ezoai.jp";
 
 const endpoints = [
   {
@@ -46,6 +49,7 @@ const endpoints = [
   }
 }`,
     notes: "レート制限: 10リクエスト/分（IP単位）。POSTと同じレスポンス形式。",
+    curl: `curl "${BASE}/api/check?url=https://example.com"`,
   },
   {
     method: "POST",
@@ -73,6 +77,9 @@ const endpoints = [
   "checkedAt": "2026-03-10T00:00:00.000Z"
 }`,
     notes: "レート制限: 10リクエスト/分（IP単位）",
+    curl: `curl -X POST ${BASE}/api/check \\
+  -H "Content-Type: application/json" \\
+  -d '{"url": "https://example.com"}'`,
   },
   {
     method: "POST",
@@ -103,6 +110,9 @@ const endpoints = [
   "filename": "llms.txt"
 }`,
     notes: null,
+    curl: `curl -X POST ${BASE}/api/generate \\
+  -H "Content-Type: application/json" \\
+  -d '{"type":"llms-txt","data":{"siteName":"My Site","siteUrl":"https://example.com","description":"説明","pages":[{"path":"/","title":"トップ","description":"概要"}]}}'`,
   },
   {
     method: "POST",
@@ -134,6 +144,9 @@ const endpoints = [
   "count": 2
 }`,
     notes: "最大10件まで。レート制限はURL単位で適用。",
+    curl: `curl -X POST ${BASE}/api/check/batch \\
+  -H "Content-Type: application/json" \\
+  -d '{"urls":["https://example.com","https://example.org"]}'`,
   },
   {
     method: "GET",
@@ -146,13 +159,14 @@ const endpoints = [
 <!-- Content-Type: image/svg+xml -->
 
 <!-- Markdown埋め込み例 -->
-[![GEO Score](https://ai-check.ezoai.jp/api/badge?url=https://example.com)](https://ai-check.ezoai.jp/check?url=https://example.com)
+[![GEO Score](${BASE}/api/badge?url=https://example.com)](${BASE}/check?url=https://example.com)
 
 <!-- HTML埋め込み例 -->
-<a href="https://ai-check.ezoai.jp/check?url=https://example.com">
-  <img src="https://ai-check.ezoai.jp/api/badge?url=https://example.com" alt="GEO Score" />
+<a href="${BASE}/check?url=https://example.com">
+  <img src="${BASE}/api/badge?url=https://example.com" alt="GEO Score" />
 </a>`,
     notes: "結果は1時間キャッシュされます。",
+    curl: `curl "${BASE}/api/badge?url=https://example.com&style=flat"`,
   },
 ];
 
@@ -248,6 +262,7 @@ export default function DevelopersPage() {
                   {ep.notes && (
                     <p className="text-xs text-white/40">{ep.notes}</p>
                   )}
+                  <CurlCopy curl={ep.curl} />
                 </div>
               </div>
             ))}
