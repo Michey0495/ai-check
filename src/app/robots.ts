@@ -17,6 +17,8 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: "Bytespider", allow: "/" },
       { userAgent: "CCBot", allow: "/" },
       { userAgent: "Diffbot", allow: "/" },
+      { userAgent: "Meta-ExternalAgent", allow: "/" },
+      { userAgent: "OAI-SearchBot", allow: "/" },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,
   };
