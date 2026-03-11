@@ -1,6 +1,6 @@
 # QA Report - web-url-a (AI Check)
 
-**Date:** 2026-03-12 (Night 38 QA Pass)
+**Date:** 2026-03-12 (Night 39 QA Pass)
 **Project:** AI Check (GEO Score Analyzer)
 **Domain:** ai-check.ezoai.jp
 
@@ -8,8 +8,22 @@
 
 | Check | Status |
 |-------|--------|
-| `npm run build` | PASS (44 static pages, compiled in 7.5s) |
+| `npm run build` | PASS (44 static pages) |
 | `npm run lint` | PASS (0 errors, 0 warnings) |
+
+## Night 39 Fixes
+
+### LOW: Lint warnings - unused imports in check-client.tsx
+- **File:** `src/app/check/check-client.tsx:9,47`
+- **Fix:** 未使用の `GRADE_HEX_COLORS` インポートと `GRADE_COLORS` 変数を削除
+
+### LOW: Feedback widget - missing focus management
+- **File:** `src/components/feedback-widget.tsx`
+- **Fix:** ダイアログ開閉時のフォーカス管理を追加（textareaへの自動フォーカス、閉じた時のトリガーボタンへのフォーカス復帰）
+
+### LOW: Feedback API - silent failure when GITHUB_TOKEN missing
+- **File:** `src/app/api/feedback/route.ts:71`
+- **Fix:** GITHUB_TOKEN未設定時に `console.warn` でログ出力を追加
 
 ## Night 38 Fixes
 
@@ -75,7 +89,6 @@
 - `React.memo` の使用なし - パフォーマンス影響が顕在化した場合に対応
 
 ### Accessibility (Minor)
-- フィードバックダイアログ: フォーカストラップ未実装
 - SVGチャート: `<desc>` 要素が未設定（`role="img"` + `aria-label` は設定済み）
 
 ## Checklist

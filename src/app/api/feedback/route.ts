@@ -68,6 +68,10 @@ export async function POST(request: NextRequest) {
   // GitHub Personal Access Token (set in Vercel env vars)
   const token = process.env.GITHUB_TOKEN;
 
+  if (!token) {
+    console.warn("GITHUB_TOKEN not set — feedback will not create GitHub issues");
+  }
+
   if (token) {
     try {
       const res = await fetch(`https://api.github.com/repos/Michey0495/${targetRepo}/issues`, {

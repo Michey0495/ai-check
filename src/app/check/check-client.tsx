@@ -6,7 +6,6 @@ import Link from "next/link";
 import { UrlCheckForm } from "@/components/url-check-form";
 import { Button } from "@/components/ui/button";
 import type { CheckReport } from "@/lib/check-indicators";
-import { GRADE_TEXT_COLORS, GRADE_HEX_COLORS } from "@/lib/grade-colors";
 import { createZip } from "@/lib/zip";
 import {
   DOWNLOAD_NAME_MAP,
@@ -43,8 +42,6 @@ import {
   OgPreviewSection,
   HeadingTreeSection,
 } from "./check-report-sections";
-
-const GRADE_COLORS = GRADE_TEXT_COLORS;
 
 export function CheckPageClient() {
   const searchParams = useSearchParams();

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export function FeedbackWidget({ repoName }: { repoName: string }) {
   const [open, setOpen] = useState(false);
@@ -9,6 +9,17 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
   const [sent, setSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (open && textareaRef.current) {
+      textareaRef.current.focus();
+    }
+    if (!open && triggerRef.current) {
+      triggerRef.current.focus();
+    }
+  }, [open]);
 
   const submit = async () => {
     if (!message.trim() || submitting) return;
@@ -40,6 +51,7 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
   if (!open) {
     return (
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen(true)}
         className="fixed bottom-4 right-4 bg-white/10 text-white/70 px-4 py-2 rounded-full border border-white/10 hover:bg-white/20 hover:text-white transition-all duration-200 text-sm z-50 backdrop-blur-sm cursor-pointer"
@@ -75,6 +87,7 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
             ))}
           </div>
           <textarea
+            ref={textareaRef}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             aria-label="フィードバック内容"
