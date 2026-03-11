@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ApiPlayground } from "./api-playground";
 
 export const metadata: Metadata = {
   title: "API / 開発者向けドキュメント",
@@ -198,6 +199,12 @@ export default function DevelopersPage() {
       </p>
 
       <div className="space-y-16">
+        {/* API Playground */}
+        <section>
+          <h2 className="mb-6 text-2xl font-bold text-white">API Playground</h2>
+          <ApiPlayground />
+        </section>
+
         {/* REST API */}
         <section>
           <h2 className="mb-6 text-2xl font-bold text-white">REST API</h2>

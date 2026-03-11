@@ -86,6 +86,9 @@
 - ソーシャルシェアプレビュー（og:title、og:description、og:imageに基づくSNS表示イメージのビジュアル確認）
 - 見出し構造ツリー表示（h1〜h6の全見出しを階層ツリー形式で可視化、最大30個）
 - 重複メタタグ検出（title、meta description、og:title、og:description、canonicalの重複を警告）
+- API Playground（開発者ページからブラウザ上でAPI直接テスト、レスポンスタイム表示）
+- URL入力オートコンプリート（チェック履歴からURL候補を表示、キーボード操作対応）
+- キーボードショートカット（Ctrl+K / Cmd+K でURL入力にフォーカス）
 
 ## API
 - GET /api/check?url=URL: URLのGEOスコアチェック（GETメソッド対応、ブラウザから直接アクセス可）。CORS対応

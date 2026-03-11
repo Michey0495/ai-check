@@ -177,7 +177,7 @@ export default function Home() {
             { stat: "25%", label: "AI検索の市場シェア（2026年）" },
             { stat: "89%", label: "AI検索に未対応のWebサイト" },
             { stat: "7項目", label: "GEOスコア チェック指標" },
-            { stat: "4,500+", label: "分析済みサイト数" },
+            { stat: "5ツール", label: "無料生成ツール" },
           ].map((item) => (
             <div key={item.stat} className="text-center">
               <p className="text-2xl font-bold text-primary sm:text-3xl">{item.stat}</p>
@@ -419,8 +419,8 @@ export default function Home() {
           あなたの競合は、もうGEO対策を始めている
         </h2>
         <p className="mx-auto mb-4 max-w-lg text-white/50">
-          4,500サイトの平均GEOスコアは42点（グレードD）。
-          今対策すれば上位5%に入れる。
+          多くのサイトのGEOスコアはグレードD以下。
+          今対策すれば、AI検索で先行者優位を確立できます。
         </p>
         <p className="mx-auto mb-8 max-w-lg text-sm text-primary/70">
           AI検索の市場シェアは毎月拡大中。対策が遅れるほど、競合との差は開く一方です。
