@@ -83,6 +83,7 @@ export function Header() {
               onKeyDown={(e) => { if (e.key === "Escape") setGuidesOpen(false); }}
               aria-expanded={guidesOpen}
               aria-haspopup="true"
+              aria-controls="guides-dropdown"
             >
               ガイド
               <svg
@@ -99,7 +100,7 @@ export function Header() {
               </svg>
             </button>
             {guidesOpen && (
-              <div className="absolute right-0 top-full z-50 mt-2 w-48 rounded-lg border border-white/10 bg-black/95 py-1 shadow-xl backdrop-blur-sm">
+              <div id="guides-dropdown" className="absolute right-0 top-full z-50 mt-2 w-48 rounded-lg border border-white/10 bg-black/95 py-1 shadow-xl backdrop-blur-sm">
                 {guideLinks.map((link) => (
                   <Link
                     key={link.href}
@@ -122,6 +123,7 @@ export function Header() {
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? "メニューを閉じる" : "メニューを開く"}
           aria-expanded={mobileOpen}
+          aria-controls="mobile-nav"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
             {mobileOpen ? (
@@ -142,7 +144,7 @@ export function Header() {
 
       {/* Mobile nav */}
       {mobileOpen && (
-        <nav className="border-t border-white/10 sm:hidden">
+        <nav id="mobile-nav" className="border-t border-white/10 sm:hidden">
           <div className="mx-auto max-w-5xl space-y-1 px-4 py-3">
             {navLinks.map((link) => (
               <Link

@@ -1449,7 +1449,8 @@ export async function POST(request: NextRequest) {
         ...rateLimitHeaders,
       },
     });
-  } catch {
+  } catch (e) {
+    console.error("Check API error:", e);
     return NextResponse.json(
       { error: "チェック中にエラーが発生しました。", errorCode: "INTERNAL_ERROR" },
       { status: 500, headers: { ...corsHeaders(), ...rateLimitHeaders } }
