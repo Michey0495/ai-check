@@ -4,7 +4,7 @@ AI検索対応度チェッカー & ジェネレーター。URLを入力するだ
 
 ## 技術スタック
 
-- Next.js 15 (App Router)
+- Next.js 16 (App Router)
 - TypeScript (strict)
 - Tailwind CSS
 - shadcn/ui
@@ -406,3 +406,9 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - リファクタリング: チェックAPI（1,459行）をモジュール分割（security.ts, network.ts, checkers.ts, analyzers.ts）- 保守性・可読性向上
 - リファクタリング: グレード色定義を共有ユーティリティ（lib/grade-colors.ts）に統合 - check-client, compare-client, history-client, badge APIの重複排除
 - 改善: error.tsx / global-error.tsx にエラーログ出力追加（console.error）、エラーIDの表示、トップへの導線追加
+
+### Night 39 (完了)
+- リファクタリング: check-client.tsx（2,178行）を4ファイルに分割 - check-utils.ts（ユーティリティ関数・履歴管理・レポート生成）、check-sections.tsx（共通UIコンポーネント8個）、check-report-sections.tsx（レポート表示セクション16個）、check-client.tsx（メイン740行）
+- 修正: Next.js バージョン参照を全ファイルで15→16に統一（README, ARCHITECTURE, About, llms.txt）
+- AI公開チャネル: agent.json v3.8.0に更新
+- ドキュメント: ARCHITECTURE.mdにチェック結果ページの新ファイル構成を反映

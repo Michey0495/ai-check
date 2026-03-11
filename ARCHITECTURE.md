@@ -11,7 +11,7 @@
 
 | 技術 | 用途 |
 |------|------|
-| Next.js 15 (App Router) | フレームワーク |
+| Next.js 16 (App Router) | フレームワーク |
 | TypeScript (strict) | 言語 |
 | Tailwind CSS v4 | スタイリング |
 | shadcn/ui | UIコンポーネント |
@@ -30,7 +30,10 @@ src/
 │   ├── not-found.tsx           # 404ページ
 │   ├── check/
 │   │   ├── page.tsx            # チェックページ（Suspense wrapper）
-│   │   ├── check-client.tsx    # チェック結果表示（Client Component）
+│   │   ├── check-client.tsx    # チェック結果メイン（Client Component）
+│   │   ├── check-utils.ts      # ユーティリティ関数（履歴管理、レポート生成）
+│   │   ├── check-sections.tsx   # 共通UIコンポーネント（ScoreCircle、SectionNav等）
+│   │   ├── check-report-sections.tsx # レポート表示セクション（16セクション）
 │   │   ├── compare/            # 複数サイト比較（2〜5サイト、CSV出力）
 │   │   └── [indicator]/page.tsx # チェック項目別SEOランディング（7ページ）
 │   ├── generate/
