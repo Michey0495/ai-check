@@ -18,7 +18,7 @@ function generateCSV(results: { url: string; report: CheckReport | null; error: 
     const rpt = r.report!;
     const pct = Math.round((rpt.totalScore / rpt.maxScore) * 100);
     const scores = rpt.results.map((item) => `${item.score}/${item.maxScore}`);
-    return [`"${rpt.url}"`, rpt.grade, `${pct}/100`, ...scores].join(",");
+    return [`"${rpt.url.replace(/"/g, '""')}"`, rpt.grade, `${pct}/100`, ...scores].join(",");
   });
   return [header, ...rows].join("\n");
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,18 +11,22 @@ const STYLES = [
   { id: "card", label: "カード", desc: "スコアを大きく表示" },
 ] as const;
 
+function computeInitialBadgeUrl(initialUrl: string): string {
+  if (!initialUrl) return "";
+  const trimmed = initialUrl.trim();
+  if (!trimmed) return "";
+  const normalized = /^https?:\/\//.test(trimmed) ? trimmed : "https://" + trimmed;
+  const params = new URLSearchParams({ url: normalized, style: "flat" });
+  return `https://ai-check.ezoai.jp/api/badge?${params.toString()}`;
+}
+
 export function BadgeGenerator() {
   const searchParams = useSearchParams();
   const initialUrl = searchParams.get("url") ?? "";
   const [url, setUrl] = useState(initialUrl);
   const [style, setStyle] = useState<string>("flat");
-  const [badgeUrl, setBadgeUrl] = useState("");
+  const [badgeUrl, setBadgeUrl] = useState(() => computeInitialBadgeUrl(initialUrl));
   const [copied, setCopied] = useState<"md" | "html" | "url" | null>(null);
-
-  useEffect(() => {
-    if (initialUrl) generate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   function generate() {
     const trimmed = url.trim();

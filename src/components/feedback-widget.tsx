@@ -40,6 +40,7 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
   if (!open) {
     return (
       <button
+        type="button"
         onClick={() => setOpen(true)}
         className="fixed bottom-4 right-4 bg-white/10 text-white/70 px-4 py-2 rounded-full border border-white/10 hover:bg-white/20 hover:text-white transition-all duration-200 text-sm z-50 backdrop-blur-sm cursor-pointer"
       >
@@ -52,7 +53,7 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
     <div role="dialog" aria-modal="true" aria-labelledby="feedback-title" className="fixed bottom-4 right-4 w-72 max-w-[calc(100vw-2rem)] bg-black/90 border border-white/10 rounded-xl shadow-2xl p-4 z-50 backdrop-blur-md sm:w-80">
       <div className="flex justify-between items-center mb-3">
         <h3 id="feedback-title" className="font-bold text-white text-sm">フィードバック</h3>
-        <button onClick={() => setOpen(false)} aria-label="閉じる" className="text-white/40 hover:text-white/70 transition-colors cursor-pointer">&times;</button>
+        <button type="button" onClick={() => setOpen(false)} aria-label="閉じる" className="text-white/40 hover:text-white/70 transition-colors cursor-pointer">&times;</button>
       </div>
       {sent ? (
         <p className="text-green-400 text-center py-4 text-sm">送信しました</p>
@@ -62,6 +63,7 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
             {(["bug", "feature", "other"] as const).map((t) => (
               <button
                 key={t}
+                type="button"
                 onClick={() => setType(t)}
                 aria-pressed={type === t}
                 className={`px-3 py-1 rounded-full text-xs transition-colors cursor-pointer ${
@@ -77,12 +79,14 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
             onChange={(e) => setMessage(e.target.value)}
             aria-label="フィードバック内容"
             placeholder="ご意見をお聞かせください..."
+            maxLength={2000}
             className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-white placeholder:text-white/50 h-24 resize-none mb-3 focus:outline-none focus:border-white/20"
           />
           {submitError && (
             <p className="text-red-400 text-xs mb-2">送信に失敗しました。もう一度お試しください。</p>
           )}
           <button
+            type="button"
             onClick={submit}
             disabled={submitting || !message.trim()}
             className="w-full bg-white/10 text-white py-2 rounded-lg text-sm hover:bg-white/20 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"

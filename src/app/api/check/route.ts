@@ -208,7 +208,7 @@ export async function POST(request: NextRequest) {
     const ogImageAccessible = await checkOgImageAccessibility(ogImageMatch?.[1], baseUrl);
     const accessibility = analyzeAccessibility(html);
     const securityHeaders = analyzeSecurityHeaders(responseHdrs);
-    const { imgCount, imgTags, allImageSrcs, imageOptimization } = analyzeImages(html);
+    const { imgCount, imgTags, imageOptimization } = analyzeImages(html);
     const perfData = analyzePerformance(html, imgCount);
     const coreWebVitals = analyzeCoreWebVitals(html, imgTags, perfData.scriptTags, perfData.hasFontDisplay);
     const pwaManifest = await analyzePwaManifest(html, baseUrl, manifestRes);

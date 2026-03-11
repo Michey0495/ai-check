@@ -1,6 +1,6 @@
 # QA Report - web-url-a (AI Check)
 
-**Date:** 2026-03-12 (Night 37 QA Pass)
+**Date:** 2026-03-12 (Night 38 QA Pass)
 **Project:** AI Check (GEO Score Analyzer)
 **Domain:** ai-check.ezoai.jp
 
@@ -11,17 +11,38 @@
 | `npm run build` | PASS (44 static pages, compiled in 7.5s) |
 | `npm run lint` | PASS (0 errors, 0 warnings) |
 
+## Night 38 Fixes
+
+### LOW: Lint warning - unused variable `allImageSrcs`
+- **File:** `src/app/api/check/route.ts:211`
+- **Fix:** destructuring から `allImageSrcs` を除外（下流で未使用）
+
+### MEDIUM: Feedback widget - missing `type="button"` on all buttons
+- **File:** `src/components/feedback-widget.tsx`
+- **Fix:** 全4箇所の `<button>` に `type="button"` を追加
+
+### LOW: Feedback widget - textarea missing maxLength
+- **File:** `src/components/feedback-widget.tsx`
+- **Fix:** `maxLength={2000}` を追加
+
+### MEDIUM: Badge generator - React hook dependency issue
+- **File:** `src/app/generate/badge/generator-client.tsx`
+- **Issue:** `useEffect` 内で `setBadgeUrl` を呼んでおり、React 19 lint ルール `react-hooks/set-state-in-effect` 違反
+- **Fix:** `computeInitialBadgeUrl()` を作成し、`useState` の初期値として計算。useEffect を除去
+
+### LOW: CSV escaping in compare page
+- **File:** `src/app/check/compare/compare-client.tsx:21`
+- **Fix:** URL内のダブルクォートをCSV標準 (`""`) でエスケープ
+
 ## Night 37 Fixes
 
 ### LOW: Header Accessibility - Missing aria-controls
 - **File:** `src/components/header.tsx`
-- **Issue:** ガイドドロップダウンボタンとモバイルメニューボタンに `aria-controls` 属性が未設定。`aria-expanded` はあるが、どの要素を制御しているかスクリーンリーダーに伝わらない
-- **Fix:** ガイドボタンに `aria-controls="guides-dropdown"`、モバイルメニューに `aria-controls="mobile-nav"` を追加。対応する要素にも `id` を付与
+- **Fix:** ガイドボタンに `aria-controls="guides-dropdown"`、モバイルメニューに `aria-controls="mobile-nav"` を追加
 
 ### LOW: Check API Missing Error Logging
-- **File:** `src/app/api/check/route.ts:1452`
-- **Issue:** catch-all エラーハンドラーで `console.error` が未実装。エラー発生時にサーバーログに何も残らず、デバッグ不可
-- **Fix:** `catch (e) { console.error("Check API error:", e); }` を追加
+- **File:** `src/app/api/check/route.ts`
+- **Fix:** catch-all エラーハンドラーに `console.error` を追加
 
 ## Previous Night Fixes (History)
 
