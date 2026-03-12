@@ -144,7 +144,7 @@ function RadarChart({ reports }: { reports: { url: string; report: CheckReport }
 }
 
 function ScoreBar({ score, maxScore, status }: { score: number; maxScore: number; status: string }) {
-  const pct = (score / maxScore) * 100;
+  const pct = maxScore > 0 ? (score / maxScore) * 100 : 0;
   const color = status === "pass" ? "#4ade80" : status === "warn" ? "#facc15" : "#f87171";
   return (
     <div className="flex items-center gap-2">
@@ -317,34 +317,45 @@ export function CompareClient() {
       {hasResults && (
         <div className="mt-12 space-y-8">
           {/* Score overview */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-            {results.map((r, i) => (
-              <div key={i} className="rounded-lg border border-white/10 bg-white/5 p-6 text-center">
-                {r.loading && (
-                  <div className="py-4" role="status" aria-live="polite">
-                    <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-white/10 border-t-white/70" />
-                    <p className="mt-2 text-sm text-white/40">チェック中...</p>
-                  </div>
-                )}
-                {r.error && (
-                  <div className="py-4" role="alert">
-                    <p className="text-sm text-red-400">{r.error}</p>
-                  </div>
-                )}
-                {r.report && (
-                  <>
-                    <p className="mb-2 truncate text-xs text-white/40" title={r.report.url}>{r.report.url}</p>
-                    <span className={`text-4xl font-bold ${gradeColors[r.report.grade] ?? "text-white"}`}>
-                      {r.report.grade}
-                    </span>
-                    <p className="mt-1 text-sm text-white/50">
-                      {Math.round((r.report.totalScore / r.report.maxScore) * 100)}/100
-                    </p>
-                  </>
-                )}
+          {(() => {
+            const completedReports = results.filter((r) => r.report !== null);
+            const bestScore = completedReports.length >= 2
+              ? Math.max(...completedReports.map((r) => r.report!.maxScore > 0 ? Math.round((r.report!.totalScore / r.report!.maxScore) * 100) : 0))
+              : -1;
+            return (
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+                {results.map((r, i) => {
+                  const pct = r.report && r.report.maxScore > 0 ? Math.round((r.report.totalScore / r.report.maxScore) * 100) : 0;
+                  const isBest = r.report !== null && completedReports.length >= 2 && pct === bestScore;
+                  return (
+                    <div key={i} className={`rounded-lg border p-6 text-center ${isBest ? "border-primary/30 bg-primary/5" : "border-white/10 bg-white/5"}`}>
+                      {r.loading && (
+                        <div className="py-4" role="status" aria-live="polite">
+                          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-white/10 border-t-white/70" />
+                          <p className="mt-2 text-sm text-white/40">チェック中...</p>
+                        </div>
+                      )}
+                      {r.error && (
+                        <div className="py-4" role="alert">
+                          <p className="text-sm text-red-400">{r.error}</p>
+                        </div>
+                      )}
+                      {r.report && (
+                        <>
+                          {isBest && <p className="mb-1 text-xs font-medium text-primary">Best</p>}
+                          <p className="mb-2 truncate text-xs text-white/40" title={r.report.url}>{r.report.url}</p>
+                          <span className={`text-4xl font-bold ${gradeColors[r.report.grade] ?? "text-white"}`}>
+                            {r.report.grade}
+                          </span>
+                          <p className="mt-1 text-sm text-white/50">{pct}/100</p>
+                        </>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-            ))}
-          </div>
+            );
+          })()}
 
           {/* Radar Chart */}
           {reports.length >= 2 && (

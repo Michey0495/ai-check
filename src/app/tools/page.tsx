@@ -51,7 +51,7 @@ const tools = [
     description:
       "Schema.org準拠のJSON-LD構造化データを生成。WebSite, Organization, Product, Article, FAQ等の主要スキーマに対応。",
     details: [
-      "6種類のスキーマタイプに対応（WebSite, Organization, Product, Article, FAQ, LocalBusiness）",
+      "12種類のスキーマタイプに対応（WebSite, Organization, Product, Article, FAQ, LocalBusiness, Event, Course等）",
       "必須プロパティを自動設定",
       "Google リッチリザルト対応",
     ],

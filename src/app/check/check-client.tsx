@@ -292,6 +292,18 @@ export function CheckPageClient() {
               maxScore={report.maxScore}
               grade={report.grade}
             />
+            {/* Score insight */}
+            <p className="mt-2 text-sm text-white/50">
+              {report.grade === "A"
+                ? "AI検索への対応は十分です。現状を維持しましょう。"
+                : report.grade === "B"
+                ? "概ね対応済み。あと少しの改善でグレードAに到達できます。"
+                : report.grade === "C"
+                ? "基本的な対応はされていますが、改善の余地があります。"
+                : report.grade === "D"
+                ? "多くの項目が未対応です。優先度の高い項目から改善しましょう。"
+                : "AI検索にほぼ未対応です。まずは下記のクイック改善ガイドをご確認ください。"}
+            </p>
             {/* Score trend */}
             {prevScore !== undefined && (() => {
               const currentPct = Math.round((report.totalScore / report.maxScore) * 100);

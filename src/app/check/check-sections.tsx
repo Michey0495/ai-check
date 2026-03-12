@@ -188,7 +188,7 @@ export function CheckHistory({ currentUrl }: { currentUrl: string }) {
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm text-white/70">{entry.url}</p>
               <p className="text-xs text-white/30">
-                {new Date(entry.checkedAt).toLocaleDateString("ja-JP")}
+                {new Date(entry.checkedAt).toLocaleString("ja-JP")}
               </p>
             </div>
             <div className="ml-4 text-right">
@@ -376,8 +376,8 @@ export function SectionNav({ report }: { report: CheckReport }) {
   if (sections.length < 3) return null;
 
   return (
-    <div className="no-print sticky top-0 z-30 -mx-4 border-b border-white/10 bg-black/90 px-4 py-2 backdrop-blur-sm">
-      <div ref={navRef} className="flex gap-1 overflow-x-auto scrollbar-hide">
+    <nav aria-label="セクションナビゲーション" className="no-print sticky top-0 z-30 -mx-4 border-b border-white/10 bg-black/90 px-4 py-2 backdrop-blur-sm">
+      <div ref={navRef} className="flex gap-1 overflow-x-auto scrollbar-hide" role="tablist">
         {sections.map((s) => (
           <button
             key={s.id}
@@ -396,7 +396,7 @@ export function SectionNav({ report }: { report: CheckReport }) {
           </button>
         ))}
       </div>
-    </div>
+    </nav>
   );
 }
 
