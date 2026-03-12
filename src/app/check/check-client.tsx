@@ -24,6 +24,7 @@ import {
   SectionNav,
   ScoreSimulator,
   AllFixCodes,
+  CollapsibleGroup,
 } from "./check-sections";
 import {
   AiCrawlerStatusSection,
@@ -489,24 +490,52 @@ export function CheckPageClient() {
 
           <SectionNav report={report} />
 
-          <AiCrawlerStatusSection report={report} />
-          <AccessibilitySection report={report} />
-          <SecurityHeadersSection report={report} />
-          <SslCertificateSection report={report} />
-          <PerformanceHintsSection report={report} />
-          <CoreWebVitalsSection report={report} />
-          <ImageOptimizationSection report={report} />
-          <DetectedTechSection report={report} />
-          <PwaManifestSection report={report} />
-          <SocialMetaSection report={report} />
-          <RedirectCanonicalSection report={report} />
-          <ContentMetricsSection report={report} />
-          <FeedDetectionSection report={report} />
-          <FaviconAnalysisSection report={report} />
-          <DuplicateMetaTagsSection report={report} />
-          <OgPreviewSection report={report} />
-          <HeadingTreeSection report={report} />
-          <ExternalResourcesSection report={report} />
+          {/* Security & Network */}
+          <CollapsibleGroup
+            title="セキュリティ & ネットワーク"
+            sectionCount={[report.aiCrawlerStatus?.length, report.securityHeaders, report.sslCertificate, report.redirectChain || report.canonicalUrl].filter(Boolean).length}
+            defaultOpen
+          >
+            <AiCrawlerStatusSection report={report} />
+            <SecurityHeadersSection report={report} />
+            <SslCertificateSection report={report} />
+            <RedirectCanonicalSection report={report} />
+          </CollapsibleGroup>
+
+          {/* Performance */}
+          <CollapsibleGroup
+            title="パフォーマンス & 最適化"
+            sectionCount={[report.performanceHints, report.coreWebVitals, report.imageOptimization, report.externalResourceCount].filter(Boolean).length}
+          >
+            <PerformanceHintsSection report={report} />
+            <CoreWebVitalsSection report={report} />
+            <ImageOptimizationSection report={report} />
+            <ExternalResourcesSection report={report} />
+          </CollapsibleGroup>
+
+          {/* Content & SEO */}
+          <CollapsibleGroup
+            title="コンテンツ & SEO"
+            sectionCount={[report.contentMetrics?.wordCount, report.headingTree?.length, report.duplicateMetaTags?.length, report.feedDetection, report.ogPreview || report.ogImage].filter(Boolean).length}
+          >
+            <ContentMetricsSection report={report} />
+            <HeadingTreeSection report={report} />
+            <DuplicateMetaTagsSection report={report} />
+            <OgPreviewSection report={report} />
+            <FeedDetectionSection report={report} />
+          </CollapsibleGroup>
+
+          {/* Tech & Social */}
+          <CollapsibleGroup
+            title="テクノロジー & ソーシャル"
+            sectionCount={[report.detectedTech?.length, report.pwaManifest?.exists, report.socialMeta, report.faviconAnalysis, report.accessibility?.imgCount || report.accessibility?.ariaLandmarks].filter(Boolean).length}
+          >
+            <DetectedTechSection report={report} />
+            <PwaManifestSection report={report} />
+            <SocialMetaSection report={report} />
+            <FaviconAnalysisSection report={report} />
+            <AccessibilitySection report={report} />
+          </CollapsibleGroup>
 
           {/* Score breakdown chart */}
           <div id="sec-score-breakdown" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">

@@ -412,3 +412,10 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - 修正: Next.js バージョン参照を全ファイルで15→16に統一（README, ARCHITECTURE, About, llms.txt）
 - AI公開チャネル: agent.json v3.8.0に更新
 - ドキュメント: ARCHITECTURE.mdにチェック結果ページの新ファイル構成を反映
+
+### Night 40 (完了)
+- 修正: fabricated statistics（25%、89%、$72B、4.5%等の出典のない数値）をトップページ・About・GEO対策ガイド・GEO vs SEO・OGP画像から一括削除
+- 生成ツール強化: JSON-LD生成ツールのスキーマタイプを5→12に拡大（Product, Event, Course, VideoObject, BreadcrumbList, HowTo, NewsArticle追加）- 各タイプに専用フィールドUI
+- チェック強化: テクノロジー検出を拡張（Astro, Qwik, SolidJS, Ghost, Contentful, Strapi, Jekyll, Webflow, Hotjar, Plausible Analytics追加）
+- UX: チェック結果の補足分析18セクションを4つの折りたたみ式カテゴリに整理（セキュリティ&ネットワーク、パフォーマンス&最適化、コンテンツ&SEO、テクノロジー&ソーシャル）- モバイルでの閲覧性向上
+- AI公開チャネル: agent.json v4.0.0に更新、llms.txtにJSON-LD拡張・テクノロジー検出・セクショングループ化情報追記

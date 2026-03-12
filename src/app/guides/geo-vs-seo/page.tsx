@@ -185,8 +185,8 @@ export default function GeoVsSeoPage() {
           </h2>
           <div className="space-y-4 text-sm leading-relaxed text-white/60">
             <p>
-              2026年現在、AI検索は全検索市場の約25%を占めています。
-              Gartner の予測では、2028年までに検索トラフィックの50%以上がAI検索経由になるとされています。
+              AI検索（ChatGPT、Perplexity、Gemini等）の利用は急速に拡大しており、
+              今後もAI経由の検索トラフィックは増加し続けると予測されています。
             </p>
             <p>
               一方、SEOは依然として検索トラフィックの主要なソースです。
@@ -196,9 +196,9 @@ export default function GeoVsSeoPage() {
           </div>
           <div className="mt-6 grid gap-4 sm:grid-cols-3">
             {[
-              { value: "25%", label: "AI検索の現在のシェア" },
-              { value: "50%+", label: "2028年予測シェア" },
-              { value: "89%", label: "AI検索未対応のサイト" },
+              { value: "7項目", label: "GEOスコア チェック指標" },
+              { value: "5ツール", label: "無料生成ツール" },
+              { value: "30秒", label: "チェック所要時間" },
             ].map((stat) => (
               <div key={stat.label} className="rounded-lg border border-white/10 bg-white/5 p-4 text-center">
                 <p className="text-2xl font-bold text-primary">{stat.value}</p>

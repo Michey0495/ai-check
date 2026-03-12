@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef, useEffect, useSyncExternalStore } from "react";
+import { useState, useMemo, useRef, useEffect, useSyncExternalStore, type ReactNode } from "react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,49 @@ import { getHistory, type HistoryEntry } from "./check-utils";
 
 const GRADE_COLORS = GRADE_TEXT_COLORS;
 const STROKE_COLORS = GRADE_HEX_COLORS;
+
+export function CollapsibleGroup({
+  title,
+  sectionCount,
+  children,
+  defaultOpen = false,
+}: {
+  title: string;
+  sectionCount: number;
+  children: ReactNode;
+  defaultOpen?: boolean;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+
+  if (sectionCount === 0) return null;
+
+  return (
+    <div className="rounded-lg border border-white/10 bg-white/[0.02]">
+      <button
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        className="flex w-full cursor-pointer items-center justify-between px-6 py-4 text-left transition-all duration-200 hover:bg-white/[0.03]"
+      >
+        <h2 className="text-lg font-semibold text-white">
+          {title}
+          <span className="ml-2 text-sm font-normal text-white/40">({sectionCount})</span>
+        </h2>
+        <span className={`text-sm text-white/40 transition-transform duration-200 ${open ? "rotate-180" : ""}`}>
+          ▼
+        </span>
+      </button>
+      <div
+        className={`overflow-hidden transition-all duration-300 ${
+          open ? "max-h-[9999px] opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="space-y-4 px-4 pb-4 pt-0 sm:px-6">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function ScoreCircle({ score, maxScore, grade }: { score: number; maxScore: number; grade: string }) {
   const pct = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;

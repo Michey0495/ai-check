@@ -56,9 +56,9 @@ export default function AboutPage() {
           <h2 className="mb-4 text-2xl font-bold text-white">なぜ必要か</h2>
           <div className="space-y-4 text-sm leading-relaxed text-white/60">
             <p>
-              2026年現在、AI検索は全検索市場の約25%を占めると予測されています。
-              ChatGPT、Perplexity、Geminiなどの生成AI検索エンジンが急速に普及する中、
-              89%のWebサイトがAI検索に未対応のままです。
+              ChatGPT、Perplexity、Geminiなどの生成AI検索エンジンが急速に普及し、
+              AI経由のWeb検索トラフィックは拡大し続けています。
+              しかし多くのWebサイトがAI検索への対応を行っていません。
             </p>
             <p>
               AI Checkは「何が足りないのか」「どう改善すればいいのか」を

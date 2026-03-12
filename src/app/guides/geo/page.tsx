@@ -99,8 +99,8 @@ export default function GeoGuidePage() {
               GEOはChatGPT、Perplexity、Geminiなどの生成AI検索エンジンへの最適化です。
             </p>
             <p>
-              2026年現在、AI検索は全検索市場の約25%（約$72B）を占めると予測されています。
-              しかし89%のWebサイトがAI検索に未対応のままです。
+              AI検索の利用は急速に拡大しており、従来の検索エンジンに加えてAI経由のトラフィックが無視できない規模になっています。
+              しかし多くのWebサイトがAI検索への対応を行っていません。
             </p>
           </div>
         </section>

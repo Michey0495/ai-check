@@ -84,12 +84,38 @@ export function detectTechnologies(html: string, responseHdrs: Record<string, st
   }
   if (html.includes("data-svelte") || html.includes("__sveltekit")) {
     tech.push("SvelteKit");
+  } else if (html.includes("svelte") && html.includes(".svelte-")) {
+    tech.push("Svelte");
   }
   if (html.includes("data-turbo") || html.includes("turbolinks")) {
     tech.push("Ruby on Rails");
   }
   if (html.includes('content="Hugo')) {
     tech.push("Hugo");
+  }
+  if (html.includes("data-astro-") || html.includes("astro-island") || html.includes("/_astro/")) {
+    tech.push("Astro");
+  }
+  if (html.includes("_qwik") || html.includes("qwikloader")) {
+    tech.push("Qwik");
+  }
+  if (html.includes("solidjs") || html.includes("_$") && html.includes("solid")) {
+    tech.push("SolidJS");
+  }
+  if (html.includes('content="Ghost') || html.includes("ghost-") && html.includes("ghost.org")) {
+    tech.push("Ghost");
+  }
+  if (html.includes("cdn.contentful.com") || html.includes("contentful")) {
+    tech.push("Contentful");
+  }
+  if (html.includes("strapi") || responseHdrs["x-powered-by"]?.toLowerCase().includes("strapi")) {
+    tech.push("Strapi");
+  }
+  if (html.includes('content="Jekyll')) {
+    tech.push("Jekyll");
+  }
+  if (html.includes("webflow.com") || html.includes("wf-page")) {
+    tech.push("Webflow");
   }
   if (html.includes("wix.com") || html.includes("wixsite")) {
     tech.push("Wix");
@@ -102,6 +128,12 @@ export function detectTechnologies(html: string, responseHdrs: Record<string, st
   }
   if (html.includes("clarity.ms")) {
     tech.push("Microsoft Clarity");
+  }
+  if (html.includes("hotjar.com") || html.includes("_hjSettings")) {
+    tech.push("Hotjar");
+  }
+  if (html.includes("plausible.io")) {
+    tech.push("Plausible Analytics");
   }
   return tech;
 }

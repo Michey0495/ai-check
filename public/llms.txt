@@ -60,7 +60,7 @@
 - セキュリティヘッダー分析（HSTS、CSP、X-Frame-Options、X-Content-Type-Options、Referrer-Policy）
 - パフォーマンスヒント（preconnect/prefetch数、画像遅延読み込み、スクリプト最適化、font-display検出）
 - 多言語対応検出（Content-Languageヘッダー、hreflangタグ）
-- CMS/フレームワーク検出（WordPress, Next.js, Shopify, Nuxt.js, React, Angular, Vue.js, SvelteKit, Hugo, Wix, Squarespace等をHTMLソースとレスポンスヘッダーから自動判定）
+- CMS/フレームワーク検出（WordPress, Next.js, Shopify, Nuxt.js, React, Angular, Vue.js, SvelteKit, Astro, Qwik, Ghost, Webflow, Jekyll, Contentful, Strapi, Hugo, Wix, Squarespace等をHTMLソースとレスポンスヘッダーから自動判定。Hotjar, Plausible Analytics等の分析ツールも検出）
 - OG画像アクセス可否検証（og:image URLに対するHEADリクエストで画像が実際にアクセス可能かを検証）
 - Core Web Vitalsヒント（LCP候補検出、CLSリスク要因分析、レンダーブロッキングリソース数、インラインCSSサイズ、fetchpriority検出）
 - PWA manifest.json検出・プロパティ検証（アプリ名、アイコン、start_url、display、テーマカラー）
@@ -93,6 +93,8 @@
 - DNS解決時間計測（dnsResolutionMs: DNS名前解決に要した時間をミリ秒で表示）
 - APIレート制限情報ヘッダー（X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Resetをレスポンスヘッダーに付与）
 - 比較ページ印刷/PDF対応（チェック結果と同様の印刷最適化スタイル）
+- チェック結果セクショングループ化（18セクションを4つの折りたたみ式カテゴリに整理: セキュリティ&ネットワーク、パフォーマンス&最適化、コンテンツ&SEO、テクノロジー&ソーシャル）
+- JSON-LD生成ツール強化（12スキーマタイプ対応: WebSite, Organization, FAQPage, Article, NewsArticle, LocalBusiness, Product, Event, Course, VideoObject, BreadcrumbList, HowTo。各タイプに固有フィールド入力UI）
 
 ## API
 - GET /api/check?url=URL: URLのGEOスコアチェック（GETメソッド対応、ブラウザから直接アクセス可）。CORS対応

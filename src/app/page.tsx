@@ -11,7 +11,7 @@ const faqData = [
   },
   {
     q: "なぜGEO対策が必要なのですか?",
-    a: "2026年現在、AI検索が全検索市場の25%（約$72B）を占めると予測されています。しかし89%のWebサイトがAI検索に未対応です。GEO対策をしないと、AI検索結果に表示されず、大きなトラフィック機会を逃すことになります。",
+    a: "AI検索（ChatGPT、Perplexity、Gemini等）の利用は急速に拡大しており、従来の検索エンジンに加えてAI経由のトラフィックが増加しています。しかし多くのWebサイトがAI検索への対応を行っていません。GEO対策をしないと、AI検索結果に表示されず、トラフィック機会を逃すことになります。",
   },
   {
     q: "チェックは無料ですか?",
@@ -152,10 +152,10 @@ export default function Home() {
       {/* Hero */}
       <section className="py-16 text-center">
         <p className="mb-4 text-sm font-medium tracking-wide text-primary/80">
-          2026年、AI検索は全検索の25%を占める -- 89%のサイトが未対応
+          AI検索の利用が急拡大 -- 多くのサイトが未対応のまま
         </p>
         <p className="mb-4 inline-block rounded-full border border-red-500/30 bg-red-500/10 px-4 py-1.5 text-sm font-semibold tracking-wide text-red-400">
-          Google AI Mode 日本上陸 -- 従来SEOのCTRが4.5%に激減
+          Google AI Mode 日本上陸 -- 従来SEOだけでは不十分な時代に
         </p>
         <h1 className="mb-4 text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl">
           あなたのサイトは
@@ -174,10 +174,10 @@ export default function Home() {
         </div>
         <div className="mx-auto mt-12 grid max-w-4xl grid-cols-2 gap-4 sm:grid-cols-4">
           {[
-            { stat: "25%", label: "AI検索の市場シェア（2026年）" },
-            { stat: "89%", label: "AI検索に未対応のWebサイト" },
             { stat: "7項目", label: "GEOスコア チェック指標" },
             { stat: "5ツール", label: "無料生成ツール" },
+            { stat: "30秒", label: "チェック所要時間" },
+            { stat: "無料", label: "登録不要で即利用" },
           ].map((item) => (
             <div key={item.stat} className="text-center">
               <p className="text-2xl font-bold text-primary sm:text-3xl">{item.stat}</p>

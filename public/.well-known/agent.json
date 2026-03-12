@@ -2,14 +2,14 @@
   "name": "AI Check",
   "description": "WebサイトのAI検索対応度をチェックし、llms.txt・robots.txt・JSON-LD構造化データ・agent.jsonを自動生成するツール",
   "url": "https://ai-check.ezoai.jp",
-  "version": "3.9.0",
-  "dateUpdated": "2026-03-12",
+  "version": "4.0.0",
+  "dateUpdated": "2026-03-13",
   "capabilities": [
     "GEOスコアチェック（7指標 + llms-full.txt検出 + スキーマタイプ識別 + noindex検出）",
     "AIクローラー検出（GPTBot, ChatGPT-User, ClaudeBot, anthropic-ai, PerplexityBot, Google-Extended, Bytespider, CCBot, Applebot-Extended, cohere-ai）",
     "llms.txt生成",
     "robots.txt生成（AIクローラー対応）",
-    "JSON-LD構造化データ生成（6スキーマタイプ対応）",
+    "JSON-LD構造化データ生成（12スキーマタイプ対応: WebSite, Organization, FAQPage, Article, NewsArticle, LocalBusiness, Product, Event, Course, VideoObject, BreadcrumbList, HowTo）",
     "agent.json（A2A Agent Card）生成",
     "複数サイトGEOスコア比較",
     "業界別GEO対策ガイド（EC・SaaS・メディア・士業・ローカル・教育）",
@@ -42,7 +42,7 @@
     "多言語対応検出（Content-Languageヘッダー、hreflangタグ）",
     "PWA対応（Web App Manifest）",
     "LINEシェア対応",
-    "CMS/フレームワーク検出（WordPress, Next.js, Shopify, Nuxt.js, React, Angular, Vue.js, SvelteKit等）",
+    "CMS/フレームワーク検出（WordPress, Next.js, Shopify, Nuxt.js, React, Angular, Vue.js, SvelteKit, Astro, Qwik, Ghost, Webflow, Jekyll, Contentful, Strapi等）",
     "OG画像アクセス可否検証（og:image URLのHEADリクエスト検証）",
     "Core Web Vitalsヒント（LCP候補検出、CLSリスク要因分析、レンダーブロッキングリソース数、fetchpriority検出）",
     "チェック履歴ページ（/history）",
@@ -79,7 +79,9 @@
     "セクションナビゲーション（チェック結果ページのスクロール連動セクション目次）",
     "DNS解決時間計測（dnsResolutionMs）",
     "APIレート制限情報ヘッダー（X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset）",
-    "比較ページ印刷/PDF対応"
+    "比較ページ印刷/PDF対応",
+    "チェック結果のセクショングループ化（セキュリティ&ネットワーク、パフォーマンス&最適化、コンテンツ&SEO、テクノロジー&ソーシャルの4グループに折りたたみ式表示）",
+    "分析ツール検出拡張（Hotjar, Plausible Analytics対応追加）"
   ],
   "endpoints": {
     "mcp": "https://ai-check.ezoai.jp/api/mcp",

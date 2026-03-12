@@ -83,9 +83,9 @@ export default function Image() {
           }}
         >
           {[
-            { value: "25%", label: "AI検索シェア" },
-            { value: "89%", label: "未対応サイト" },
             { value: "7", label: "チェック指標" },
+            { value: "5", label: "生成ツール" },
+            { value: "無料", label: "登録不要" },
           ].map((item) => (
             <div
               key={item.label}
