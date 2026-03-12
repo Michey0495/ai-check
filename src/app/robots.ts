@@ -19,6 +19,8 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: "Diffbot", allow: "/" },
       { userAgent: "Meta-ExternalAgent", allow: "/" },
       { userAgent: "OAI-SearchBot", allow: "/" },
+      { userAgent: "GoogleOther", allow: "/" },
+      { userAgent: "Twitterbot", allow: "/" },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,
   };
