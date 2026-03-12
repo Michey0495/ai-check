@@ -2,8 +2,8 @@
   "name": "AI Check",
   "description": "WebサイトのAI検索対応度をチェックし、llms.txt・robots.txt・JSON-LD構造化データ・agent.jsonを自動生成するツール",
   "url": "https://ai-check.ezoai.jp",
-  "version": "4.1.0",
-  "dateUpdated": "2026-03-14",
+  "version": "4.2.0",
+  "dateUpdated": "2026-03-13",
   "capabilities": [
     "GEOスコアチェック（7指標 + llms-full.txt検出 + スキーマタイプ識別 + noindex検出）",
     "AIクローラー検出（GPTBot, ChatGPT-User, ClaudeBot, anthropic-ai, PerplexityBot, Google-Extended, Bytespider, CCBot, Applebot-Extended, cohere-ai）",
@@ -84,7 +84,10 @@
     "分析ツール検出拡張（Hotjar, Plausible Analytics対応追加）",
     "JSON-LDブロック詳細分析（ブロック数・スキーマタイプ一覧を表示）",
     "サードパーティドメイン分析（外部リソースの読み込み元ドメインを一覧表示）",
-    "スクロールトップボタン（長いチェック結果ページのナビゲーション改善）"
+    "スクロールトップボタン（長いチェック結果ページのナビゲーション改善）",
+    "AIコンテンツプレビュー（AIクローラーが見るテキストコンテンツの抽出・表示、主要トピック抽出、読了時間推定）",
+    "リンク品質分析（follow/nofollow/sponsored/ugcリンクの分類・比率表示）",
+    "リッチリザルト適格性（検出JSON-LDスキーマからGoogle Rich Results対応状況を判定・表示、17タイプ対応）"
   ],
   "endpoints": {
     "mcp": "https://ai-check.ezoai.jp/api/mcp",

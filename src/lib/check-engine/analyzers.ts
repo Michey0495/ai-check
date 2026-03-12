@@ -497,6 +497,91 @@ export function analyzeExternalResources(html: string, baseUrl: string) {
   return { externalCss, externalJs, totalExternal: externalCss + externalJs, thirdPartyDomains };
 }
 
+export function analyzeAiContentPreview(html: string) {
+  const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+  const bodyHtml = bodyMatch?.[1] ?? html;
+  // Strip non-content elements
+  const cleaned = bodyHtml
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+    .replace(/<nav[^>]*>[\s\S]*?<\/nav>/gi, "")
+    .replace(/<header[^>]*>[\s\S]*?<\/header>/gi, "")
+    .replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, "")
+    .replace(/<aside[^>]*>[\s\S]*?<\/aside>/gi, "")
+    .replace(/<!--[\s\S]*?-->/g, "");
+  const textOnly = cleaned
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  const excerpt = textOnly.slice(0, 500) + (textOnly.length > 500 ? "..." : "");
+
+  // Extract main topics from h1-h3 headings
+  const headings = [...cleaned.matchAll(/<h[1-3][^>]*>([\s\S]*?)<\/h[1-3]>/gi)];
+  const mainTopics = headings
+    .map((m) => m[1].replace(/<[^>]+>/g, "").trim())
+    .filter((t) => t.length > 0 && t.length < 100)
+    .slice(0, 5);
+
+  // Estimate reading time (Japanese ~600 chars/min, English ~200 words/min)
+  const charCount = textOnly.length;
+  const estimatedReadingTimeMin = Math.max(1, Math.round(charCount / 600));
+
+  return { excerpt, mainTopics, estimatedReadingTimeMin };
+}
+
+export function analyzeLinkQuality(html: string) {
+  const allLinks = html.match(/<a[^>]*>/gi) ?? [];
+  let followCount = 0;
+  let nofollowCount = 0;
+  let sponsoredCount = 0;
+  let ugcCount = 0;
+  for (const link of allLinks) {
+    const relMatch = link.match(/\brel=["']([^"']+)["']/i);
+    const relValue = relMatch?.[1]?.toLowerCase() ?? "";
+    if (relValue.includes("nofollow")) {
+      nofollowCount++;
+    } else {
+      followCount++;
+    }
+    if (relValue.includes("sponsored")) sponsoredCount++;
+    if (relValue.includes("ugc")) ugcCount++;
+  }
+  return (allLinks.length > 0) ? { followCount, nofollowCount, sponsoredCount, ugcCount } : undefined;
+}
+
+const RICH_RESULTS_MAP: Record<string, string> = {
+  Product: "商品リッチリザルト（価格・在庫・レビュー表示）",
+  Article: "記事リッチリザルト（公開日・著者表示）",
+  NewsArticle: "ニュース記事リッチリザルト（トップニュース掲載候補）",
+  FAQPage: "FAQリッチリザルト（質問と回答の直接表示）",
+  HowTo: "ハウツーリッチリザルト（手順のステップ表示）",
+  Recipe: "レシピリッチリザルト（調理時間・材料表示）",
+  Event: "イベントリッチリザルト（日時・場所表示）",
+  Course: "コースリッチリザルト（講座情報表示）",
+  VideoObject: "動画リッチリザルト（サムネイル・再生時間表示）",
+  LocalBusiness: "ローカルビジネスリッチリザルト（地図・営業時間表示）",
+  Organization: "組織ナレッジパネル（ロゴ・連絡先表示）",
+  BreadcrumbList: "パンくずリストリッチリザルト（階層ナビ表示）",
+  WebSite: "サイトリンク検索ボックス（サイト内検索表示）",
+  SoftwareApplication: "ソフトウェアリッチリザルト（評価・価格表示）",
+  Review: "レビューリッチリザルト（星評価表示）",
+  JobPosting: "求人リッチリザルト（給与・勤務地表示）",
+  Book: "書籍リッチリザルト（著者・価格表示）",
+};
+
+export function analyzeRichResultsEligibility(jsonLdTypes: string[]) {
+  const results: { type: string; eligible: string }[] = [];
+  for (const t of jsonLdTypes) {
+    const types = t.split(",").map((s) => s.trim());
+    for (const type of types) {
+      if (RICH_RESULTS_MAP[type] && !results.some((r) => r.type === type)) {
+        results.push({ type, eligible: RICH_RESULTS_MAP[type] });
+      }
+    }
+  }
+  return results.length > 0 ? results : undefined;
+}
+
 export function analyzeJsonLdBlocks(html: string) {
   const jsonLdBlocks = html.match(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi) ?? [];
   const types: string[] = [];

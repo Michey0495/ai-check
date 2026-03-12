@@ -340,6 +340,9 @@ export function SectionNav({ report }: { report: CheckReport }) {
       { id: "sec-heading-tree", label: "見出し構造", exists: !!(report.headingTree && report.headingTree.length > 0) },
       { id: "sec-ext-resources", label: "外部リソース", exists: !!report.externalResourceCount },
       { id: "sec-jsonld-blocks", label: "JSON-LD詳細", exists: !!(report.jsonLdBlocks && report.jsonLdBlocks.blockCount > 0) },
+      { id: "sec-ai-content", label: "AIが見るコンテンツ", exists: !!(report.aiContentPreview && report.aiContentPreview.excerpt.length > 0) },
+      { id: "sec-link-quality", label: "リンク品質", exists: !!report.linkQuality },
+      { id: "sec-rich-results", label: "リッチリザルト", exists: !!(report.richResultsEligibility && report.richResultsEligibility.length > 0) },
     ];
     return s.filter((x) => x.exists);
   }, [report]);

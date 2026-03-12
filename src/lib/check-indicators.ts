@@ -246,6 +246,21 @@ export type CheckReport = {
     blockCount: number;
     types: string[];
   };
+  aiContentPreview?: {
+    excerpt: string;
+    mainTopics: string[];
+    estimatedReadingTimeMin: number;
+  };
+  linkQuality?: {
+    followCount: number;
+    nofollowCount: number;
+    sponsoredCount: number;
+    ugcCount: number;
+  };
+  richResultsEligibility?: {
+    type: string;
+    eligible: string;
+  }[];
 };
 
 export function getGrade(score: number, maxScore: number): CheckReport["grade"] {

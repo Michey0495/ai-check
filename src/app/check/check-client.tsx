@@ -46,6 +46,9 @@ import {
   DuplicateMetaTagsSection,
   OgPreviewSection,
   HeadingTreeSection,
+  AiContentPreviewSection,
+  LinkQualitySection,
+  RichResultsSection,
 } from "./check-report-sections";
 
 export function CheckPageClient() {
@@ -517,11 +520,14 @@ export function CheckPageClient() {
           {/* Content & SEO */}
           <CollapsibleGroup
             title="コンテンツ & SEO"
-            sectionCount={[report.contentMetrics?.wordCount, report.headingTree?.length, report.jsonLdBlocks?.blockCount, report.duplicateMetaTags?.length, report.feedDetection, report.ogPreview || report.ogImage].filter(Boolean).length}
+            sectionCount={[report.aiContentPreview, report.contentMetrics?.wordCount, report.headingTree?.length, report.jsonLdBlocks?.blockCount, report.richResultsEligibility?.length, report.linkQuality, report.duplicateMetaTags?.length, report.feedDetection, report.ogPreview || report.ogImage].filter(Boolean).length}
           >
+            <AiContentPreviewSection report={report} />
             <ContentMetricsSection report={report} />
             <HeadingTreeSection report={report} />
             <JsonLdBlocksSection report={report} />
+            <RichResultsSection report={report} />
+            <LinkQualitySection report={report} />
             <DuplicateMetaTagsSection report={report} />
             <OgPreviewSection report={report} />
             <FeedDetectionSection report={report} />

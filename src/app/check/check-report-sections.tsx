@@ -861,3 +861,115 @@ export function HeadingTreeSection({ report }: { report: CheckReport }) {
     </div>
   );
 }
+
+export function AiContentPreviewSection({ report }: { report: CheckReport }) {
+  if (!report.aiContentPreview || report.aiContentPreview.excerpt.length === 0) return null;
+
+  return (
+    <div id="sec-ai-content" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-white">AIが見るコンテンツ</h2>
+        <span className="rounded-full bg-white/5 px-3 py-1 text-xs text-white/50">
+          読了 約{report.aiContentPreview.estimatedReadingTimeMin}分
+        </span>
+      </div>
+      <p className="mb-3 text-xs text-white/40">
+        AIクローラーがインデックスする主要テキストコンテンツのプレビューです（nav/header/footer/script除外）。
+      </p>
+      {report.aiContentPreview.mainTopics.length > 0 && (
+        <div className="mb-3">
+          <p className="mb-1.5 text-xs font-medium text-white/60">主要トピック:</p>
+          <div className="flex flex-wrap gap-1.5">
+            {report.aiContentPreview.mainTopics.map((topic, i) => (
+              <span key={i} className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs text-primary/80">
+                {topic}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+      <div className="rounded-lg bg-black/30 p-4">
+        <p className="whitespace-pre-wrap text-xs leading-relaxed text-white/60">
+          {report.aiContentPreview.excerpt}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export function LinkQualitySection({ report }: { report: CheckReport }) {
+  if (!report.linkQuality) return null;
+  const total = report.linkQuality.followCount + report.linkQuality.nofollowCount;
+  const followPct = total > 0 ? Math.round((report.linkQuality.followCount / total) * 100) : 0;
+
+  return (
+    <div id="sec-link-quality" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-white">リンク品質分析</h2>
+        <span className={`rounded-full px-3 py-1 text-xs ${
+          followPct >= 80 ? "bg-green-500/10 text-green-400"
+            : followPct >= 50 ? "bg-yellow-500/10 text-yellow-400"
+            : "bg-red-500/10 text-red-400"
+        }`}>
+          follow率: {followPct}%
+        </span>
+      </div>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="rounded-lg bg-green-500/5 p-3 text-center">
+          <p className="text-lg font-bold text-green-400">{report.linkQuality.followCount}</p>
+          <p className="text-xs text-white/50">follow</p>
+        </div>
+        <div className="rounded-lg bg-red-500/5 p-3 text-center">
+          <p className="text-lg font-bold text-red-400">{report.linkQuality.nofollowCount}</p>
+          <p className="text-xs text-white/50">nofollow</p>
+        </div>
+        <div className="rounded-lg bg-yellow-500/5 p-3 text-center">
+          <p className="text-lg font-bold text-yellow-400">{report.linkQuality.sponsoredCount}</p>
+          <p className="text-xs text-white/50">sponsored</p>
+        </div>
+        <div className="rounded-lg bg-blue-500/5 p-3 text-center">
+          <p className="text-lg font-bold text-blue-400">{report.linkQuality.ugcCount}</p>
+          <p className="text-xs text-white/50">ugc</p>
+        </div>
+      </div>
+      {total > 0 && (
+        <div className="mt-3">
+          <div className="h-2 w-full rounded-full bg-white/5">
+            <div className="h-2 rounded-full bg-green-500" style={{ width: `${followPct}%` }} />
+          </div>
+          <p className="mt-1 text-xs text-white/40">
+            {total}件中{report.linkQuality.followCount}件がfollow（AIクローラーが辿れるリンク）
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function RichResultsSection({ report }: { report: CheckReport }) {
+  if (!report.richResultsEligibility || report.richResultsEligibility.length === 0) return null;
+
+  return (
+    <div id="sec-rich-results" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-white">リッチリザルト適格性</h2>
+        <span className="rounded-full bg-green-500/10 px-3 py-1 text-xs text-green-400">
+          {report.richResultsEligibility.length}件対応
+        </span>
+      </div>
+      <p className="mb-3 text-xs text-white/40">
+        検出されたJSON-LDスキーマに基づき、Google検索で表示可能なリッチリザルトタイプです。
+      </p>
+      <div className="space-y-2">
+        {report.richResultsEligibility.map((r) => (
+          <div key={r.type} className="flex items-start gap-3 rounded-lg bg-black/20 px-4 py-3">
+            <span className="mt-0.5 shrink-0 rounded bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+              {r.type}
+            </span>
+            <p className="text-sm text-white/60">{r.eligible}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

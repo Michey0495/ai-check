@@ -40,6 +40,9 @@ import {
   analyzeAiCrawlerStatus,
   analyzeExternalResources,
   analyzeJsonLdBlocks,
+  analyzeAiContentPreview,
+  analyzeLinkQuality,
+  analyzeRichResultsEligibility,
 } from "@/lib/check-engine";
 
 export async function OPTIONS() {
@@ -226,6 +229,9 @@ export async function POST(request: NextRequest) {
     const aiCrawlerStatus = analyzeAiCrawlerStatus(robotsRes.ok ? robotsRes.text : null);
     const externalResourceCount = analyzeExternalResources(html, baseUrl);
     const jsonLdBlocks = analyzeJsonLdBlocks(html);
+    const aiContentPreview = analyzeAiContentPreview(html);
+    const linkQuality = analyzeLinkQuality(html);
+    const richResultsEligibility = analyzeRichResultsEligibility(jsonLdBlocks.types);
 
     const report: CheckReport = {
       url,
@@ -286,6 +292,9 @@ export async function POST(request: NextRequest) {
         thirdPartyDomains: externalResourceCount.thirdPartyDomains.length > 0 ? externalResourceCount.thirdPartyDomains : undefined,
       } : undefined,
       jsonLdBlocks: jsonLdBlocks.blockCount > 0 ? jsonLdBlocks : undefined,
+      aiContentPreview: aiContentPreview.excerpt.length > 0 ? aiContentPreview : undefined,
+      linkQuality,
+      richResultsEligibility,
     };
 
     return NextResponse.json(report, {

@@ -328,6 +328,33 @@ export function generateReportText(report: CheckReport): string {
     }
   }
 
+  if (report.aiContentPreview && report.aiContentPreview.excerpt.length > 0) {
+    lines.push("");
+    lines.push("--- AIが見るコンテンツ ---");
+    lines.push(`読了時間: 約${report.aiContentPreview.estimatedReadingTimeMin}分`);
+    if (report.aiContentPreview.mainTopics.length > 0) {
+      lines.push(`主要トピック: ${report.aiContentPreview.mainTopics.join("、")}`);
+    }
+    lines.push(`プレビュー: ${report.aiContentPreview.excerpt.slice(0, 200)}...`);
+  }
+
+  if (report.linkQuality) {
+    const total = report.linkQuality.followCount + report.linkQuality.nofollowCount;
+    lines.push("");
+    lines.push("--- リンク品質 ---");
+    lines.push(`follow: ${report.linkQuality.followCount}件 / nofollow: ${report.linkQuality.nofollowCount}件 (合計: ${total}件)`);
+    if (report.linkQuality.sponsoredCount > 0) lines.push(`sponsored: ${report.linkQuality.sponsoredCount}件`);
+    if (report.linkQuality.ugcCount > 0) lines.push(`ugc: ${report.linkQuality.ugcCount}件`);
+  }
+
+  if (report.richResultsEligibility && report.richResultsEligibility.length > 0) {
+    lines.push("");
+    lines.push("--- リッチリザルト適格性 ---");
+    for (const r of report.richResultsEligibility) {
+      lines.push(`${r.type}: ${r.eligible}`);
+    }
+  }
+
   const failItems = report.results.filter((r) => r.status === "fail");
   const warnItems = report.results.filter((r) => r.status === "warn");
 

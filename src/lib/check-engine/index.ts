@@ -24,4 +24,7 @@ export {
   analyzeI18n,
   analyzeExternalResources,
   analyzeJsonLdBlocks,
+  analyzeAiContentPreview,
+  analyzeLinkQuality,
+  analyzeRichResultsEligibility,
 } from "./analyzers";
