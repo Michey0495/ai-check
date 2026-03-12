@@ -1,175 +1,98 @@
-# QA Report - web-url-a (AI Check)
+# QA Report - AI Check (web-url-a)
 
-**Date:** 2026-03-12 (Night 40 QA Pass)
-**Project:** AI Check (GEO Score Analyzer)
-**Domain:** ai-check.ezoai.jp
-
-## Build & Lint
-
-| Check | Status |
-|-------|--------|
-| `npm run build` | PASS (44 static pages) |
-| `npm run lint` | PASS (0 errors, 0 warnings) |
-
-## Night 40 Fixes
-
-### CRITICAL: Redundant public/robots.txt with wrong domain
-- **File:** `public/robots.txt` (deleted)
-- **Issue:** Static `public/robots.txt` referenced `web-url-a.ezoai.jp` instead of `ai-check.ezoai.jp`. Dynamic `src/app/robots.ts` already generates the correct robots.txt.
-- **Fix:** Deleted `public/robots.txt` to eliminate confusion. Dynamic `robots.ts` handles this correctly with 13 AI crawler rules.
-
-### MEDIUM: URL suggestions listbox missing aria-controls
-- **File:** `src/components/url-check-form.tsx`
-- **Fix:** Added `aria-controls="url-suggestions"` to input and `id="url-suggestions"` to listbox. Added `role="none"` to non-selectable footer item.
-
-### MEDIUM: Badge style selector missing ARIA attributes
-- **File:** `src/app/generate/badge/generator-client.tsx`
-- **Fix:** Added `role="radio"` and `aria-checked` to radiogroup buttons.
-
-### LOW: Badge generator clipboard copy silent failure
-- **File:** `src/app/generate/badge/generator-client.tsx`
-- **Fix:** Added feedback state update in clipboard catch handler.
-
-## Night 39 Fixes
-
-### LOW: Lint warnings - unused imports in check-client.tsx
-- **File:** `src/app/check/check-client.tsx:9,47`
-- **Fix:** 未使用の `GRADE_HEX_COLORS` インポートと `GRADE_COLORS` 変数を削除
-
-### LOW: Feedback widget - missing focus management
-- **File:** `src/components/feedback-widget.tsx`
-- **Fix:** ダイアログ開閉時のフォーカス管理を追加（textareaへの自動フォーカス、閉じた時のトリガーボタンへのフォーカス復帰）
-
-### LOW: Feedback API - silent failure when GITHUB_TOKEN missing
-- **File:** `src/app/api/feedback/route.ts:71`
-- **Fix:** GITHUB_TOKEN未設定時に `console.warn` でログ出力を追加
-
-## Night 38 Fixes
-
-### LOW: Lint warning - unused variable `allImageSrcs`
-- **File:** `src/app/api/check/route.ts:211`
-- **Fix:** destructuring から `allImageSrcs` を除外（下流で未使用）
-
-### MEDIUM: Feedback widget - missing `type="button"` on all buttons
-- **File:** `src/components/feedback-widget.tsx`
-- **Fix:** 全4箇所の `<button>` に `type="button"` を追加
-
-### LOW: Feedback widget - textarea missing maxLength
-- **File:** `src/components/feedback-widget.tsx`
-- **Fix:** `maxLength={2000}` を追加
-
-### MEDIUM: Badge generator - React hook dependency issue
-- **File:** `src/app/generate/badge/generator-client.tsx`
-- **Issue:** `useEffect` 内で `setBadgeUrl` を呼んでおり、React 19 lint ルール `react-hooks/set-state-in-effect` 違反
-- **Fix:** `computeInitialBadgeUrl()` を作成し、`useState` の初期値として計算。useEffect を除去
-
-### LOW: CSV escaping in compare page
-- **File:** `src/app/check/compare/compare-client.tsx:21`
-- **Fix:** URL内のダブルクォートをCSV標準 (`""`) でエスケープ
-
-## Night 37 Fixes
-
-### LOW: Header Accessibility - Missing aria-controls
-- **File:** `src/components/header.tsx`
-- **Fix:** ガイドボタンに `aria-controls="guides-dropdown"`、モバイルメニューに `aria-controls="mobile-nav"` を追加
-
-### LOW: Check API Missing Error Logging
-- **File:** `src/app/api/check/route.ts`
-- **Fix:** catch-all エラーハンドラーに `console.error` を追加
-
-## Previous Night Fixes (History)
-
-### Night 36
-- Batch API error message exposure (security) - ユーザー入力のエラーメッセージ反映を除去
-- Clipboard operation false success - コピー失敗時の誤表示を修正
-- Feedback widget missing loading state - 送信中の二重送信防止
-
-### Night 34
-- Stats Grid responsive修正（再発対応）
-- Placeholder text contrast向上（WCAG AA準拠）
-- Inline object allocation最適化（module-level constants化）
-
-### Night 33
-- FAQ Accordion `aria-labelledby` 追加
-
-### Night 32
-- MCP Route input sanitization（セキュリティ）
-- MCP Route schema type validation
-- Stats Grid responsive対応
-- Low contrast text修正（WCAG）
-- SVG Charts accessibility attributes追加
-- Badge Generator URL正規化
-- JSON-LD Generator FAQ parsing修正
-
-## Known Issues (Low Priority)
-
-### Performance
-- `check-client.tsx` (2095行) - 大きなコンポーネント。将来的にファイル分割を検討
-- `React.memo` の使用なし - パフォーマンス影響が顕在化した場合に対応
-
-### Accessibility (Minor)
-- SVGチャート: `<desc>` 要素が未設定（`role="img"` + `aria-label` は設定済み）
+**Date**: 2026-03-13
+**Tester**: Claude Code (automated QA)
 
 ## Checklist
 
-- [x] `npm run build` success
-- [x] `npm run lint` no errors
-- [x] Responsive layout (mobile/tablet/desktop)
-- [x] favicon (dynamic icon.tsx + apple-icon.tsx)
-- [x] OGP (opengraph-image.tsx + per-page metadata)
-- [x] 404 page (not-found.tsx with navigation cards)
-- [x] Loading state (loading.tsx with spinner + aria)
-- [x] Error state (error.tsx + global-error.tsx with reset)
+- [x] `npm run build` 成功 (44ページ、7.1秒)
+- [x] `npm run lint` エラーなし
+- [x] レスポンシブ対応（モバイル・デスクトップ）
+- [x] favicon, OGP設定
+- [x] 404ページ
+- [x] ローディング状態の表示
+- [x] エラー状態の表示
 
-## SEO Status
+## Build
 
-| Item | Status |
-|------|--------|
-| Page metadata (title, description) | All pages have unique metadata |
-| OGP images | Dynamic generation (1200x630) |
-| Structured data (JSON-LD) | Organization + WebSite + WebApplication + FAQ + HowTo + BreadcrumbList |
-| robots.txt | 13 AI crawlers explicitly allowed (dynamic robots.ts) |
-| sitemap.xml | 44 URLs with priority/changeFrequency |
-| llms.txt | Comprehensive AI site description |
-| .well-known/agent.json | A2A Agent Card with MCP tools |
-| manifest.json | PWA-ready |
+- Next.js 16.1.6 (Turbopack)
+- 44 static pages generated
+- TypeScript strict: pass
+- 0 lint errors
 
-## API Security
+## Issues Found & Fixed
 
-| Check | Status |
-|-------|--------|
-| SSRF protection | Private IP/hostname blocking (IPv4, IPv6, mapped) |
-| Rate limiting | 10 req/min per IP with memory cleanup at 10K entries |
-| Input validation | URL length (2048), protocol (http/https), body size (5MB) |
-| Timeout protection | AbortSignal on all external fetches (10-25s) |
-| CORS | Proper headers on all API routes |
-| Error sanitization | User input not reflected in error messages |
-| Error logging | console.error in all API catch blocks |
+### 1. Redundant `public/robots.txt` (Fixed)
 
-## Accessibility
+**Severity**: Medium
+**Description**: `public/robots.txt` referenced wrong domain (`web-url-a.ezoai.jp`) while the app uses `ai-check.ezoai.jp`. It was also redundant since `src/app/robots.ts` already generates a proper robots.txt via the Next.js Metadata API.
+**Fix**: Removed `public/robots.txt`. The dynamic `src/app/robots.ts` is the canonical source.
 
-| Check | Status |
-|-------|--------|
-| Skip-to-content link | Present in root layout |
-| role="alert" on errors | error.tsx + global-error.tsx |
-| role="status" on loading | loading.tsx + check-client.tsx |
-| aria-label on inputs | All form inputs |
-| aria-pressed on toggles | Feedback type buttons |
-| aria-expanded on accordions | Header menu + AllFixCodes |
-| aria-controls on menus | Guides dropdown + mobile nav |
-| Semantic HTML | Proper headings, landmarks, table scope |
-| Color contrast | White on black base, text-white/50+ for secondary |
-| Focus states | Present on all interactive elements |
-| Keyboard navigation | Cmd+K shortcut, Escape closes menus, arrow keys in autocomplete |
+### 2. `<a>` tags instead of Next.js `<Link>` in generator pages (Fixed)
 
-## Design System Compliance
+**Severity**: Low (performance)
+**Description**: 4 generator pages (`llms-txt`, `json-ld`, `robots-txt`, `agent-json`) used plain `<a href>` tags for internal links instead of Next.js `<Link>`. This causes full page reloads instead of client-side navigation.
+**Files fixed**:
+- `src/app/generate/llms-txt/page.tsx` (4 links)
+- `src/app/generate/json-ld/page.tsx` (3 links)
+- `src/app/generate/robots-txt/page.tsx` (3 links)
+- `src/app/generate/agent-json/page.tsx` (3 links)
+**Fix**: Replaced all internal `<a>` tags with `<Link>` from `next/link`.
 
-| Rule | Status |
-|------|--------|
-| Background: #000000 | bg-black throughout |
-| Text: white base | text-white, text-white/70, text-white/50 |
-| No emojis | Verified: 0 emoji usage |
-| No icon libraries | Verified: custom SVG only, no Lucide/Heroicons |
-| Cards: bg-white/5 border-white/10 | Consistent across all pages |
-| Hover: cursor-pointer + transition | All interactive elements |
-| Font: 16px+, line-height 1.5-1.75 | text-base+ with leading-relaxed |
+## No Issues Found (Pass)
+
+### UI/Layout
+- All pages render correctly with black background design system
+- Card styles consistent (`bg-white/5 border border-white/10`)
+- Hover states working (`cursor-pointer`, `transition-all duration-200`)
+- Font sizes 16px+ with proper line-height
+- No emojis or illustration icons used
+
+### Edge Cases
+- Empty URL input: proper validation ("URLを入力してください。")
+- Invalid URL: proper validation ("有効なURLを入力してください。")
+- Long URL: maxLength=2048 on client, 2048 char limit on API
+- Special characters: URL encoding via `encodeURIComponent`
+- SSRF protection: private IP/hostname blocking
+- Rate limiting: 10 requests/min per IP with proper headers
+
+### SEO
+- Metadata: title template, description, keywords (100+), OGP, Twitter cards
+- JSON-LD: Organization, WebSite, WebApplication, FAQPage, HowTo, BreadcrumbList
+- Sitemap: 32 URLs with proper priorities
+- robots.ts: All major AI crawlers explicitly allowed
+- Canonical URLs set on all pages
+- Dynamic OGP images (1200x630) for root and check pages
+
+### Accessibility
+- Skip-to-main-content link
+- `lang="ja"` on html
+- `role="status"` on loading spinner
+- `role="alert"` on error messages
+- `aria-label`, `aria-expanded`, `aria-controls` on interactive elements
+- `aria-pressed` on feedback type toggles
+- `aria-invalid` and `aria-describedby` on form inputs
+- `aria-autocomplete` and `role="listbox"` on URL suggestions
+- `role="progressbar"` with proper aria-value attributes
+- Keyboard navigation: Escape closes mobile menu, Cmd/Ctrl+K focuses search
+- Focus management in feedback widget
+
+### Performance
+- Server Components by default, "use client" only where needed
+- Concurrent data fetching in API (`Promise.all`)
+- Response body size limit (5MB)
+- API timeout (10s per resource, 30s max duration)
+- AbortSignal.timeout on fetch calls
+- Rate limit map cleanup to prevent memory leaks
+
+### Security
+- SSRF protection (private IP/hostname blocking)
+- Protocol validation (http/https only)
+- Rate limiting with proper headers
+- CORS support
+- Input sanitization on all API endpoints
+- No secrets exposed in client code
+
+## Summary
+
+Overall quality is high. The codebase follows consistent patterns, has proper error handling, and comprehensive SEO/accessibility support. Only 2 minor issues were found and fixed.

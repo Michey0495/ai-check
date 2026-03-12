@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { RobotsTxtGenerator } from "./generator-client";
 
 export const metadata: Metadata = {
@@ -57,18 +58,18 @@ export default function RobotsTxtPage() {
       <section className="mt-16">
         <h2 className="mb-4 text-2xl font-bold text-white">他の生成ツール</h2>
         <div className="grid gap-4 sm:grid-cols-3">
-          <a href="/generate/llms-txt" className="cursor-pointer rounded-lg border border-white/10 bg-white/5 p-5 transition-all duration-200 hover:border-white/20">
+          <Link href="/generate/llms-txt" className="cursor-pointer rounded-lg border border-white/10 bg-white/5 p-5 transition-all duration-200 hover:border-white/20">
             <h3 className="mb-1 text-sm font-semibold text-white">llms.txt 生成</h3>
             <p className="text-xs text-white/40">AI向けサイト説明ファイルを自動生成</p>
-          </a>
-          <a href="/generate/json-ld" className="cursor-pointer rounded-lg border border-white/10 bg-white/5 p-5 transition-all duration-200 hover:border-white/20">
+          </Link>
+          <Link href="/generate/json-ld" className="cursor-pointer rounded-lg border border-white/10 bg-white/5 p-5 transition-all duration-200 hover:border-white/20">
             <h3 className="mb-1 text-sm font-semibold text-white">JSON-LD 生成</h3>
             <p className="text-xs text-white/40">構造化データを自動生成</p>
-          </a>
-          <a href="/generate/agent-json" className="cursor-pointer rounded-lg border border-white/10 bg-white/5 p-5 transition-all duration-200 hover:border-white/20">
+          </Link>
+          <Link href="/generate/agent-json" className="cursor-pointer rounded-lg border border-white/10 bg-white/5 p-5 transition-all duration-200 hover:border-white/20">
             <h3 className="mb-1 text-sm font-semibold text-white">agent.json 生成</h3>
             <p className="text-xs text-white/40">A2A Agent Cardを自動生成</p>
-          </a>
+          </Link>
         </div>
       </section>
     </div>
