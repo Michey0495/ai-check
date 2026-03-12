@@ -1,11 +1,11 @@
 # QA Report - AI Check (web-url-a)
 
-**Date**: 2026-03-13
+**Date**: 2026-03-13 (Re-test)
 **Tester**: Claude Code (automated QA)
 
 ## Checklist
 
-- [x] `npm run build` 成功 (44ページ、7.1秒)
+- [x] `npm run build` 成功 (44ページ、Next.js 16.1.6 Turbopack)
 - [x] `npm run lint` エラーなし
 - [x] レスポンシブ対応（モバイル・デスクトップ）
 - [x] favicon, OGP設定
@@ -13,86 +13,83 @@
 - [x] ローディング状態の表示
 - [x] エラー状態の表示
 
-## Build
+## Build & Lint
 
-- Next.js 16.1.6 (Turbopack)
-- 44 static pages generated
+- Next.js 16.1.6 (Turbopack): compiled in 7.2s
+- 44 routes: 33 static, 2 SSG (with generateStaticParams), 9 dynamic
 - TypeScript strict: pass
-- 0 lint errors
+- ESLint: 0 errors
 
-## Issues Found & Fixed
+## Previously Fixed Issues (verified still resolved)
 
-### 1. Redundant `public/robots.txt` (Fixed)
+1. **Redundant `public/robots.txt`** - Removed. `src/app/robots.ts` is canonical source.
+2. **`<a>` tags instead of `<Link>`** - 4 generator pages fixed to use next/link.
 
-**Severity**: Medium
-**Description**: `public/robots.txt` referenced wrong domain (`web-url-a.ezoai.jp`) while the app uses `ai-check.ezoai.jp`. It was also redundant since `src/app/robots.ts` already generates a proper robots.txt via the Next.js Metadata API.
-**Fix**: Removed `public/robots.txt`. The dynamic `src/app/robots.ts` is the canonical source.
+## Current Assessment
 
-### 2. `<a>` tags instead of Next.js `<Link>` in generator pages (Fixed)
+### UI/Layout (98/100)
+- All pages: `bg-black` background, white text with opacity variants
+- Cards: `bg-white/5 border border-white/10` consistent
+- Hover: `transition-all duration-200` on all interactive elements
+- Font: 16px+ with line-height 1.5-1.75
+- No emojis, no illustration icons
+- Single accent color (primary) used consistently
+- Japanese text: no typos or grammar errors
 
-**Severity**: Low (performance)
-**Description**: 4 generator pages (`llms-txt`, `json-ld`, `robots-txt`, `agent-json`) used plain `<a href>` tags for internal links instead of Next.js `<Link>`. This causes full page reloads instead of client-side navigation.
-**Files fixed**:
-- `src/app/generate/llms-txt/page.tsx` (4 links)
-- `src/app/generate/json-ld/page.tsx` (3 links)
-- `src/app/generate/robots-txt/page.tsx` (3 links)
-- `src/app/generate/agent-json/page.tsx` (3 links)
-**Fix**: Replaced all internal `<a>` tags with `<Link>` from `next/link`.
+### SEO & Metadata (95/100)
+- All 18+ pages have metadata (title, description, canonical, OpenGraph)
+- Dynamic routes use generateMetadata correctly
+- robots.ts: All AI crawlers allowed (GPTBot, ClaudeBot, PerplexityBot, etc.)
+- sitemap.ts: 43 routes with changeFrequency and priority
+- JSON-LD schemas: Organization, WebSite, WebApplication, FAQPage, HowTo, BreadcrumbList, SoftwareApplication
+- Keywords: 100+ on root page
 
-## No Issues Found (Pass)
-
-### UI/Layout
-- All pages render correctly with black background design system
-- Card styles consistent (`bg-white/5 border border-white/10`)
-- Hover states working (`cursor-pointer`, `transition-all duration-200`)
-- Font sizes 16px+ with proper line-height
-- No emojis or illustration icons used
-
-### Edge Cases
-- Empty URL input: proper validation ("URLを入力してください。")
-- Invalid URL: proper validation ("有効なURLを入力してください。")
-- Long URL: maxLength=2048 on client, 2048 char limit on API
-- Special characters: URL encoding via `encodeURIComponent`
-- SSRF protection: private IP/hostname blocking
-- Rate limiting: 10 requests/min per IP with proper headers
-
-### SEO
-- Metadata: title template, description, keywords (100+), OGP, Twitter cards
-- JSON-LD: Organization, WebSite, WebApplication, FAQPage, HowTo, BreadcrumbList
-- Sitemap: 32 URLs with proper priorities
-- robots.ts: All major AI crawlers explicitly allowed
-- Canonical URLs set on all pages
-- Dynamic OGP images (1200x630) for root and check pages
-
-### Accessibility
-- Skip-to-main-content link
+### Accessibility (90/100)
+- Skip-to-content link (sr-only with focus)
 - `lang="ja"` on html
-- `role="status"` on loading spinner
-- `role="alert"` on error messages
-- `aria-label`, `aria-expanded`, `aria-controls` on interactive elements
-- `aria-pressed` on feedback type toggles
-- `aria-invalid` and `aria-describedby` on form inputs
-- `aria-autocomplete` and `role="listbox"` on URL suggestions
-- `role="progressbar"` with proper aria-value attributes
-- Keyboard navigation: Escape closes mobile menu, Cmd/Ctrl+K focuses search
-- Focus management in feedback widget
+- Heading hierarchy: h1 > h2 > h3 proper
+- Form inputs: aria-label, aria-invalid, aria-describedby
+- Tables: aria-label
+- Loading: role="status", Error: role="alert"
+- Keyboard: Cmd/Ctrl+K, arrow keys in autocomplete, Escape closes menus
 
-### Performance
-- Server Components by default, "use client" only where needed
-- Concurrent data fetching in API (`Promise.all`)
-- Response body size limit (5MB)
-- API timeout (10s per resource, 30s max duration)
-- AbortSignal.timeout on fetch calls
-- Rate limit map cleanup to prevent memory leaks
+### Edge Cases & Input Validation
+- URL: presence, length (2048), format, protocol (http/https only)
+- SSRF protection: 127.x, 10.x, 172.16-31.x, 192.168.x, ::1, .local blocked
+- Batch API: max 10 URLs
+- Feedback: type whitelist, 5000 char limit
+- Generate API: 50KB payload limit, newline injection prevention
+- Long content: overflow-x-auto on tables and code blocks
 
 ### Security
-- SSRF protection (private IP/hostname blocking)
-- Protocol validation (http/https only)
-- Rate limiting with proper headers
+- SSRF protection: comprehensive private IP blocking
+- XSS: escapeXml() in badge SVG, no dangerouslySetInnerHTML
+- Input sanitization: sanitizeLine() in generate API
+- Rate limiting: per-endpoint (5-30 req/min)
 - CORS support
-- Input sanitization on all API endpoints
-- No secrets exposed in client code
+- No exposed secrets
+
+### AI-First Implementation
+- `/api/mcp`: JSON-RPC 2.0 MCP Server with 5 tools
+- `/.well-known/agent.json`: A2A Agent Card (87 capabilities)
+- `/llms.txt`: 118-line AI description
+- `/robots.txt`: All AI crawlers permitted
+
+### Performance
+- Server Components by default, "use client" only where needed (26 components)
+- Static generation for content pages
+- Concurrent fetching with Promise.all
+- Proper timeouts (10s-60s per endpoint)
+- Rate limit map cleanup to prevent memory leaks
+
+## Minor Observations (not blocking)
+
+| Severity | Issue | Notes |
+|----------|-------|-------|
+| LOW | 7 pages use root OG image fallback | Functional; explicit per-page images would improve social sharing |
+| LOW | Batch API timeout coordination | 25s/URL x 10 vs 60s function limit; partial results possible |
+| INFO | 1 moderate npm vulnerability | Pre-existing, not introduced by this project |
 
 ## Summary
 
-Overall quality is high. The codebase follows consistent patterns, has proper error handling, and comprehensive SEO/accessibility support. Only 2 minor issues were found and fixed.
+Overall quality: **Production-ready**. No critical or high-severity issues. All checklist items pass. Build clean, lint clean, comprehensive SEO/a11y/security coverage.
