@@ -1,98 +1,59 @@
 # QA Report - AI Check (web-url-a)
 
-**Date**: 2026-03-13
+**Date**: 2026-03-13 (Night 44 re-test)
 **Tester**: Claude Code (automated QA)
 
 ## Checklist
 
-- [x] `npm run build` 成功 (44ページ、7.2s)
+- [x] `npm run build` 成功
 - [x] `npm run lint` エラーなし
-- [x] レスポンシブ対応（モバイル・デスクトップ）- Tailwind responsive classes throughout
-- [x] favicon, OGP設定 - icon.tsx, apple-icon.tsx, opengraph-image.tsx (Edge runtime)
-- [x] 404ページ - not-found.tsx with navigation links
-- [x] ローディング状態の表示 - loading.tsx + check-client.tsx loading state
+- [x] レスポンシブ対応（モバイル・デスクトップ）
+- [x] favicon, OGP設定 - icon.tsx, apple-icon.tsx, opengraph-image.tsx
+- [x] 404ページ - not-found.tsx
+- [x] ローディング状態の表示 - loading.tsx + check-client.tsx
 - [x] エラー状態の表示 - error.tsx + global-error.tsx
 
-## Build Results
+## 修正した問題 (4件)
 
-- Static pages: 44
-- Build time: 7.2s (Turbopack)
-- TypeScript: strict mode, no errors
-- Routes: 8 static, 7 dynamic, 7 SSG
+### 1. SSRF保護の強化 (security.ts)
+- `isPrivateIPv4`にマルチキャスト(224+)、CGNAT(100.64/10)、ベンチマーク(198.18/15)、予約済みアドレスのブロックを追加
+- 不正なオクテット値のバリデーション追加
 
-## Input Validation & Edge Cases
+### 2. MCP JSON-RPCメソッド型バリデーション (mcp/route.ts)
+- `method`フィールドの`typeof method !== "string"`チェック追加
 
-| Endpoint | Empty | Long Input | Special Chars | Rate Limit | SSRF |
-|----------|-------|-----------|---------------|-----------|------|
-| /api/check | OK | 2048 char limit | URL parse validation | IP-based | Private hostname block |
-| /api/check/batch | OK | 10 URL max | Per-URL validation | OK | OK |
-| /api/badge | OK | - | XML escape | 30/60s | - |
-| /api/feedback | OK | 5000 char limit | Type whitelist | 5/5min | - |
-| /api/generate | OK | 50000 char limit | sanitizeLine() | - | - |
-| /api/mcp | OK | JSON-RPC validation | Schema validation | - | - |
+### 3. セキュリティヘッダー追加 (cors.ts)
+- 全APIレスポンスに`X-Content-Type-Options: nosniff`を追加
 
-### Client-side validation (url-check-form.tsx)
-- Empty: "URLを入力してください。"
-- Long: maxLength=2048
-- Invalid URL: `new URL()` parse validation
-- Protocol: http/https only
-- Loading state: button disabled during submit
-- ARIA: aria-label, aria-invalid, aria-describedby, keyboard shortcuts (Cmd+K)
+### 4. 重複robots.txt削除
+- `public/robots.txt`（古いドメイン名参照）を削除、`src/app/robots.ts`（正しいドメイン）に統一
 
-## SEO & Metadata
+## 確認済み項目
 
-- [x] title / description / keywords (100+ keywords)
-- [x] OpenGraph (title, description, url, image, siteName, locale)
-- [x] Twitter Card (summary_large_image)
-- [x] robots meta (index, follow, googleBot directives)
-- [x] canonical URL
-- [x] metadataBase
-- [x] manifest.json
-- [x] Structured data: Organization, WebSite, WebApplication, FAQPage, HowTo, BreadcrumbList
-- [x] robots.ts - 16 user-agents including AI crawlers
-- [x] sitemap.ts - 43 URLs with priority/changeFrequency
-- [x] llms.txt (12KB)
-- [x] .well-known/agent.json (A2A Agent Card)
+### SEO/AI対応
+- メタデータ: title, description, keywords(100+), OGP, Twitter Card
+- JSON-LD: Organization, WebSite (SearchAction)
+- robots.ts: 16種類のAIクローラー許可
+- sitemap.ts: 42+ URLs
+- llms.txt: 12KB
+- agent.json: A2A Agent Card v4.3.0
 
-## Accessibility
+### セキュリティ
+- SSRF保護 (強化済み)
+- レート制限: 10req/min/IP
+- 入力バリデーション: URL長、ペイロードサイズ制限
+- バッチAPI: 最大10URL
 
-- [x] Skip navigation link
-- [x] lang="ja" on html element
-- [x] Semantic HTML (header, main, nav, section, footer)
-- [x] ARIA labels on interactive elements
-- [x] Keyboard navigation (Escape, Enter, Arrow keys, Cmd+K)
-- [x] Focus management in modals/dropdowns
-- [x] role="alert" on error messages
-- [x] role="status" on loading states
-- [x] role="progressbar" on score bars
+### アクセシビリティ
+- role="status", role="alert", aria-label設定済み
+- キーボードナビゲーション (Escape, Cmd+K)
+- セマンティックHTML
 
-## Security
-
-- [x] CORS headers on all API routes
-- [x] SSRF protection (private hostname blocking)
-- [x] Rate limiting on all public endpoints
-- [x] Input sanitization in generation endpoints
-- [x] No sensitive data in error responses
-
-## Performance
-
-- [x] Concurrent Promise.all() for resource fetching
-- [x] Cache-Control headers (s-maxage=300, stale-while-revalidate=600)
-- [x] Static generation (44 static pages)
-- [x] Edge runtime for OGP image generation
-
-## Design System Compliance
-
-- [x] Background: #000000
-- [x] Text: white base with opacity
-- [x] No emojis, no illustration icons
-- [x] Cards: bg-white/5 border border-white/10
-- [x] Hover: cursor-pointer, transition-all duration-200
-
-## Issues Found
-
-None. The codebase is production-ready.
+### パフォーマンス
+- Server Components デフォルト
+- Edge runtime OGP画像生成
+- 静的生成 (44ページ)
 
 ## Verdict
 
-**PASS** - All quality checks passed.
+**PASS** - 全チェック項目クリア。4件の問題を修正済み。

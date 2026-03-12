@@ -121,7 +121,7 @@ export async function POST(request: NextRequest) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { jsonrpc, method, id, params } = body as any;
 
-    if (jsonrpc !== "2.0") {
+    if (jsonrpc !== "2.0" || typeof method !== "string") {
       return jsonRpcResponse(
         { jsonrpc: "2.0", error: { code: -32600, message: "Invalid Request" }, id },
         400
