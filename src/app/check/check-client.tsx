@@ -277,7 +277,7 @@ export function CheckPageClient() {
                   {report.siteTitle && (
                     <p className="truncate text-sm font-medium text-white/80">{report.siteTitle}</p>
                   )}
-                  <p className="mt-0.5 truncate text-xs text-white/40">{report.url}</p>
+                  <p className="mt-0.5 truncate text-xs text-white/40" title={report.url}>{report.url}</p>
                 </div>
               </div>
             </div>
@@ -285,7 +285,7 @@ export function CheckPageClient() {
 
           <div className="text-center">
             {!report.ogImage && !report.siteTitle && (
-              <p className="mb-4 truncate text-sm text-white/50">{report.url}</p>
+              <p className="mb-4 truncate text-sm text-white/50" title={report.url}>{report.url}</p>
             )}
             <ScoreCircle
               score={report.totalScore}

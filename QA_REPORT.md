@@ -1,6 +1,6 @@
 # QA Report - AI Check (web-url-a)
 
-**Date**: 2026-03-13 (Re-test)
+**Date**: 2026-03-13 (Re-test #2)
 **Tester**: Claude Code (automated QA)
 
 ## Checklist
@@ -24,6 +24,12 @@
 
 1. **Redundant `public/robots.txt`** - Removed. `src/app/robots.ts` is canonical source.
 2. **`<a>` tags instead of `<Link>`** - 4 generator pages fixed to use next/link.
+
+## Fixes Applied (Re-test #2)
+
+3. **URL truncate にホバーヒントなし** - `title` 属性を追加し、truncate されたURLをホバーで全文確認可能に。
+   - `src/app/check/check-client.tsx` (2箇所)
+   - `src/app/check/compare/compare-client.tsx` (2箇所)
 
 ## Current Assessment
 

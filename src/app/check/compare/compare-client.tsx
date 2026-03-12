@@ -333,7 +333,7 @@ export function CompareClient() {
                 )}
                 {r.report && (
                   <>
-                    <p className="mb-2 truncate text-xs text-white/40">{r.report.url}</p>
+                    <p className="mb-2 truncate text-xs text-white/40" title={r.report.url}>{r.report.url}</p>
                     <span className={`text-4xl font-bold ${gradeColors[r.report.grade] ?? "text-white"}`}>
                       {r.report.grade}
                     </span>
@@ -386,7 +386,7 @@ export function CompareClient() {
                       if (!item) return null;
                       return (
                         <div key={i} className="flex items-center gap-3">
-                          <span className="w-32 truncate text-xs text-white/40">
+                          <span className="w-32 truncate text-xs text-white/40" title={cr.report!.url}>
                             {(() => { try { return new URL(cr.report!.url).hostname; } catch { return cr.report!.url; } })()}
                           </span>
                           <div className="flex-1">
