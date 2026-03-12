@@ -93,11 +93,49 @@ export function ExternalResourcesSection({ report }: { report: CheckReport }) {
           <p className="text-xs text-white/40">合計</p>
         </div>
       </div>
+      {report.externalResourceCount.thirdPartyDomains && report.externalResourceCount.thirdPartyDomains.length > 0 && (
+        <div className="mt-3">
+          <p className="mb-1 text-xs text-white/40">外部ドメイン ({report.externalResourceCount.thirdPartyDomains.length})</p>
+          <div className="flex flex-wrap gap-1">
+            {report.externalResourceCount.thirdPartyDomains.map((domain) => (
+              <span key={domain} className="rounded bg-white/5 px-2 py-0.5 text-xs text-white/50 font-mono">{domain}</span>
+            ))}
+          </div>
+        </div>
+      )}
       {totalExternal > 10 && (
         <p className="mt-3 text-xs text-white/40">
           外部リソースが多いとページ読み込み速度に影響します。不要なリソースの削除やセルフホスティングを検討してください。
         </p>
       )}
+    </div>
+  );
+}
+
+export function JsonLdBlocksSection({ report }: { report: CheckReport }) {
+  if (!report.jsonLdBlocks || report.jsonLdBlocks.blockCount === 0) return null;
+
+  return (
+    <div id="sec-jsonld-blocks" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-white">JSON-LDブロック詳細</h2>
+        <span className="rounded-full bg-green-500/10 px-3 py-1 text-xs text-green-400">
+          {report.jsonLdBlocks.blockCount}ブロック
+        </span>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {report.jsonLdBlocks.types.map((type, i) => (
+          <span
+            key={`${type}-${i}`}
+            className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-sm text-primary/80"
+          >
+            {type}
+          </span>
+        ))}
+      </div>
+      <p className="mt-3 text-xs text-white/40">
+        検出されたJSON-LDブロック数とスキーマタイプの一覧です。複数のスキーマタイプを適切に設置することで、AI検索エンジンがサイトの内容を正確に理解しやすくなります。
+      </p>
     </div>
   );
 }

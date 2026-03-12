@@ -314,6 +314,18 @@ export function generateReportText(report: CheckReport): string {
     lines.push(`外部CSS: ${report.externalResourceCount.externalCss}件`);
     lines.push(`外部JS: ${report.externalResourceCount.externalJs}件`);
     lines.push(`合計: ${report.externalResourceCount.totalExternal}件`);
+    if (report.externalResourceCount.thirdPartyDomains && report.externalResourceCount.thirdPartyDomains.length > 0) {
+      lines.push(`外部ドメイン: ${report.externalResourceCount.thirdPartyDomains.join(", ")}`);
+    }
+  }
+
+  if (report.jsonLdBlocks && report.jsonLdBlocks.blockCount > 0) {
+    lines.push("");
+    lines.push("--- JSON-LDブロック ---");
+    lines.push(`ブロック数: ${report.jsonLdBlocks.blockCount}`);
+    if (report.jsonLdBlocks.types.length > 0) {
+      lines.push(`スキーマタイプ: ${report.jsonLdBlocks.types.join(", ")}`);
+    }
   }
 
   const failItems = report.results.filter((r) => r.status === "fail");

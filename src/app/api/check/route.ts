@@ -39,6 +39,7 @@ import {
   analyzeI18n,
   analyzeAiCrawlerStatus,
   analyzeExternalResources,
+  analyzeJsonLdBlocks,
 } from "@/lib/check-engine";
 
 export async function OPTIONS() {
@@ -224,6 +225,7 @@ export async function POST(request: NextRequest) {
     const { canonicalUrl, canonicalMismatch } = analyzeCanonical(html, url);
     const aiCrawlerStatus = analyzeAiCrawlerStatus(robotsRes.ok ? robotsRes.text : null);
     const externalResourceCount = analyzeExternalResources(html, baseUrl);
+    const jsonLdBlocks = analyzeJsonLdBlocks(html);
 
     const report: CheckReport = {
       url,
@@ -277,7 +279,13 @@ export async function POST(request: NextRequest) {
       duplicateMetaTags,
       dnsResolutionMs: dnsResolutionMs ?? undefined,
       aiCrawlerStatus,
-      externalResourceCount: externalResourceCount.totalExternal > 0 ? externalResourceCount : undefined,
+      externalResourceCount: externalResourceCount.totalExternal > 0 ? {
+        externalCss: externalResourceCount.externalCss,
+        externalJs: externalResourceCount.externalJs,
+        totalExternal: externalResourceCount.totalExternal,
+        thirdPartyDomains: externalResourceCount.thirdPartyDomains.length > 0 ? externalResourceCount.thirdPartyDomains : undefined,
+      } : undefined,
+      jsonLdBlocks: jsonLdBlocks.blockCount > 0 ? jsonLdBlocks : undefined,
     };
 
     return NextResponse.json(report, {

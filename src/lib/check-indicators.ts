@@ -240,6 +240,11 @@ export type CheckReport = {
     externalCss: number;
     externalJs: number;
     totalExternal: number;
+    thirdPartyDomains?: string[];
+  };
+  jsonLdBlocks?: {
+    blockCount: number;
+    types: string[];
   };
 };
 

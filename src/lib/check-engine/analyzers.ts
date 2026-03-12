@@ -457,13 +457,17 @@ export function analyzeI18n(html: string, responseHdrs: Record<string, string>) 
 }
 
 export function analyzeExternalResources(html: string, baseUrl: string) {
+  const domains = new Set<string>();
   const cssLinks = html.match(/<link[^>]*rel=["']stylesheet["'][^>]*href=["']([^"']+)["']/gi) ?? [];
   let externalCss = 0;
   for (const link of cssLinks) {
     const hrefMatch = link.match(/href=["']([^"']+)["']/i);
     if (hrefMatch) {
       const href = hrefMatch[1];
-      if (href.startsWith("http") && !href.startsWith(baseUrl)) externalCss++;
+      if (href.startsWith("http") && !href.startsWith(baseUrl)) {
+        externalCss++;
+        try { domains.add(new URL(href).hostname); } catch {}
+      }
     }
   }
   const scriptTags = html.match(/<script[^>]*src=["']([^"']+)["'][^>]*>/gi) ?? [];
@@ -472,8 +476,54 @@ export function analyzeExternalResources(html: string, baseUrl: string) {
     const srcMatch = tag.match(/src=["']([^"']+)["']/i);
     if (srcMatch) {
       const src = srcMatch[1];
-      if (src.startsWith("http") && !src.startsWith(baseUrl)) externalJs++;
+      if (src.startsWith("http") && !src.startsWith(baseUrl)) {
+        externalJs++;
+        try { domains.add(new URL(src).hostname); } catch {}
+      }
     }
   }
-  return { externalCss, externalJs, totalExternal: externalCss + externalJs };
+  // Also check external font/image preloads
+  const preloads = html.match(/<link[^>]*rel=["']preload["'][^>]*href=["']([^"']+)["']/gi) ?? [];
+  for (const link of preloads) {
+    const hrefMatch = link.match(/href=["']([^"']+)["']/i);
+    if (hrefMatch) {
+      const href = hrefMatch[1];
+      if (href.startsWith("http") && !href.startsWith(baseUrl)) {
+        try { domains.add(new URL(href).hostname); } catch {}
+      }
+    }
+  }
+  const thirdPartyDomains = [...domains].sort();
+  return { externalCss, externalJs, totalExternal: externalCss + externalJs, thirdPartyDomains };
+}
+
+export function analyzeJsonLdBlocks(html: string) {
+  const jsonLdBlocks = html.match(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi) ?? [];
+  const types: string[] = [];
+  for (const block of jsonLdBlocks) {
+    const contentMatch = block.match(/<script[^>]*>([\s\S]*?)<\/script>/i);
+    if (!contentMatch) continue;
+    try {
+      const data = JSON.parse(contentMatch[1]);
+      const items = Array.isArray(data) ? data : [data];
+      for (const item of items) {
+        if (item["@type"]) {
+          const t = Array.isArray(item["@type"]) ? item["@type"].join(", ") : item["@type"];
+          types.push(t);
+        }
+        // Check @graph
+        if (Array.isArray(item["@graph"])) {
+          for (const node of item["@graph"]) {
+            if (node["@type"]) {
+              const t = Array.isArray(node["@type"]) ? node["@type"].join(", ") : node["@type"];
+              types.push(t);
+            }
+          }
+        }
+      }
+    } catch {
+      // parse error - already handled by structured data checker
+    }
+  }
+  return { blockCount: jsonLdBlocks.length, types };
 }

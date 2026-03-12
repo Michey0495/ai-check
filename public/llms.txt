@@ -95,6 +95,9 @@
 - 比較ページ印刷/PDF対応（チェック結果と同様の印刷最適化スタイル）
 - チェック結果セクショングループ化（18セクションを4つの折りたたみ式カテゴリに整理: セキュリティ&ネットワーク、パフォーマンス&最適化、コンテンツ&SEO、テクノロジー&ソーシャル）
 - JSON-LD生成ツール強化（12スキーマタイプ対応: WebSite, Organization, FAQPage, Article, NewsArticle, LocalBusiness, Product, Event, Course, VideoObject, BreadcrumbList, HowTo。各タイプに固有フィールド入力UI）
+- JSON-LDブロック詳細分析（ページ内のJSON-LDブロック数とスキーマタイプ一覧を表示）
+- サードパーティドメイン分析（外部CSS/JSリソースの読み込み元ドメインを一覧表示、ドメイン数の可視化）
+- スクロールトップボタン（600px以上スクロール時に表示、長いチェック結果ページのナビゲーション改善）
 
 ## API
 - GET /api/check?url=URL: URLのGEOスコアチェック（GETメソッド対応、ブラウザから直接アクセス可）。CORS対応

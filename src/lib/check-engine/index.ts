@@ -23,4 +23,5 @@ export {
   analyzeCanonical,
   analyzeI18n,
   analyzeExternalResources,
+  analyzeJsonLdBlocks,
 } from "./analyzers";

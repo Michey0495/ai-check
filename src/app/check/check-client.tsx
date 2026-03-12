@@ -29,6 +29,7 @@ import {
 import {
   AiCrawlerStatusSection,
   ExternalResourcesSection,
+  JsonLdBlocksSection,
   AccessibilitySection,
   SecurityHeadersSection,
   SslCertificateSection,
@@ -516,10 +517,11 @@ export function CheckPageClient() {
           {/* Content & SEO */}
           <CollapsibleGroup
             title="コンテンツ & SEO"
-            sectionCount={[report.contentMetrics?.wordCount, report.headingTree?.length, report.duplicateMetaTags?.length, report.feedDetection, report.ogPreview || report.ogImage].filter(Boolean).length}
+            sectionCount={[report.contentMetrics?.wordCount, report.headingTree?.length, report.jsonLdBlocks?.blockCount, report.duplicateMetaTags?.length, report.feedDetection, report.ogPreview || report.ogImage].filter(Boolean).length}
           >
             <ContentMetricsSection report={report} />
             <HeadingTreeSection report={report} />
+            <JsonLdBlocksSection report={report} />
             <DuplicateMetaTagsSection report={report} />
             <OgPreviewSection report={report} />
             <FeedDetectionSection report={report} />
