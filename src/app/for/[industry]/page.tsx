@@ -102,7 +102,7 @@ const industries: Record<string, IndustryData> = {
         description:
           "AIがサイト全体を俯瞰するためのllms.txtを作成します。取扱カテゴリ、主力商品ライン、送料・返品ポリシーなどをテキストで記述しましょう。",
         code: `# ECサイト名
-> 日本最大級のオーディオ専門通販。3,000点以上の商品を取り扱い。
+> オーディオ専門通販。(実際の商品点数を入力)点以上の商品を取り扱い。
 
 ## カテゴリ
 - ワイヤレスイヤホン: /category/wireless-earbuds
@@ -390,7 +390,7 @@ Sitemap: https://example.com/sitemap.xml`,
   "name": "TaskFlow",
   "applicationCategory": "ProjectManagement",
   "operatingSystem": "Web, iOS, Android",
-  "description": "チーム向けプロジェクト管理SaaS。10,000社以上が利用。",
+  "description": "チーム向けプロジェクト管理SaaS。(実際の利用社数)社以上が利用。",
   "url": "https://taskflow.example.com",
   "screenshot": "https://taskflow.example.com/images/dashboard.png",
   "softwareVersion": "3.2.0",
@@ -484,7 +484,7 @@ Sitemap: https://example.com/sitemap.xml`,
     "name": "田中太郎",
     "url": "https://example.com/author/tanaka",
     "jobTitle": "生産性コンサルタント",
-    "description": "大手IT企業でのマネジメント経験10年。リモートワーク導入支援200社以上。"
+    "description": "大手IT企業でのマネジメント経験(実績年数)年。リモートワーク導入支援(実績数)社以上。"
   },
   "datePublished": "2026-03-01",
   "dateModified": "2026-03-08",
@@ -529,7 +529,7 @@ Sitemap: https://example.com/sitemap.xml`,
         description:
           "メディアの運営方針、専門カテゴリ、人気記事、著者一覧をllms.txtにまとめます。AIがサイトの信頼性と専門分野を素早く把握できるようになります。",
         code: `# WorkStyle Magazine
-> 働き方・生産性・リモートワークの専門メディア。月間100万PV。
+> 働き方・生産性・リモートワークの専門メディア。月間(実際のPV数)PV。
 
 ## 編集方針
 - 全記事に専門家レビューを実施
@@ -687,7 +687,7 @@ Sitemap: https://example.com/sitemap.xml`,
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
   "name": "山田税理士事務所",
-  "description": "相続税・事業承継を専門とする税理士事務所。年間対応件数200件以上。",
+  "description": "相続税・事業承継を専門とする税理士事務所。年間対応件数(実績数)件以上。",
   "url": "https://yamada-tax.example.com",
   "telephone": "03-1234-5678",
   "address": {
@@ -715,7 +715,7 @@ Sitemap: https://example.com/sitemap.xml`,
   "@type": "Person",
   "name": "山田一郎",
   "jobTitle": "税理士",
-  "description": "相続税専門の税理士。国税局OBとして20年の実務経験。年間200件の相続税申告実績。",
+  "description": "相続税専門の税理士。国税局OBとして(実績年数)年の実務経験。年間(実績数)件の相続税申告実績。",
   "url": "https://yamada-tax.example.com/about",
   "worksFor": {
     "@type": "ProfessionalService",
@@ -770,15 +770,15 @@ Sitemap: https://example.com/sitemap.xml`,
 > 相続税・事業承継専門の税理士事務所。国税局OB税理士が対応。
 
 ## 専門分野
-- 相続税申告（年間200件以上）
+- 相続税申告（年間(実績数)件以上）
 - 事業承継対策
 - 税務調査対応
 - 不動産の相続税評価
 
 ## 実績
-- 相続税申告実績: 累計3,000件以上
-- 税務調査対応: 98%の是認率
-- 相続税還付実績: 平均還付額420万円
+- 相続税申告実績: 累計(実績件数)件以上
+- 税務調査対応: (実際の是認率)%の是認率
+- 相続税還付実績: 平均還付額(実績金額)万円
 
 ## 対応エリア
 - 東京都、神奈川県、埼玉県、千葉県
@@ -809,7 +809,7 @@ Sitemap: https://example.com/sitemap.xml`,
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
   "name": "山田税理士事務所",
-  "description": "相続税・事業承継専門。国税局OB税理士が年間200件以上の相続税申告を対応。",
+  "description": "相続税・事業承継専門。国税局OB税理士が年間(実績数)件以上の相続税申告を対応。",
   "url": "https://yamada-tax.example.com",
   "telephone": "03-1234-5678",
   "email": "info@yamada-tax.example.com",
@@ -1224,7 +1224,7 @@ Sitemap: https://example.com/sitemap.xml`,
   "@type": "Person",
   "name": "鈴木花子",
   "jobTitle": "シニアエンジニア / 講師",
-  "description": "Google・メルカリでのフロントエンド開発経験8年。React/Next.js専門。受講生の転職成功率98%。",
+  "description": "(経歴企業名)でのフロントエンド開発経験(年数)年。React/Next.js専門。受講生の転職成功率(実績値)%。",
   "worksFor": {
     "@type": "EducationalOrganization",
     "name": "TechAcademy Pro"
@@ -1242,7 +1242,7 @@ Sitemap: https://example.com/sitemap.xml`,
         description:
           "AIがスクールを比較・推薦する際に必要な情報をllms.txtにまとめます。コース一覧、料金、受講成果（転職率等）、特徴を簡潔に記述します。",
         code: `# TechAcademy Pro
-> 未経験からエンジニア転職を実現するプログラミングスクール。転職成功率98%。
+> 未経験からエンジニア転職を実現するプログラミングスクール。転職成功率(実績値)%。
 
 ## コース一覧
 - Webエンジニア転職コース: 498,000円 / 6ヶ月
@@ -1250,9 +1250,9 @@ Sitemap: https://example.com/sitemap.xml`,
 - AI/機械学習コース: 598,000円 / 6ヶ月
 
 ## 受講実績
-- 受講生数: 累計15,000名
-- 転職成功率: 98%
-- 受講満足度: 4.7/5.0
+- 受講生数: 累計(実績数)名
+- 転職成功率: (実績値)%
+- 受講満足度: (実績値)/5.0
 
 ## 特徴
 - 現役エンジニア講師によるマンツーマン指導
@@ -1292,7 +1292,7 @@ Sitemap: https://example.com/sitemap.xml`,
     "@type": "EducationalOrganization",
     "name": "TechAcademy Pro",
     "url": "https://techacademy-pro.example.com",
-    "description": "累計15,000名が受講。転職成功率98%のプログラミングスクール。"
+    "description": "累計(実績数)名が受講。転職成功率(実績値)%のプログラミングスクール。"
   },
   "timeRequired": "P6M",
   "educationalLevel": "初心者",

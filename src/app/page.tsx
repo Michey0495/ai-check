@@ -369,47 +369,31 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Competitor Comparison */}
+      {/* AI Check Features */}
       <section className="py-16">
         <h2 className="mb-2 text-center text-2xl font-bold text-white">
-          GEO対策ツール 価格比較
+          AI Checkでできること
         </h2>
         <p className="mb-10 text-center text-white/50">
-          同じ機能が、なぜ200倍の価格差になるのか
+          GEO対策に必要な機能をすべて無料で提供
         </p>
-        <div className="mx-auto max-w-2xl overflow-hidden rounded-lg border border-white/10">
-          <table className="w-full text-sm" aria-label="GEO対策ツール価格比較">
-            <thead>
-              <tr className="border-b border-white/10 bg-white/5">
-                <th scope="col" className="px-4 py-3 text-left font-medium text-white/50">機能</th>
-                <th scope="col" className="px-4 py-3 text-center font-medium text-white/50">海外ツール（$1,200/月）</th>
-                <th scope="col" className="px-4 py-3 text-center font-medium text-white/50">国内ツール（980円/月）</th>
-                <th scope="col" className="px-4 py-3 text-center font-medium text-primary">AI Check</th>
-              </tr>
-            </thead>
-            <tbody className="text-white/60">
-              {[
-                { feature: "GEOスコア算出", a: true, b: true, us: true },
-                { feature: "llms.txt 生成", a: true, b: false, us: true },
-                { feature: "JSON-LD 生成", a: false, b: false, us: true },
-                { feature: "agent.json 生成", a: false, b: false, us: true },
-                { feature: "日本語対応", a: false, b: true, us: true },
-              ].map((row) => (
-                <tr key={row.feature} className="border-b border-white/5">
-                  <td className="px-4 py-3">{row.feature}</td>
-                  <td className={`px-4 py-3 text-center ${row.a ? "text-white/60" : "text-white/40"}`} aria-label={row.a ? "対応" : "未対応"}>{row.a ? "\u2713" : "\u2015"}</td>
-                  <td className={`px-4 py-3 text-center ${row.b ? "text-white/60" : "text-white/40"}`} aria-label={row.b ? "対応" : "未対応"}>{row.b ? "\u2713" : "\u2015"}</td>
-                  <td className="px-4 py-3 text-center text-primary" aria-label={row.us ? "対応" : "未対応"}>{row.us ? "\u2713" : "\u2015"}</td>
-                </tr>
-              ))}
-              <tr>
-                <td className="px-4 py-3 font-medium text-white">月額料金</td>
-                <td className="px-4 py-3 text-center text-white/40">$1,200+</td>
-                <td className="px-4 py-3 text-center text-white/40">980円</td>
-                <td className="px-4 py-3 text-center font-bold text-primary">無料</td>
-              </tr>
-            </tbody>
-          </table>
+        <div className="mx-auto grid max-w-3xl gap-4 sm:grid-cols-2">
+          {[
+            { feature: "7指標GEOスコア算出", desc: "AIクローラー、llms.txt、構造化データ等の7項目を自動チェック" },
+            { feature: "llms.txt / robots.txt 生成", desc: "AI向けサイト説明ファイルをフォーム入力で即生成" },
+            { feature: "JSON-LD 構造化データ生成", desc: "12スキーマタイプ対応。リッチリザルト獲得を支援" },
+            { feature: "agent.json (A2A) 生成", desc: "Google A2A Protocol準拠のAgent Card を自動生成" },
+            { feature: "複数サイト比較", desc: "最大5サイトのGEOスコアをレーダーチャートで比較" },
+            { feature: "完全無料・登録不要", desc: "全機能を制限なく利用可能。アカウント作成も不要" },
+          ].map((item) => (
+            <div
+              key={item.feature}
+              className="rounded-lg border border-white/10 bg-white/5 p-5 transition-all duration-200 hover:border-white/20"
+            >
+              <h3 className="mb-1 font-semibold text-white">{item.feature}</h3>
+              <p className="text-sm text-white/50">{item.desc}</p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -419,8 +403,8 @@ export default function Home() {
           あなたの競合は、もうGEO対策を始めている
         </h2>
         <p className="mx-auto mb-4 max-w-lg text-white/50">
-          多くのサイトのGEOスコアはグレードD以下。
-          今対策すれば、AI検索で先行者優位を確立できます。
+          AI検索への対応はまだ始まったばかり。
+          今対策すれば、先行者優位を確立できます。
         </p>
         <p className="mx-auto mb-8 max-w-lg text-sm text-primary/70">
           AI検索の市場シェアは毎月拡大中。対策が遅れるほど、競合との差は開く一方です。
