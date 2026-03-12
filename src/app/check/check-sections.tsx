@@ -11,6 +11,16 @@ import { getHistory, type HistoryEntry } from "./check-utils";
 const GRADE_COLORS = GRADE_TEXT_COLORS;
 const STROKE_COLORS = GRADE_HEX_COLORS;
 
+const INDICATOR_SHORT_NAMES = [
+  "クローラー",
+  "llms.txt",
+  "構造化",
+  "メタタグ",
+  "構造",
+  "SSR",
+  "サイトマップ",
+];
+
 export function CollapsibleGroup({
   title,
   sectionCount,
@@ -315,6 +325,7 @@ export function SectionNav({ report }: { report: CheckReport }) {
 
   const sections = useMemo<SectionDef[]>(() => {
     const s: SectionDef[] = [
+      { id: "sec-radar", label: "レーダーチャート", exists: true },
       { id: "sec-score-breakdown", label: "スコア内訳", exists: true },
       { id: "sec-grade-guide", label: "スコアの見方", exists: true },
       { id: "sec-quick-fix", label: "クイック改善", exists: report.results.some((r) => r.status !== "pass") },
@@ -555,6 +566,77 @@ export function AllFixCodes({ report }: { report: CheckReport }) {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+export function ScoreRadarChart({ report }: { report: CheckReport }) {
+  const cx = 140;
+  const cy = 140;
+  const r = 100;
+  const levels = 4;
+  const n = 7;
+
+  const angleStep = (2 * Math.PI) / n;
+  const startAngle = -Math.PI / 2;
+
+  function point(angle: number, radius: number) {
+    return { x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
+  }
+
+  const gridPaths = Array.from({ length: levels }, (_, i) => {
+    const lr = (r * (i + 1)) / levels;
+    const pts = Array.from({ length: n }, (__, j) => point(startAngle + j * angleStep, lr));
+    return pts.map((p, j) => `${j === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ") + " Z";
+  });
+
+  const axes = Array.from({ length: n }, (_, i) => point(startAngle + i * angleStep, r));
+
+  const gradeColor = STROKE_COLORS[report.grade] ?? "#f87171";
+
+  const dataPts = report.results.map((result, i) => {
+    const pct = result.maxScore > 0 ? result.score / result.maxScore : 0;
+    return point(startAngle + i * angleStep, r * pct);
+  });
+  const dataPath = dataPts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ") + " Z";
+
+  const labels = INDICATOR_SHORT_NAMES.map((name, i) => {
+    const p = point(startAngle + i * angleStep, r + 20);
+    let anchor: "middle" | "end" | "start" = "middle";
+    if (p.x < cx - 10) anchor = "end";
+    else if (p.x > cx + 10) anchor = "start";
+    return { ...p, name, anchor };
+  });
+
+  return (
+    <div id="sec-radar" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
+      <h2 className="mb-4 text-lg font-semibold text-white">指標レーダーチャート</h2>
+      <div className="flex justify-center">
+        <svg viewBox="0 0 280 280" className="w-full max-w-[280px]" role="img" aria-label="GEOスコア レーダーチャート">
+          {gridPaths.map((d, i) => (
+            <path key={i} d={d} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
+          ))}
+          {axes.map((p, i) => (
+            <line key={i} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+          ))}
+          <path d={dataPath} fill={gradeColor} fillOpacity="0.15" stroke={gradeColor} strokeWidth="2" />
+          {dataPts.map((p, i) => (
+            <circle key={i} cx={p.x} cy={p.y} r="3" fill={gradeColor} />
+          ))}
+          {labels.map((l, i) => (
+            <text key={i} x={l.x} y={l.y} textAnchor={l.anchor} fill="rgba(255,255,255,0.5)" fontSize="10" dominantBaseline="middle">
+              {l.name}
+            </text>
+          ))}
+        </svg>
+      </div>
+      <div className="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-white/40">
+        {report.results.map((result, i) => (
+          <span key={result.id}>
+            {INDICATOR_SHORT_NAMES[i]}: {result.score}/{result.maxScore}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }

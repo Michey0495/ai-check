@@ -25,6 +25,7 @@ import {
   ScoreSimulator,
   AllFixCodes,
   CollapsibleGroup,
+  ScoreRadarChart,
 } from "./check-sections";
 import {
   AiCrawlerStatusSection,
@@ -50,6 +51,24 @@ import {
   LinkQualitySection,
   RichResultsSection,
 } from "./check-report-sections";
+
+function downloadFile(filename: string, content: string, mimeType: string) {
+  const blob = new Blob([content], { type: `${mimeType};charset=utf-8` });
+  const blobUrl = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = blobUrl;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(blobUrl);
+}
+
+function getHostname(url: string): string {
+  try { return new URL(url).hostname; } catch { return "site"; }
+}
+
+function dateSuffix(): string {
+  return new Date().toISOString().split("T")[0];
+}
 
 export function CheckPageClient() {
   const searchParams = useSearchParams();
@@ -117,42 +136,17 @@ export function CheckPageClient() {
 
   const handleDownloadReport = useCallback(() => {
     if (!report) return;
-    const text = generateReportText(report);
-    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-    const blobUrl = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = blobUrl;
-    a.download = `ai-check-report-${new Date().toISOString().split("T")[0]}.txt`;
-    a.click();
-    URL.revokeObjectURL(blobUrl);
+    downloadFile(`ai-check-report-${dateSuffix()}.txt`, generateReportText(report), "text/plain");
   }, [report]);
 
   const handleDownloadJson = useCallback(() => {
     if (!report) return;
-    const json = JSON.stringify(report, null, 2);
-    const blob = new Blob([json], { type: "application/json;charset=utf-8" });
-    const blobUrl = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = blobUrl;
-    let hostname = "site";
-    try { hostname = new URL(report.url).hostname; } catch { /* use default */ }
-    a.download = `ai-check-${hostname}-${new Date().toISOString().split("T")[0]}.json`;
-    a.click();
-    URL.revokeObjectURL(blobUrl);
+    downloadFile(`ai-check-${getHostname(report.url)}-${dateSuffix()}.json`, JSON.stringify(report, null, 2), "application/json");
   }, [report]);
 
   const handleDownloadMarkdown = useCallback(() => {
     if (!report) return;
-    const md = generateMarkdownReport(report);
-    const blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
-    const blobUrl = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = blobUrl;
-    let hostname = "site";
-    try { hostname = new URL(report.url).hostname; } catch { /* use default */ }
-    a.download = `ai-check-${hostname}-${new Date().toISOString().split("T")[0]}.md`;
-    a.click();
-    URL.revokeObjectURL(blobUrl);
+    downloadFile(`ai-check-${getHostname(report.url)}-${dateSuffix()}.md`, generateMarkdownReport(report), "text/markdown");
   }, [report]);
 
   const handleDownloadZip = useCallback(() => {
@@ -169,9 +163,7 @@ export function CheckPageClient() {
     const blobUrl = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = blobUrl;
-    let hostname = "site";
-    try { hostname = new URL(report.url).hostname; } catch { /* use default */ }
-    a.download = `ai-check-${hostname}-${new Date().toISOString().split("T")[0]}.zip`;
+    a.download = `ai-check-${getHostname(report.url)}-${dateSuffix()}.zip`;
     a.click();
     URL.revokeObjectURL(blobUrl);
   }, [report]);
@@ -488,8 +480,9 @@ export function CheckPageClient() {
               <Button
                 variant="outline"
                 size="sm"
-                className="cursor-pointer border-primary/30 bg-primary/10 text-primary transition-all duration-200 hover:bg-primary/20"
+                className="cursor-pointer border-primary/30 bg-primary/10 text-primary transition-all duration-200 hover:bg-primary/20 disabled:cursor-not-allowed disabled:opacity-50"
                 onClick={handleRecheck}
+                disabled={loading}
               >
                 再チェック
               </Button>
@@ -505,6 +498,8 @@ export function CheckPageClient() {
           </div>
 
           <SectionNav report={report} />
+
+          <ScoreRadarChart report={report} />
 
           {/* Security & Network */}
           <CollapsibleGroup
