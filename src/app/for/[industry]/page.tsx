@@ -1350,11 +1350,20 @@ export async function generateMetadata({
       siteName: "AI Check",
       locale: "ja_JP",
       type: "article",
+      images: [
+        {
+          url: "https://ai-check.ezoai.jp/opengraph-image",
+          width: 1200,
+          height: 630,
+          alt: data.metaTitle,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: data.metaTitle,
       description: data.metaDescription,
+      images: ["https://ai-check.ezoai.jp/opengraph-image"],
     },
   };
 }
@@ -1404,7 +1413,7 @@ export default async function IndustryPage({
     description: data.metaDescription,
     url: `https://ai-check.ezoai.jp/for/${slug}`,
     datePublished: "2026-03-09",
-    dateModified: "2026-03-09",
+    dateModified: new Date().toISOString().split("T")[0],
     publisher: {
       "@type": "Organization",
       name: "AI Check",
