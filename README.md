@@ -506,3 +506,10 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
   - 生成ツールページ: llms-txt, robots-txt, json-ld, agent-json, badge（5ファイル）
   - 動的ルート: check/[indicator]（7指標別）, for/[industry]（6業界別）（2ファイル、計13パターン）
 - AI公開チャネル: agent.json v4.8.0に更新
+
+### Night 52 (完了)
+- 修正: トップページの未検証統計データを削除（「61% CTR低下」「93%ゼロクリック」「$17B市場規模」等の出典なき数値を事実ベースの定性的表現に置換）
+- 修正: 業界別ページ（/for/[industry]）ローカルビジネス例のレビューratingValueをプレースホルダーに変更（hardcoded "5" を削除）
+- UX: チェック結果のSNSシェア時にOGP画像にスコア・グレードを動的表示（X/LINE/URLコピー時のシェアURLにscore・gradeパラメータを付与、OGP画像でグレード色付き大文字表示）
+- SEO: チェックページのメタデータを動的生成に変更（score・grade付きURLアクセス時にタイトル・OGP画像を動的に設定）
+- AI公開チャネル: agent.json v4.9.0に更新

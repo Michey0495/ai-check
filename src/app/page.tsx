@@ -135,11 +135,8 @@ export default function Home() {
       />
       {/* Hero */}
       <section className="py-16 text-center">
-        <p className="mb-4 text-sm font-medium tracking-wide text-primary/80">
-          GEO市場 $1.48B → $17.02B（CAGR 45.5%）-- AI検索対策は今が最重要
-        </p>
         <p className="mb-4 inline-block rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-semibold tracking-wide text-primary">
-          Google AI Modeで検索CTRが61%低下 -- 93%がゼロクリック検索の時代に
+          Google AI Mode・ChatGPT・Perplexity -- AI検索がWeb検索の主流に
         </p>
         <h1 className="mb-4 text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl">
           あなたのサイトは
@@ -202,16 +199,16 @@ export default function Home() {
         </p>
         <div className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-3">
           <div className="rounded-lg border border-white/10 bg-white/5 p-6 text-center">
-            <p className="text-3xl font-bold text-primary">61%</p>
-            <p className="mt-2 text-sm text-white/50">Google AI Mode導入による従来の検索CTR低下率</p>
+            <p className="text-3xl font-bold text-primary">AI Mode</p>
+            <p className="mt-2 text-sm text-white/50">Google検索にAI回答が標準搭載 -- 従来のリンク型検索からの転換</p>
           </div>
           <div className="rounded-lg border border-white/10 bg-white/5 p-6 text-center">
-            <p className="text-3xl font-bold text-primary">93%</p>
-            <p className="mt-2 text-sm text-white/50">ゼロクリック検索の割合 -- ユーザーはAI回答で完結</p>
+            <p className="text-3xl font-bold text-primary">ゼロクリック</p>
+            <p className="mt-2 text-sm text-white/50">AI回答で検索が完結 -- サイトへの流入なしにユーザーの疑問が解決</p>
           </div>
           <div className="rounded-lg border border-white/10 bg-white/5 p-6 text-center">
-            <p className="text-3xl font-bold text-primary">$17B</p>
-            <p className="mt-2 text-sm text-white/50">2034年のGEO市場規模予測（CAGR 45.5%）</p>
+            <p className="text-3xl font-bold text-primary">急成長</p>
+            <p className="mt-2 text-sm text-white/50">ChatGPT・Perplexity・Gemini等 AI検索エンジンの利用が急拡大中</p>
           </div>
         </div>
       </section>

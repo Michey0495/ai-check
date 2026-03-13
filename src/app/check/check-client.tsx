@@ -169,37 +169,42 @@ export function CheckPageClient() {
     URL.revokeObjectURL(blobUrl);
   }, [report]);
 
+  const getShareUrl = useCallback((report: CheckReport) => {
+    const pct = Math.round((report.totalScore / report.maxScore) * 100);
+    return `https://ai-check.ezoai.jp/check?url=${encodeURIComponent(report.url)}&score=${pct}&grade=${report.grade}`;
+  }, []);
+
   const handleShareX = useCallback(() => {
     if (!report) return;
     const pct = Math.round((report.totalScore / report.maxScore) * 100);
     const text = `AI検索対応度チェック結果: ${report.grade}ランク (${pct}/100)\n${report.url}\n\n#GEO対策 #AI検索`;
-    const shareUrl = `https://ai-check.ezoai.jp/check?url=${encodeURIComponent(report.url)}`;
+    const shareUrl = getShareUrl(report);
     window.open(
       `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`,
       "_blank",
       "noopener,noreferrer"
     );
-  }, [report]);
+  }, [report, getShareUrl]);
 
   const handleShareLINE = useCallback(() => {
     if (!report) return;
     const pct = Math.round((report.totalScore / report.maxScore) * 100);
-    const shareUrl = `https://ai-check.ezoai.jp/check?url=${encodeURIComponent(report.url)}`;
+    const shareUrl = getShareUrl(report);
     const text = `AI検索対応度チェック結果: ${report.grade}ランク (${pct}/100) ${shareUrl}`;
     window.open(
       `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(text)}`,
       "_blank",
       "noopener,noreferrer"
     );
-  }, [report]);
+  }, [report, getShareUrl]);
 
   const handleCopyShareUrl = useCallback(() => {
     if (!report) return;
-    const shareUrl = `https://ai-check.ezoai.jp/check?url=${encodeURIComponent(report.url)}`;
+    const shareUrl = getShareUrl(report);
     navigator.clipboard.writeText(shareUrl).catch(() => {});
     setUrlCopied(true);
     setTimeout(() => setUrlCopied(false), 2000);
-  }, [report]);
+  }, [report, getShareUrl]);
 
   return (
     <div className="py-16">

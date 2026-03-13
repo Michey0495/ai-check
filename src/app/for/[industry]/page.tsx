@@ -1025,7 +1025,7 @@ Sitemap: https://example.com/sitemap.xml`,
       "datePublished": "2026-02-15",
       "reviewRating": {
         "@type": "Rating",
-        "ratingValue": "5"
+        "ratingValue": "（実際の評価値を入力）"
       },
       "reviewBody": "（実際のレビュー内容を入力）"
     }
