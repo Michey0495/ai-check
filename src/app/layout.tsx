@@ -142,8 +142,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    // TODO: Vercelの環境変数 GOOGLE_SITE_VERIFICATION に実際のコードを設定
-    google: process.env.GOOGLE_SITE_VERIFICATION || "",
+    google: process.env.GOOGLE_SITE_VERIFICATION,
   },
   alternates: {
     canonical: "https://ai-check.ezoai.jp",
