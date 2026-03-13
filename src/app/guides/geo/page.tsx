@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     url: "https://ai-check.ezoai.jp/guides/geo",
     images: [
       {
-        url: "https://ai-check.ezoai.jp/opengraph-image",
+        url: "https://ai-check.ezoai.jp/guides/geo/opengraph-image",
         width: 1200,
         height: 630,
         alt: "GEO対策ガイド - AI検索最適化の基本",
@@ -28,6 +28,8 @@ const howToJsonLd = {
   name: "GEO対策の方法 - AI検索最適化7ステップ",
   description:
     "ChatGPT、Perplexity、GeminiなどのAI検索エンジンに自サイトの情報を正しく参照してもらうための7ステップガイド。",
+  datePublished: "2026-03-06",
+  dateModified: "2026-03-14",
   step: [
     {
       "@type": "HowToStep",

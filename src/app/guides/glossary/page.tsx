@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     url: "https://ai-check.ezoai.jp/guides/glossary",
     images: [
       {
-        url: "https://ai-check.ezoai.jp/opengraph-image",
+        url: "https://ai-check.ezoai.jp/guides/glossary/opengraph-image",
         width: 1200,
         height: 630,
         alt: "GEO・AI検索 用語集",
@@ -140,6 +140,8 @@ const definitionListJsonLd = {
   name: "GEO・AI検索 用語集",
   description: "GEO対策・AI検索最適化に関する用語集",
   url: "https://ai-check.ezoai.jp/guides/glossary",
+  datePublished: "2026-03-06",
+  dateModified: "2026-03-14",
   hasDefinedTerm: glossaryTerms.map((t) => ({
     "@type": "DefinedTerm",
     name: t.term,

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
       "robots.txt、llms.txt、JSON-LDの3ファイルを設定するだけ。AI検索対応を最短で実現するクイックスタートガイド。",
     images: [
       {
-        url: "https://ai-check.ezoai.jp/opengraph-image",
+        url: "https://ai-check.ezoai.jp/guides/quick-start/opengraph-image",
         width: 1200,
         height: 630,
         alt: "5分で始めるGEO対策 - クイックスタートガイド",
@@ -92,6 +92,8 @@ const howToJsonLd = {
     "@type": "HowToTool",
     name: "AI Check - GEO対策ツール",
   },
+  datePublished: "2026-03-06",
+  dateModified: "2026-03-14",
 };
 
 const steps = [

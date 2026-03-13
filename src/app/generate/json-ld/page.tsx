@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     url: "https://ai-check.ezoai.jp/generate/json-ld",
     images: [
       {
-        url: "https://ai-check.ezoai.jp/opengraph-image",
+        url: "https://ai-check.ezoai.jp/generate/json-ld/opengraph-image",
         width: 1200,
         height: 630,
         alt: "JSON-LD 構造化データ生成ツール",

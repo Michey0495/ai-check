@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     url: "https://ai-check.ezoai.jp/generate/agent-json",
     images: [
       {
-        url: "https://ai-check.ezoai.jp/opengraph-image",
+        url: "https://ai-check.ezoai.jp/generate/agent-json/opengraph-image",
         width: 1200,
         height: 630,
         alt: "agent.json 生成ツール (A2A Agent Card)",

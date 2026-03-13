@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     url: "https://ai-check.ezoai.jp/guides/checklist",
     images: [
       {
-        url: "https://ai-check.ezoai.jp/opengraph-image",
+        url: "https://ai-check.ezoai.jp/guides/checklist/opengraph-image",
         width: 1200,
         height: 630,
         alt: "GEO対策チェックリスト - AI検索対応 完全ガイド",
@@ -82,6 +82,8 @@ const howToJsonLd = {
     },
   ],
   totalTime: "PT2H",
+  datePublished: "2026-03-06",
+  dateModified: "2026-03-14",
 };
 
 export default function ChecklistPage() {

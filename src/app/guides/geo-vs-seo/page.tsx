@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     url: "https://ai-check.ezoai.jp/guides/geo-vs-seo",
     images: [
       {
-        url: "https://ai-check.ezoai.jp/opengraph-image",
+        url: "https://ai-check.ezoai.jp/guides/geo-vs-seo/opengraph-image",
         width: 1200,
         height: 630,
         alt: "GEO対策 vs SEO対策 - 違いと両立する方法",

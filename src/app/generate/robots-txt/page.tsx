@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     url: "https://ai-check.ezoai.jp/generate/robots-txt",
     images: [
       {
-        url: "https://ai-check.ezoai.jp/opengraph-image",
+        url: "https://ai-check.ezoai.jp/generate/robots-txt/opengraph-image",
         width: 1200,
         height: 630,
         alt: "robots.txt 生成ツール（AIクローラー対応）",

@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     url: "https://ai-check.ezoai.jp/generate/badge",
     images: [
       {
-        url: "https://ai-check.ezoai.jp/opengraph-image",
+        url: "https://ai-check.ezoai.jp/generate/badge/opengraph-image",
         width: 1200,
         height: 630,
         alt: "GEOスコアバッジ生成 - サイトにスコアを埋め込む",

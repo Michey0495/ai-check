@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     url: "https://ai-check.ezoai.jp/check/compare",
     images: [
       {
-        url: "https://ai-check.ezoai.jp/opengraph-image",
+        url: "https://ai-check.ezoai.jp/check/compare/opengraph-image",
         width: 1200,
         height: 630,
         alt: "GEOスコア比較 - 複数サイトのAI検索対応度を比較",

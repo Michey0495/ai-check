@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     url: "https://ai-check.ezoai.jp/guides/industry",
     images: [
       {
-        url: "https://ai-check.ezoai.jp/opengraph-image",
+        url: "https://ai-check.ezoai.jp/guides/industry/opengraph-image",
         width: 1200,
         height: 630,
         alt: "業界別GEO対策ガイド - EC・SaaS・メディア・士業のAI検索最適化",
