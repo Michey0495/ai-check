@@ -138,7 +138,7 @@ export default function Home() {
         <p className="mb-4 text-sm font-medium tracking-wide text-primary/80">
           AI検索時代の新常識 -- あなたのサイトは対応済みですか?
         </p>
-        <p className="mb-4 inline-block rounded-full border border-red-500/30 bg-red-500/10 px-4 py-1.5 text-sm font-semibold tracking-wide text-red-400">
+        <p className="mb-4 inline-block rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-semibold tracking-wide text-primary">
           Google AI Mode 日本上陸 -- 従来SEOだけでは不十分な時代に
         </p>
         <h1 className="mb-4 text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl">
@@ -333,8 +333,8 @@ export default function Home() {
           AI検索であなたのサイトがどう扱われるかが変わる
         </p>
         <div className="grid gap-6 sm:grid-cols-2">
-          <div className="rounded-lg border border-red-500/20 bg-red-500/5 p-6">
-            <p className="mb-3 text-sm font-semibold text-red-400">GEO対策なし</p>
+          <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+            <p className="mb-3 text-sm font-semibold text-white/50">GEO対策なし</p>
             <ul className="space-y-2 text-sm text-white/50">
               <li>AI検索結果に表示されない</li>
               <li>競合サイトだけが引用される</li>
@@ -342,8 +342,8 @@ export default function Home() {
               <li>構造化データなしで情報が正確に伝わらない</li>
             </ul>
           </div>
-          <div className="rounded-lg border border-green-500/20 bg-green-500/5 p-6">
-            <p className="mb-3 text-sm font-semibold text-green-400">GEO対策あり</p>
+          <div className="rounded-lg border border-primary/20 bg-primary/5 p-6">
+            <p className="mb-3 text-sm font-semibold text-primary">GEO対策あり</p>
             <ul className="space-y-2 text-sm text-white/50">
               <li>ChatGPT・Perplexityに引用される可能性が向上</li>
               <li>AI経由の新規トラフィック獲得の機会が生まれる</li>

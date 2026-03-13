@@ -465,7 +465,7 @@ export function CheckPageClient() {
               <Button
                 variant="outline"
                 size="sm"
-                className="cursor-pointer border-[#06C755]/30 bg-[#06C755]/10 text-[#06C755] transition-all duration-200 hover:bg-[#06C755]/20"
+                className="cursor-pointer border-primary/30 bg-primary/10 text-primary transition-all duration-200 hover:bg-primary/20"
                 onClick={handleShareLINE}
               >
                 LINEで送る
