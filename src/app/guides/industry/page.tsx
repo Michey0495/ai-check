@@ -130,7 +130,7 @@ const industries = [
     "url": "https://example.com/author"
   },
   "datePublished": "2026-03-08",
-  "dateModified": "2026-03-08"
+  "dateModified": "2026-03-14"
 }`,
   },
   {

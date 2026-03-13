@@ -195,8 +195,8 @@ export async function GET() {
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "記事のタイトル",
-  "datePublished": "2025-01-15",
-  "dateModified": "2025-03-01",
+  "datePublished": "2026-03-07",
+  "dateModified": "2026-03-14",
   "author": {
     "@type": "Person",
     "name": "著者名"
@@ -623,8 +623,8 @@ export default async function IndicatorPage({
     headline: content.seoTitle,
     description: content.seoDescription,
     url: `${BASE_URL}/check/${indicator}`,
-    datePublished: "2025-03-01",
-    dateModified: "2025-03-09",
+    datePublished: "2026-03-07",
+    dateModified: "2026-03-14",
     author: {
       "@type": "Organization",
       name: "AI Check",

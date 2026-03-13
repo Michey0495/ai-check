@@ -74,18 +74,9 @@ export function checkRobotsTxt(robotsText: string | null, baseUrl: string): Chec
     };
   }
 
-  const hasGlobalBlock = /User-agent:\s*\*\s*\n(?:(?!User-agent:)[^\n]*\n)*?\s*Disallow:\s*\/\s*$/im.test(robotsText);
-  const aiCrawlers = ["GPTBot", "ChatGPT-User", "ClaudeBot", "anthropic-ai", "PerplexityBot", "Google-Extended", "Bytespider", "CCBot", "Applebot-Extended", "cohere-ai"];
-
-  const blocked = aiCrawlers.filter((c) => {
-    const escaped = c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const hasSpecificAllow = new RegExp(`User-agent:\\s*${escaped}\\s*\\n(?:(?!User-agent:)[^\\n]*\\n)*?\\s*Allow:\\s*/`, "i").test(robotsText);
-    if (hasSpecificAllow) return false;
-    const pattern = new RegExp(`User-agent:\\s*${escaped}\\s*\\n(?:(?!User-agent:)[^\\n]*\\n)*?\\s*Disallow:\\s*/`, "i");
-    if (pattern.test(robotsText)) return true;
-    return hasGlobalBlock;
-  });
-  const allowed = aiCrawlers.length - blocked.length;
+  const crawlerStatus = analyzeAiCrawlerStatus(robotsText);
+  const blocked = crawlerStatus.filter((c) => !c.allowed).map((c) => c.name);
+  const allowed = crawlerStatus.length - blocked.length;
 
   const hasSitemapDirective = /^Sitemap:\s*https?:\/\//im.test(robotsText);
   const sitemapNote = hasSitemapDirective
@@ -99,7 +90,7 @@ export function checkRobotsTxt(robotsText: string | null, baseUrl: string): Chec
       maxScore: 15,
       status: "pass",
       message: "AIクローラーアクセス: 全て許可",
-      details: `robots.txtが存在し、主要AIクローラー（${aiCrawlers.join(", ")}）がブロックされていません。${sitemapNote}`,
+      details: `robots.txtが存在し、主要AIクローラー（${AI_CRAWLERS.join(", ")}）がブロックされていません。${sitemapNote}`,
     };
   } else if (allowed > 0) {
     return {
@@ -521,6 +512,20 @@ export function checkSitemap(sitemapText: string | null, baseUrl: string): Check
     };
   }
 
+  // Detect sitemap index files
+  const isSitemapIndex = /<sitemapindex[\s>]/i.test(sitemapText);
+  if (isSitemapIndex) {
+    const sitemapCount = (sitemapText.match(/<sitemap>/gi) ?? []).length;
+    return {
+      id: "sitemap",
+      score: 10,
+      maxScore: 10,
+      status: "pass",
+      message: `サイトマップ: インデックス（${sitemapCount}件のサブサイトマップ）`,
+      details: `サイトマップインデックスが検出されました。${sitemapCount}件のサブサイトマップが登録されています。大規模サイトに適した構成です。`,
+    };
+  }
+
   const urlCount = (sitemapText.match(/<url>/gi) ?? []).length;
   if (urlCount > 0) {
     const lastmodCount = (sitemapText.match(/<lastmod>/gi) ?? []).length;
@@ -529,14 +534,17 @@ export function checkSitemap(sitemapText: string | null, baseUrl: string): Check
     const lastmodInfo = hasLastmod
       ? ` lastmod設定: ${lastmodCount}/${urlCount}件（${lastmodPct}%）。`
       : " lastmod（最終更新日）が未設定です。設定するとクローラーの効率が向上します。";
+    const urlLimitWarning = urlCount > 50000
+      ? " 警告: URLが50,000件を超えています。サイトマップの仕様では1ファイルあたり50,000件が上限です。サイトマップインデックスの利用を検討してください。"
+      : "";
 
     return {
       id: "sitemap",
-      score: 10,
+      score: urlCount > 50000 ? 8 : 10,
       maxScore: 10,
-      status: "pass",
+      status: urlCount > 50000 ? "warn" : "pass",
       message: `サイトマップ: ${urlCount}ページ検出`,
-      details: `sitemap.xmlが存在し、適切にページが登録されています。${lastmodInfo}`,
+      details: `sitemap.xmlが存在し、適切にページが登録されています。${lastmodInfo}${urlLimitWarning}`,
     };
   }
   return {

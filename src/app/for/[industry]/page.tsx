@@ -394,7 +394,7 @@ Sitemap: https://example.com/sitemap.xml`,
   "url": "https://taskflow.example.com",
   "screenshot": "https://taskflow.example.com/images/dashboard.png",
   "softwareVersion": "3.2.0",
-  "datePublished": "2024-01-15",
+  "datePublished": "2026-03-09",
   "offers": [
     {
       "@type": "Offer",
@@ -487,7 +487,7 @@ Sitemap: https://example.com/sitemap.xml`,
     "description": "大手IT企業でのマネジメント経験(実績年数)年。リモートワーク導入支援(実績数)社以上。"
   },
   "datePublished": "2026-03-01",
-  "dateModified": "2026-03-08",
+  "dateModified": "2026-03-14",
   "image": "https://example.com/images/remote-work.jpg",
   "publisher": {
     "@type": "Organization",
@@ -620,7 +620,7 @@ Sitemap: https://example.com/sitemap.xml`,
     }
   },
   "datePublished": "2026-03-01",
-  "dateModified": "2026-03-08",
+  "dateModified": "2026-03-14",
   "mainEntityOfPage": "https://example.com/articles/remote-productivity",
   "image": "https://example.com/images/remote-work-hero.jpg",
   "articleSection": "リモートワーク",
