@@ -498,3 +498,11 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - パフォーマンス: Google Analytics外部リソースにDNS prefetchヒント追加（初回接続高速化）
 - UX: 比較ページにMarkdownエクスポート機能追加（サマリー＋指標別比較テーブルをMarkdown形式でダウンロード）
 - AI公開チャネル: agent.json v4.7.0に更新（Markdownエクスポート・画像遅延読み込み・DNS prefetch情報追記）
+
+### Night 51 (完了)
+- SEO: 全ページにカスタムOGP画像追加（21ファイル）- 共有OGP画像ユーティリティ（lib/ogp-image.tsx）で統一デザイン
+  - 個別ページ: about, developers, tools, compare, history, privacy（6ファイル）
+  - ガイドページ: geo, geo-vs-seo, llms-txt, checklist, industry, quick-start, glossary（7ファイル）
+  - 生成ツールページ: llms-txt, robots-txt, json-ld, agent-json, badge（5ファイル）
+  - 動的ルート: check/[indicator]（7指標別）, for/[industry]（6業界別）（2ファイル、計13パターン）
+- AI公開チャネル: agent.json v4.8.0に更新
