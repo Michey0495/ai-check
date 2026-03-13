@@ -490,3 +490,11 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - 修正: チェック項目別ページのコード例内の古い日付を2026年に更新（5箇所: article:published_time, article:modified_time, sitemap lastmod）
 - 修正: 未検証の「多くの」表現を事実ベースの表現に置換（トップページFAQ、robots.txtチェック解説、EC業界ページの3箇所）
 - 改善: MCP Server APIルートの型安全性向上（`as any`を`Record<string, unknown>`に置換、eslint-disableコメント削減）
+
+### Night 50 (完了)
+- パフォーマンス: 外部画像（OG画像・favicon・バッジ）にlazy loading追加（loading="lazy", decoding="async"でLCP/CLS改善）
+- パフォーマンス: favicon画像にwidth/height属性追加（レイアウトシフト防止）
+- パフォーマンス: フォント読み込みにdisplay: "swap"を明示指定（FOIT防止）
+- パフォーマンス: Google Analytics外部リソースにDNS prefetchヒント追加（初回接続高速化）
+- UX: 比較ページにMarkdownエクスポート機能追加（サマリー＋指標別比較テーブルをMarkdown形式でダウンロード）
+- AI公開チャネル: agent.json v4.7.0に更新（Markdownエクスポート・画像遅延読み込み・DNS prefetch情報追記）

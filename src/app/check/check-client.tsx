@@ -246,6 +246,8 @@ export function CheckPageClient() {
                     src={report.ogImage}
                     alt={report.siteTitle || "Site preview"}
                     className="h-full w-full object-cover"
+                    loading="lazy"
+                    decoding="async"
                     onError={(e) => {
                       const img = e.target as HTMLImageElement;
                       const container = img.parentElement;
@@ -261,7 +263,11 @@ export function CheckPageClient() {
                     <img
                       src={report.favicon}
                       alt="Favicon"
+                      width={20}
+                      height={20}
                       className="h-5 w-5 rounded"
+                      loading="lazy"
+                      decoding="async"
                       onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                     />
                   </div>
@@ -713,6 +719,8 @@ export function CheckPageClient() {
                     src={`/api/badge?url=${encodeURIComponent(report.url)}&style=flat`}
                     alt="GEO Score Badge"
                     className="h-5"
+                    loading="lazy"
+                    decoding="async"
                     onError={() => setBadgeLoadError(true)}
                   />
                 )}

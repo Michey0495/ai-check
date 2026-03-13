@@ -800,6 +800,8 @@ export function OgPreviewSection({ report }: { report: CheckReport }) {
               src={report.ogImage.startsWith("http") ? report.ogImage : `${new URL(report.url).origin}${report.ogImage.startsWith("/") ? "" : "/"}${report.ogImage}`}
               alt="OG画像プレビュー"
               className="h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
               onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
             />
           </div>
