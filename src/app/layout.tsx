@@ -141,8 +141,15 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  verification: {
+    // TODO: Vercelの環境変数 GOOGLE_SITE_VERIFICATION に実際のコードを設定
+    google: process.env.GOOGLE_SITE_VERIFICATION || "",
+  },
   alternates: {
     canonical: "https://ai-check.ezoai.jp",
+    languages: {
+      ja: "https://ai-check.ezoai.jp",
+    },
   },
   metadataBase: new URL("https://ai-check.ezoai.jp"),
   manifest: "/manifest.json",

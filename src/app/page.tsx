@@ -136,10 +136,10 @@ export default function Home() {
       {/* Hero */}
       <section className="py-16 text-center">
         <p className="mb-4 text-sm font-medium tracking-wide text-primary/80">
-          AI検索時代の新常識 -- あなたのサイトは対応済みですか?
+          GEO市場 $1.48B → $17.02B（CAGR 45.5%）-- AI検索対策は今が最重要
         </p>
         <p className="mb-4 inline-block rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-semibold tracking-wide text-primary">
-          Google AI Mode 日本上陸 -- 従来SEOだけでは不十分な時代に
+          Google AI Modeで検索CTRが61%低下 -- 93%がゼロクリック検索の時代に
         </p>
         <h1 className="mb-4 text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl">
           あなたのサイトは
@@ -153,8 +153,12 @@ export default function Home() {
         <div className="mx-auto max-w-xl">
           <UrlCheckForm size="lg" />
         </div>
-        <div className="mt-4 flex items-center justify-center gap-4 text-sm text-white/40">
-          <span>無料 / 登録不要 / 30秒で結果表示</span>
+        <div className="mt-4 flex items-center justify-center gap-6 text-sm text-white/40">
+          <span>完全無料</span>
+          <span className="h-3 w-px bg-white/20" />
+          <span>登録不要</span>
+          <span className="h-3 w-px bg-white/20" />
+          <span>30秒で結果表示</span>
         </div>
         <div className="mx-auto mt-12 grid max-w-4xl grid-cols-2 gap-4 sm:grid-cols-4">
           {[
@@ -185,6 +189,30 @@ export default function Home() {
               </span>
             )
           )}
+        </div>
+      </section>
+
+      {/* Why Now - Urgency */}
+      <section className="py-16">
+        <h2 className="mb-2 text-center text-2xl font-bold text-white">
+          なぜ今GEO対策が急務なのか
+        </h2>
+        <p className="mb-10 text-center text-white/50">
+          AI検索の普及で、従来のSEOだけでは検索トラフィックを維持できなくなっています
+        </p>
+        <div className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-3">
+          <div className="rounded-lg border border-white/10 bg-white/5 p-6 text-center">
+            <p className="text-3xl font-bold text-primary">61%</p>
+            <p className="mt-2 text-sm text-white/50">Google AI Mode導入による従来の検索CTR低下率</p>
+          </div>
+          <div className="rounded-lg border border-white/10 bg-white/5 p-6 text-center">
+            <p className="text-3xl font-bold text-primary">93%</p>
+            <p className="mt-2 text-sm text-white/50">ゼロクリック検索の割合 -- ユーザーはAI回答で完結</p>
+          </div>
+          <div className="rounded-lg border border-white/10 bg-white/5 p-6 text-center">
+            <p className="text-3xl font-bold text-primary">$17B</p>
+            <p className="mt-2 text-sm text-white/50">2034年のGEO市場規模予測（CAGR 45.5%）</p>
+          </div>
         </div>
       </section>
 
@@ -385,17 +413,17 @@ export default function Home() {
       {/* Bottom CTA */}
       <section className="py-16 text-center">
         <h2 className="mb-4 text-2xl font-bold text-white">
-          今すぐGEOスコアをチェック
+          あなたのサイトのGEOスコアは?
         </h2>
         <p className="mx-auto mb-8 max-w-lg text-white/50">
-          URLを入力するだけで、AI検索対応の現状と改善ポイントが分かります。
-          無料・登録不要で、修正コードまで自動生成。
+          AI検索で競合だけが表示される前に、今すぐ対応状況を確認。
+          URLを入れるだけ。30秒で7指標のスコアと修正コードを取得できます。
         </p>
         <div className="mx-auto max-w-xl">
           <UrlCheckForm size="lg" />
         </div>
         <p className="mt-4 text-sm text-white/40">
-          無料・登録不要 / 30秒でGEOスコアを表示
+          完全無料・登録不要 / ChatGPT・Perplexity・Gemini・Claude対応
         </p>
       </section>
     </div>
