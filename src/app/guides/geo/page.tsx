@@ -99,7 +99,7 @@ export default function GeoGuidePage() {
               GEOはChatGPT、Perplexity、Geminiなどの生成AI検索エンジンへの最適化です。
             </p>
             <p>
-              AI検索の利用は急速に拡大しており、従来の検索エンジンに加えてAI経由のトラフィックが無視できない規模になっています。
+              ChatGPT、Perplexity、Geminiなど、AI検索エンジンを利用するユーザーが増えており、従来の検索エンジンに加えてAI経由のトラフィックも重要になっています。
               しかし多くのWebサイトがAI検索への対応を行っていません。
             </p>
           </div>

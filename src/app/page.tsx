@@ -11,7 +11,7 @@ const faqData = [
   },
   {
     q: "なぜGEO対策が必要なのですか?",
-    a: "AI検索（ChatGPT、Perplexity、Gemini等）の利用は急速に拡大しており、従来の検索エンジンに加えてAI経由のトラフィックが増加しています。しかし多くのWebサイトがAI検索への対応を行っていません。GEO対策をしないと、AI検索結果に表示されず、トラフィック機会を逃すことになります。",
+    a: "ChatGPT、Perplexity、Geminiなど、AI検索エンジン経由でWebサイトを探すユーザーが増えています。しかし多くのWebサイトがAI検索への対応を行っていません。GEO対策をしないと、AI検索結果に表示されず、トラフィック機会を逃すことになります。",
   },
   {
     q: "チェックは無料ですか?",
@@ -117,18 +117,6 @@ const howToJsonLd = {
   },
 };
 
-const breadcrumbJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    {
-      "@type": "ListItem",
-      position: 1,
-      name: "ホーム",
-      item: "https://ai-check.ezoai.jp",
-    },
-  ],
-};
 
 export default function Home() {
   return (
@@ -145,14 +133,10 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-      />
       {/* Hero */}
       <section className="py-16 text-center">
         <p className="mb-4 text-sm font-medium tracking-wide text-primary/80">
-          AI検索の利用が急拡大 -- 多くのサイトが未対応のまま
+          AI検索時代の新常識 -- あなたのサイトは対応済みですか?
         </p>
         <p className="mb-4 inline-block rounded-full border border-red-500/30 bg-red-500/10 px-4 py-1.5 text-sm font-semibold tracking-wide text-red-400">
           Google AI Mode 日本上陸 -- 従来SEOだけでは不十分な時代に
@@ -192,17 +176,15 @@ export default function Home() {
 
       {/* Supported AI Engines */}
       <section className="py-8">
-        <div className="mx-auto flex max-w-2xl flex-wrap items-center justify-center gap-6 rounded-lg border border-white/5 bg-white/[0.02] px-6 py-4">
-          <p className="text-sm text-white/40">
-            対応AI検索エンジン:
-            {["ChatGPT", "Perplexity", "Gemini", "Claude", "Copilot"].map(
-              (engine, i) => (
-                <span key={engine} className="ml-1 text-white/60">
-                  {engine}{i < 4 ? "," : ""}
-                </span>
-              )
-            )}
-          </p>
+        <div className="mx-auto flex max-w-2xl flex-wrap items-center justify-center gap-3 rounded-lg border border-white/5 bg-white/[0.02] px-6 py-4">
+          <span className="text-sm text-white/40">対応AI検索:</span>
+          {["ChatGPT", "Perplexity", "Gemini", "Claude", "Copilot"].map(
+            (engine) => (
+              <span key={engine} className="rounded-full border border-white/10 bg-white/5 px-3 py-0.5 text-xs text-white/60">
+                {engine}
+              </span>
+            )
+          )}
         </div>
       </section>
 
@@ -263,8 +245,11 @@ export default function Home() {
               title: "コードを生成",
               desc: "llms.txt, robots.txt, JSON-LD等の修正コードをワンクリックで自動生成・ダウンロード。",
             },
-          ].map((item) => (
-            <div key={item.step} className="text-center">
+          ].map((item, i) => (
+            <div key={item.step} className="relative text-center">
+              {i < 2 && (
+                <div className="absolute right-0 top-6 hidden h-px w-8 translate-x-full bg-white/10 sm:block" />
+              )}
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 text-xl font-bold text-primary">
                 {item.step}
               </div>
@@ -285,18 +270,18 @@ export default function Home() {
           こんな方に必要です
         </h2>
         <p className="mb-10 text-center text-white/50">
-          AI検索対策が遅れると、競合にトラフィックを奪われます
+          AI検索対応で新しいトラフィック獲得チャネルを開拓
         </p>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { role: "Web制作会社", pain: "クライアントから「AI検索でうちのサイトが出ない」と相談されたら?", industry: "ec" },
-            { role: "ECサイト運営者", pain: "ChatGPTに商品を聞いたとき、競合だけが表示されていたら?", industry: "ec" },
-            { role: "SaaSプロダクト", pain: "Perplexityで「おすすめツール」を聞かれたとき、あなたのサービスは候補に入る?", industry: "saas" },
-            { role: "メディア・ブログ", pain: "AI検索が記事を引用してくれない = PV機会の損失", industry: "media" },
+            { role: "ECサイト運営者", pain: "ChatGPTに商品を聞いたとき、競合だけが表示されていたら?", href: "/for/ec" },
+            { role: "SaaSプロダクト", pain: "Perplexityで「おすすめツール」を聞かれたとき、あなたのサービスは候補に入る?", href: "/for/saas" },
+            { role: "メディア・ブログ", pain: "AI検索が記事を引用してくれない = PV機会の損失", href: "/for/media" },
+            { role: "士業・専門家", pain: "「おすすめの税理士」とAIに聞かれたとき、あなたの事務所は出てくる?", href: "/for/professional" },
           ].map((item) => (
             <Link
               key={item.role}
-              href={`/guides/industry#${item.industry}`}
+              href={item.href}
               className="cursor-pointer rounded-lg border border-white/10 bg-white/5 p-6 transition-all duration-200 hover:border-white/20 hover:bg-white/[0.08]"
             >
               <h3 className="mb-2 font-semibold text-primary">{item.role}</h3>
@@ -360,8 +345,8 @@ export default function Home() {
           <div className="rounded-lg border border-green-500/20 bg-green-500/5 p-6">
             <p className="mb-3 text-sm font-semibold text-green-400">GEO対策あり</p>
             <ul className="space-y-2 text-sm text-white/50">
-              <li>ChatGPT・Perplexityで引用される</li>
-              <li>AI経由の新規トラフィックを獲得</li>
+              <li>ChatGPT・Perplexityに引用される可能性が向上</li>
+              <li>AI経由の新規トラフィック獲得の機会が生まれる</li>
               <li>llms.txtでAIに正確な情報を提供</li>
               <li>JSON-LDでリッチな検索表示を実現</li>
             </ul>
@@ -400,14 +385,11 @@ export default function Home() {
       {/* Bottom CTA */}
       <section className="py-16 text-center">
         <h2 className="mb-4 text-2xl font-bold text-white">
-          あなたの競合は、もうGEO対策を始めている
+          今すぐGEOスコアをチェック
         </h2>
-        <p className="mx-auto mb-4 max-w-lg text-white/50">
-          AI検索への対応はまだ始まったばかり。
-          今対策すれば、先行者優位を確立できます。
-        </p>
-        <p className="mx-auto mb-8 max-w-lg text-sm text-primary/70">
-          AI検索の市場シェアは毎月拡大中。対策が遅れるほど、競合との差は開く一方です。
+        <p className="mx-auto mb-8 max-w-lg text-white/50">
+          URLを入力するだけで、AI検索対応の現状と改善ポイントが分かります。
+          無料・登録不要で、修正コードまで自動生成。
         </p>
         <div className="mx-auto max-w-xl">
           <UrlCheckForm size="lg" />

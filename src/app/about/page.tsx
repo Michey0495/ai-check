@@ -56,8 +56,8 @@ export default function AboutPage() {
           <h2 className="mb-4 text-2xl font-bold text-white">なぜ必要か</h2>
           <div className="space-y-4 text-sm leading-relaxed text-white/60">
             <p>
-              ChatGPT、Perplexity、Geminiなどの生成AI検索エンジンが急速に普及し、
-              AI経由のWeb検索トラフィックは拡大し続けています。
+              ChatGPT、Perplexity、Geminiなどの生成AI検索エンジンが登場し、
+              AI経由でWebサイトを探すユーザーが増えています。
               しかし多くのWebサイトがAI検索への対応を行っていません。
             </p>
             <p>

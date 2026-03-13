@@ -167,6 +167,7 @@ export default function RootLayout({
                 url: "https://ai-check.ezoai.jp",
                 description:
                   "AI検索対応度チェッカー & GEO対策ツール。URLを入力するだけでAI検索最適化を実現。",
+                areaServed: "JP",
                 sameAs: ["https://github.com/Michey0495/web-url-a"],
               },
               {

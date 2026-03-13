@@ -185,8 +185,8 @@ export default function GeoVsSeoPage() {
           </h2>
           <div className="space-y-4 text-sm leading-relaxed text-white/60">
             <p>
-              AI検索（ChatGPT、Perplexity、Gemini等）の利用は急速に拡大しており、
-              今後もAI経由の検索トラフィックは増加し続けると予測されています。
+              AI検索（ChatGPT、Perplexity、Gemini等）を利用するユーザーが増えており、
+              AI経由の検索トラフィックは今後も重要性を増すと考えられています。
             </p>
             <p>
               一方、SEOは依然として検索トラフィックの主要なソースです。
