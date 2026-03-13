@@ -110,7 +110,7 @@ export default function GeoGuidePage() {
             </p>
             <p>
               ChatGPT、Perplexity、Geminiなど、AI検索エンジンを利用するユーザーが増えており、従来の検索エンジンに加えてAI経由のトラフィックも重要になっています。
-              しかし多くのWebサイトがAI検索への対応を行っていません。
+              しかしAI検索への対応を行っていないWebサイトはまだ少なくありません。
             </p>
           </div>
         </section>
@@ -124,7 +124,7 @@ export default function GeoGuidePage() {
               {
                 title: "1. AIクローラーのアクセスを許可する",
                 content:
-                  "robots.txtでGPTBot, ClaudeBot, PerplexityBot等のAIクローラーを明示的に許可します。多くのサイトがデフォルトでブロックしていますが、AI検索に表示されるためにはアクセスを許可する必要があります。",
+                  "robots.txtでGPTBot, ClaudeBot, PerplexityBot等のAIクローラーを明示的に許可します。デフォルトでブロックしているサイトもありますが、AI検索に表示されるためにはアクセスを許可する必要があります。",
                 link: "/generate/robots-txt",
                 linkText: "robots.txt生成ツール",
               },

@@ -117,6 +117,17 @@ export function generateReportText(report: CheckReport): string {
     lines.push(`許可済み: ${allowed.map((c) => c.name).join(", ")}`);
   }
 
+  if (report.crawlDelay) {
+    lines.push("");
+    lines.push("--- Crawl-delay ---");
+    if (report.crawlDelay.hasGlobal) {
+      lines.push(`全体: ${report.crawlDelay.globalValue}秒`);
+    }
+    for (const d of report.crawlDelay.aiCrawlerDelays) {
+      lines.push(`${d.name}: ${d.value}秒`);
+    }
+  }
+
   if (report.accessibility) {
     const a = report.accessibility;
     lines.push("");

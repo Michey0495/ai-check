@@ -261,6 +261,11 @@ export type CheckReport = {
     type: string;
     eligible: string;
   }[];
+  crawlDelay?: {
+    hasGlobal: boolean;
+    globalValue?: number;
+    aiCrawlerDelays: { name: string; value: number }[];
+  };
 };
 
 export function getGrade(score: number, maxScore: number): CheckReport["grade"] {

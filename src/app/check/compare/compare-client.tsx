@@ -463,6 +463,88 @@ export function CompareClient() {
             </div>
           )}
 
+          {/* Summary insights */}
+          {reports.length >= 2 && (() => {
+            const rpts = reports.map((r) => r.report!);
+            const hostnames = rpts.map((r) => { try { return new URL(r.url).hostname; } catch { return r.url; } });
+            const totalPcts = rpts.map((r) => r.maxScore > 0 ? Math.round((r.totalScore / r.maxScore) * 100) : 0);
+            const bestIdx = totalPcts.indexOf(Math.max(...totalPcts));
+            const worstIdx = totalPcts.indexOf(Math.min(...totalPcts));
+
+            // Per-indicator winners
+            const indicatorWinners = rpts[0].results.map((_, idx) => {
+              const scores = rpts.map((r) => r.results[idx]?.score ?? 0);
+              const maxScore = Math.max(...scores);
+              const winnerIdx = scores.indexOf(maxScore);
+              const allSame = scores.every((s) => s === maxScore);
+              return { indicatorName: rpts[0].results[idx].message.split(":")[0], winnerIdx, allSame, maxScore };
+            });
+
+            // Per-site strengths/weaknesses
+            const siteInsights = rpts.map((r, siteIdx) => {
+              const strengths = indicatorWinners.filter((w) => !w.allSame && w.winnerIdx === siteIdx).map((w) => w.indicatorName);
+              const weaknesses = r.results
+                .filter((res) => res.status === "fail")
+                .map((res) => res.message.split(":")[0]);
+              return { strengths, weaknesses };
+            });
+
+            return (
+              <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+                <h2 className="mb-4 text-xl font-bold text-white">比較サマリー</h2>
+                <div className="mb-4 space-y-2 text-sm text-white/60">
+                  <p>
+                    総合トップ: <span className="font-semibold text-primary">{hostnames[bestIdx]}</span> ({totalPcts[bestIdx]}pt)
+                    {bestIdx !== worstIdx && (
+                      <> / 最もスコアが低い: <span className="text-white/40">{hostnames[worstIdx]}</span> ({totalPcts[worstIdx]}pt)</>
+                    )}
+                  </p>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {rpts.map((_, i) => (
+                    <div key={i} className="rounded-lg border border-white/5 bg-white/[0.02] p-4">
+                      <p className="mb-2 truncate text-sm font-medium text-white" title={rpts[i].url}>{hostnames[i]}</p>
+                      {siteInsights[i].strengths.length > 0 && (
+                        <div className="mb-2">
+                          <p className="text-xs text-green-400/70">強み:</p>
+                          <div className="mt-1 flex flex-wrap gap-1">
+                            {siteInsights[i].strengths.map((s) => (
+                              <span key={s} className="rounded-full bg-green-500/10 px-2 py-0.5 text-xs text-green-400">{s}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {siteInsights[i].weaknesses.length > 0 && (
+                        <div>
+                          <p className="text-xs text-red-400/70">未対応:</p>
+                          <div className="mt-1 flex flex-wrap gap-1">
+                            {siteInsights[i].weaknesses.map((w) => (
+                              <span key={w} className="rounded-full bg-red-500/10 px-2 py-0.5 text-xs text-red-400">{w}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {siteInsights[i].strengths.length === 0 && siteInsights[i].weaknesses.length === 0 && (
+                        <p className="text-xs text-white/30">特筆すべき差異なし</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                {/* Indicator winners */}
+                <div className="mt-4 border-t border-white/5 pt-4">
+                  <p className="mb-2 text-xs text-white/40">指標別トップ:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {indicatorWinners.map((w) => (
+                      <span key={w.indicatorName} className="rounded bg-white/5 px-2 py-1 text-xs text-white/50">
+                        {w.indicatorName}: {w.allSame ? "同点" : <span className="text-primary">{hostnames[w.winnerIdx]}</span>}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
           {/* Detail comparison */}
           {reports.length >= 2 && (
             <div className="space-y-4">

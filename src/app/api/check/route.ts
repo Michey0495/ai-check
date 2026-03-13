@@ -38,6 +38,7 @@ import {
   analyzeCanonical,
   analyzeI18n,
   analyzeAiCrawlerStatus,
+  analyzeCrawlDelay,
   analyzeExternalResources,
   analyzeJsonLdBlocks,
   analyzeAiContentPreview,
@@ -227,6 +228,7 @@ export async function POST(request: NextRequest) {
     const duplicateMetaTags = analyzeDuplicateMetaTags(html);
     const { canonicalUrl, canonicalMismatch } = analyzeCanonical(html, url);
     const aiCrawlerStatus = analyzeAiCrawlerStatus(robotsRes.ok ? robotsRes.text : null);
+    const crawlDelay = analyzeCrawlDelay(robotsRes.ok ? robotsRes.text : null);
     const externalResourceCount = analyzeExternalResources(html, baseUrl);
     const jsonLdBlocks = analyzeJsonLdBlocks(html);
     const aiContentPreview = analyzeAiContentPreview(html);
@@ -295,6 +297,7 @@ export async function POST(request: NextRequest) {
       aiContentPreview: aiContentPreview.excerpt.length > 0 ? aiContentPreview : undefined,
       linkQuality,
       richResultsEligibility,
+      crawlDelay,
     };
 
     return NextResponse.json(report, {

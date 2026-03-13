@@ -115,6 +115,36 @@ export function checkRobotsTxt(robotsText: string | null, baseUrl: string): Chec
   }
 }
 
+export function analyzeCrawlDelay(robotsText: string | null): { hasGlobal: boolean; globalValue?: number; aiCrawlerDelays: { name: string; value: number }[] } | undefined {
+  if (!robotsText) return undefined;
+  const aiCrawlerDelays: { name: string; value: number }[] = [];
+
+  for (const crawler of AI_CRAWLERS) {
+    const escaped = crawler.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const blockMatch = robotsText.match(new RegExp(`User-agent:\\s*${escaped}\\s*\\n((?:(?!User-agent:)[^\\n]*\\n?)*)`, "i"));
+    if (blockMatch) {
+      const delayMatch = blockMatch[1].match(/Crawl-delay:\s*(\d+)/i);
+      if (delayMatch) {
+        aiCrawlerDelays.push({ name: crawler, value: parseInt(delayMatch[1], 10) });
+      }
+    }
+  }
+
+  const globalBlockMatch = robotsText.match(/User-agent:\s*\*\s*\n((?:(?!User-agent:)[^\n]*\n?)*)/i);
+  let hasGlobal = false;
+  let globalValue: number | undefined;
+  if (globalBlockMatch) {
+    const delayMatch = globalBlockMatch[1].match(/Crawl-delay:\s*(\d+)/i);
+    if (delayMatch) {
+      hasGlobal = true;
+      globalValue = parseInt(delayMatch[1], 10);
+    }
+  }
+
+  if (!hasGlobal && aiCrawlerDelays.length === 0) return undefined;
+  return { hasGlobal, globalValue, aiCrawlerDelays };
+}
+
 export function checkLlmsTxt(llmsText: string | null, hostname: string, baseUrl: string): CheckResult {
   if (llmsText === null) {
     return {

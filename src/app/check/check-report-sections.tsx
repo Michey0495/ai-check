@@ -56,6 +56,26 @@ export function AiCrawlerStatusSection({ report }: { report: CheckReport }) {
           ブロックされているクローラーがあります。robots.txtで個別にAllowを設定するか、グローバルブロック（Disallow: /）を解除してください。
         </p>
       )}
+      {report.crawlDelay && (
+        <div className="mt-4 border-t border-white/5 pt-3">
+          <p className="mb-2 text-sm font-medium text-white/70">Crawl-delay 設定</p>
+          <div className="flex flex-wrap gap-2">
+            {report.crawlDelay.hasGlobal && (
+              <span className="rounded-full bg-yellow-500/10 px-3 py-1 text-xs text-yellow-400">
+                全体: {report.crawlDelay.globalValue}秒
+              </span>
+            )}
+            {report.crawlDelay.aiCrawlerDelays.map((d) => (
+              <span key={d.name} className="rounded-full bg-yellow-500/10 px-3 py-1 text-xs text-yellow-400">
+                {d.name}: {d.value}秒
+              </span>
+            ))}
+          </div>
+          <p className="mt-2 text-xs text-white/40">
+            Crawl-delayはクローラーのアクセス間隔を制限します。値が大きいとAIクローラーのインデックス更新が遅くなる可能性があります。
+          </p>
+        </div>
+      )}
     </div>
   );
 }

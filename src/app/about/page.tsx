@@ -58,7 +58,7 @@ export default function AboutPage() {
             <p>
               ChatGPT、Perplexity、Geminiなどの生成AI検索エンジンが登場し、
               AI経由でWebサイトを探すユーザーが増えています。
-              しかし多くのWebサイトがAI検索への対応を行っていません。
+              しかしAI検索への対応を行っていないWebサイトはまだ少なくありません。
             </p>
             <p>
               AI Checkは「何が足りないのか」「どう改善すればいいのか」を

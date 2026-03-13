@@ -101,6 +101,8 @@
 - AIコンテンツプレビュー（AIクローラーがインデックスする主要テキストコンテンツの抽出・表示。nav/header/footer/scriptを除外した読み取り可能テキスト、主要トピック抽出、読了時間推定）
 - リンク品質分析（ページ内リンクのfollow/nofollow/sponsored/ugc分類、follow率の可視化。AIクローラーが辿れるリンクの割合を表示）
 - リッチリザルト適格性（検出されたJSON-LDスキーマタイプからGoogle検索のリッチリザルト対応状況を判定。Product、Article、FAQPage、HowTo、Recipe、Event等17タイプ対応）
+- robots.txt Crawl-delay検出（グローバルおよびAIクローラー個別のCrawl-delay設定を検出・表示。クローラーのアクセス間隔制限がインデックス更新に与える影響を可視化）
+- 比較ページ サマリーインサイト（総合トップサイト表示、サイト別の強み/未対応項目をタグ表示、指標別トップの自動分析）
 
 ## API
 - GET /api/check?url=URL: URLのGEOスコアチェック（GETメソッド対応、ブラウザから直接アクセス可）。CORS対応

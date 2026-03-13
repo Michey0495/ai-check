@@ -208,7 +208,7 @@ export default function Home() {
           </div>
           <div className="rounded-lg border border-white/10 bg-white/5 p-6 text-center">
             <p className="text-3xl font-bold text-primary">急成長</p>
-            <p className="mt-2 text-sm text-white/50">ChatGPT・Perplexity・Gemini等 AI検索エンジンの利用が急拡大中</p>
+            <p className="mt-2 text-sm text-white/50">ChatGPT・Perplexity・Gemini等 AI検索エンジンの利用者が増加</p>
           </div>
         </div>
       </section>
