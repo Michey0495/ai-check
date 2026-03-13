@@ -1,11 +1,11 @@
 # QA Report - AI Check (web-url-a)
 
-**Date**: 2026-03-13 05:51 (Night 44 QA)
+**Date**: 2026-03-14 01:32 (Night 45 QA)
 **Tester**: Claude Code (automated QA)
 
 ## Checklist
 
-- [x] `npm run build` 成功 (44ページ, Turbopack 7.1s)
+- [x] `npm run build` 成功
 - [x] `npm run lint` エラーなし
 - [x] レスポンシブ対応（モバイル・デスクトップ） - Tailwind breakpoints (sm/md/lg) 全ページ
 - [x] favicon, OGP設定 - icon.tsx, apple-icon.tsx, opengraph-image.tsx, manifest.json
@@ -13,11 +13,15 @@
 - [x] ローディング状態の表示 - loading.tsx (spinner + aria-label), check-client.tsx (7項目アニメーション)
 - [x] エラー状態の表示 - error.tsx + global-error.tsx + API各エンドポイント
 
-## 修正した問題 (1件)
+## 修正した問題 (2件)
 
-### 1. 重複robots.txtの削除
-- `public/robots.txt` を削除。`src/app/robots.ts` がNext.jsで優先されるため静的ファイルは不要
-- robots.ts には16種類のAIクローラー許可設定が正しく含まれている
+### 1. Badge API style パラメータ未検証 (High)
+- `src/app/api/badge/route.ts`: style パラメータを "flat"/"card" のホワイトリストで検証するよう修正
+- 任意の値がSVG生成に渡される可能性があった
+
+### 2. Feedback 文字数制限の不一致 (Low)
+- `src/app/api/feedback/route.ts`: サーバー側上限を5000→2000に変更
+- クライアント側 (feedback-widget.tsx) の maxLength=2000 と統一
 
 ## 確認済み項目
 

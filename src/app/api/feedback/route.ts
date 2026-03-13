@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Message required" }, { status: 400 });
   }
 
-  if (message.length > 5_000) {
+  if (message.length > 2_000) {
     return NextResponse.json({ error: "Message too long" }, { status: 400 });
   }
 

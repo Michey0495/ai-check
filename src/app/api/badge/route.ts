@@ -72,7 +72,8 @@ function generateBadgeSvg(grade: string, score: number, style: string): string {
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const url = searchParams.get("url");
-  const style = searchParams.get("style") ?? "flat";
+  const rawStyle = searchParams.get("style") ?? "flat";
+  const style = ["flat", "card"].includes(rawStyle) ? rawStyle : "flat";
 
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
   if (!checkBadgeRate(ip)) {
