@@ -60,7 +60,7 @@ const industries: Record<string, IndustryData> = {
       {
         title: "AIクローラーをブロックしている",
         description:
-          "多くのECプラットフォームのデフォルトrobots.txtがAIクローラーをブロックしています。GPTBot、ClaudeBot、PerplexityBotへのアクセス許可を明示的に設定する必要があります。",
+          "ECプラットフォームのデフォルトrobots.txtがAIクローラーをブロックしていることがあります。GPTBot、ClaudeBot、PerplexityBotへのアクセス許可を明示的に設定する必要があります。",
       },
       {
         title: "商品説明が画像依存で機械可読性が低い",
@@ -149,7 +149,7 @@ const industries: Record<string, IndustryData> = {
       {
         title: "robots.txtでAIクローラーを明示的に許可する",
         description:
-          "多くのECサイトはデフォルトでAIクローラーをブロックしています。GPTBot、ClaudeBot、PerplexityBot、Google-Extendedを許可する設定に変更しましょう。",
+          "ECサイトではデフォルトでAIクローラーをブロックしている場合があります。GPTBot、ClaudeBot、PerplexityBot、Google-Extendedを許可する設定に変更しましょう。",
         code: `User-agent: GPTBot
 Allow: /
 

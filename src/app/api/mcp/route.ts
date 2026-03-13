@@ -118,8 +118,10 @@ export async function POST(request: NextRequest) {
         400
       );
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { jsonrpc, method, id, params } = body as any;
+    const jsonrpc = body.jsonrpc;
+    const method = body.method;
+    const id = body.id;
+    const params = body.params as Record<string, unknown> | undefined;
 
     if (jsonrpc !== "2.0" || typeof method !== "string") {
       return jsonRpcResponse(
@@ -149,7 +151,8 @@ export async function POST(request: NextRequest) {
 
       case "tools/call": {
         const toolName = params?.name;
-        const args = params?.arguments ?? {};
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const args = (params?.arguments ?? {}) as Record<string, any>;
 
         if (toolName === "check_geo_score") {
           const checkRes = await fetch(new URL("/api/check", request.url), {

@@ -25,7 +25,7 @@ const INDICATOR_CONTENT: Record<string, IndicatorContent> = {
     seoKeywords: ["robots.txt AI対応", "GPTBot 許可", "AIクローラー robots.txt", "AI検索 対策"],
     intro: [
       "robots.txtは、Webサイトのルートディレクトリに設置するテキストファイルで、検索エンジンのクローラーに対してアクセスの許可・拒否を指示するものです。従来はGooglebotやBingbotなどの検索エンジンクローラーを制御するために使われてきましたが、AI時代の今、GPTBot（OpenAI）、ClaudeBot（Anthropic）、PerplexityBot（Perplexity）といったAIクローラーへの対応が不可欠になっています。",
-      "多くのWebサイトでは、デフォルトのrobots.txtにAIクローラーに関する記述がありません。これは、AIクローラーがサイトのコンテンツを学習データとして利用したり、AI検索結果にサイト情報を反映させることを事実上ブロックしている可能性があります。AI検索エンジンからのトラフィックを獲得したい場合、明示的にAIクローラーを許可する必要があります。",
+      "デフォルトのrobots.txtにはAIクローラーに関する記述が含まれていないことがあります。この場合、AIクローラーがサイトのコンテンツを学習データとして利用したり、AI検索結果にサイト情報を反映させることを事実上ブロックしている可能性があります。AI検索エンジンからのトラフィックを獲得したい場合、明示的にAIクローラーを許可する必要があります。",
       "GEO（Generative Engine Optimization）において、robots.txtの設定はスコア全体の15%を占める重要な指標です。AI検索エンジンがサイトのコンテンツにアクセスできなければ、他のGEO対策がどれだけ完璧でも意味がありません。robots.txtはAI検索対策の最も基本的な土台です。",
       "特に注意が必要なのは、ワイルドカードでの一括拒否（Disallow: /）を設定しているケースです。この場合、全てのクローラーがブロックされるため、AI検索エンジンにサイトが一切表示されなくなります。サイトのコンテンツを保護しつつAI検索からの流入を確保するには、クローラーごとに細かくアクセス制御を行うことが推奨されます。",
     ],
@@ -294,9 +294,9 @@ export async function generateMetadata({ params }): Promise<Metadata> {
   <meta property="og:image"
     content="https://example.com/og-image.jpg" />
   <meta property="article:published_time"
-    content="2025-01-15T00:00:00Z" />
+    content="2026-01-15T00:00:00Z" />
   <meta property="article:modified_time"
-    content="2025-03-01T00:00:00Z" />
+    content="2026-03-01T00:00:00Z" />
   <link rel="canonical" href="https://example.com/page" />
 </head>`,
       },
@@ -480,19 +480,19 @@ location / {
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://example.com/</loc>
-    <lastmod>2025-03-01</lastmod>
+    <lastmod>2026-03-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://example.com/about</loc>
-    <lastmod>2025-02-15</lastmod>
+    <lastmod>2026-02-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://example.com/blog/post-1</loc>
-    <lastmod>2025-03-05</lastmod>
+    <lastmod>2026-03-05</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>

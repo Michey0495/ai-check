@@ -485,3 +485,8 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - チェック強化: サイトマップインデックス（sitemapindex）検出追加（サブサイトマップ数を表示、大規模サイト対応）
 - チェック強化: サイトマップURL数上限チェック追加（50,000件超過時にwarn+スコア減点、サイトマップインデックスの利用を推奨）
 - AI公開チャネル: agent.json v4.6.0に更新、llms.txtにサイトマップインデックス・URL上限チェック情報追記
+
+### Night 49 (完了)
+- 修正: チェック項目別ページのコード例内の古い日付を2026年に更新（5箇所: article:published_time, article:modified_time, sitemap lastmod）
+- 修正: 未検証の「多くの」表現を事実ベースの表現に置換（トップページFAQ、robots.txtチェック解説、EC業界ページの3箇所）
+- 改善: MCP Server APIルートの型安全性向上（`as any`を`Record<string, unknown>`に置換、eslint-disableコメント削減）
