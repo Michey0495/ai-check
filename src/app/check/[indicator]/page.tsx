@@ -555,6 +555,8 @@ export async function generateMetadata({
       title: content.seoTitle,
       description: content.seoDescription,
       url: `${BASE_URL}/check/${indicator}`,
+      siteName: "AI Check",
+      locale: "ja_JP",
       type: "article",
       images: [
         {

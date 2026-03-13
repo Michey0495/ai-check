@@ -1363,7 +1363,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: data.metaTitle,
       description: data.metaDescription,
-      images: ["https://ai-check.ezoai.jp/opengraph-image"],
+      images: [`https://ai-check.ezoai.jp/for/${slug}/opengraph-image`],
     },
   };
 }

@@ -1,6 +1,6 @@
 # QA Report - web-url-a (AI Check)
 
-**Date**: 2026-03-14 (Night 52, updated Night 53)
+**Date**: 2026-03-14 (Night 52, updated Night 53, Night 54)
 **Project**: AI Check - AI検索対応度チェッカー & GEO対策ツール
 **QA Engineer**: Claude (automated)
 
@@ -88,7 +88,14 @@
 
 ## 発見した問題と対応
 
-### 今回修正済み (Night 53)
+### 今回修正済み (Night 54)
+
+| # | 重要度 | 問題 | 対応 |
+|---|--------|------|------|
+| 1 | Medium | `for/[industry]/page.tsx:1366` Twitter OGP画像がルート画像を参照 | 動的パス `/for/${slug}/opengraph-image` に修正 |
+| 2 | Low | `check/[indicator]/page.tsx` OpenGraph に siteName/locale 欠落 | `siteName: "AI Check"`, `locale: "ja_JP"` を追加 |
+
+### 修正済み (Night 53)
 
 | # | 重要度 | 問題 | 対応 |
 |---|--------|------|------|
