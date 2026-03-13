@@ -14,9 +14,24 @@ export function AgentJsonGenerator() {
   const [mcpEndpoint, setMcpEndpoint] = useState("");
   const [output, setOutput] = useState("");
   const [copied, setCopied] = useState(false);
+  const [urlError, setUrlError] = useState("");
+
+  function validateUrl(value: string): string {
+    if (!value.trim()) return "";
+    const normalized = /^https?:\/\//.test(value.trim()) ? value.trim() : "https://" + value.trim();
+    try {
+      new URL(normalized);
+      return "";
+    } catch {
+      return "有効なURLを入力してください";
+    }
+  }
 
   function generate() {
     if (!agentName.trim() || !agentUrl.trim()) return;
+    const err = validateUrl(agentUrl);
+    if (err) { setUrlError(err); return; }
+    setUrlError("");
 
     const agentCard: Record<string, unknown> = {
       name: agentName.trim(),
@@ -75,12 +90,14 @@ export function AgentJsonGenerator() {
           <Label htmlFor="agent-url" className="mb-1.5 text-white/70">サイトURL *</Label>
           <Input
             id="agent-url"
+            type="url"
             value={agentUrl}
-            onChange={(e) => setAgentUrl(e.target.value)}
+            onChange={(e) => { setAgentUrl(e.target.value); setUrlError(""); }}
             placeholder="https://example.com"
             maxLength={2048}
             className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
           />
+          {urlError && <p className="mt-1 text-xs text-red-400">{urlError}</p>}
         </div>
         <div>
           <Label htmlFor="agent-description" className="mb-1.5 text-white/70">説明</Label>

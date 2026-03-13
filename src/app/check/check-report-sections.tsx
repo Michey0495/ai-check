@@ -512,7 +512,7 @@ export function ImageOptimizationSection({ report }: { report: CheckReport }) {
       </div>
       {report.imageOptimization.modernFormatRatio === 0 && report.imageOptimization.totalImages > 0 && (
         <p className="mt-3 text-xs text-yellow-400/70">
-          WebP/AVIF等の次世代画像フォーマットを使用するとファイルサイズが30〜50%削減でき、ページ速度が向上します。
+          WebP/AVIF等の次世代画像フォーマットを使用するとファイルサイズを大幅に削減でき、ページ速度が向上します。
         </p>
       )}
     </div>
@@ -694,7 +694,7 @@ export function ContentMetricsSection({ report }: { report: CheckReport }) {
         </div>
       </div>
       <p className="mt-3 text-xs text-white/40">
-        テキスト/HTML比率が高いほどコンテンツ密度が高く、AI検索エンジンが有用な情報を抽出しやすくなります。推奨: 25%以上。
+        テキスト/HTML比率が高いほどコンテンツ密度が高く、AI検索エンジンが有用な情報を抽出しやすくなります。
       </p>
     </div>
   );

@@ -234,9 +234,16 @@ export function CompareClient() {
     setRunning(false);
   }, [urls]);
 
+  const [csvError, setCsvError] = useState("");
+
   const handleExportCSV = useCallback(() => {
     const csv = generateCSV(results);
-    if (!csv) return;
+    if (!csv) {
+      setCsvError("エクスポートするデータがありません。チェック成功した結果が2件以上必要です。");
+      setTimeout(() => setCsvError(""), 4000);
+      return;
+    }
+    setCsvError("");
     const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
     const blobUrl = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -381,6 +388,9 @@ export function CompareClient() {
               >
                 CSVでエクスポート
               </Button>
+              {csvError && (
+                <p className="text-xs text-red-400" role="alert">{csvError}</p>
+              )}
             </div>
           )}
 

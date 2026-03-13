@@ -80,6 +80,7 @@ export function CheckPageClient() {
   const [urlCopied, setUrlCopied] = useState(false);
   const [recheckKey, setRecheckKey] = useState(0);
   const [badgeCopied, setBadgeCopied] = useState("");
+  const [badgeLoadError, setBadgeLoadError] = useState(false);
   const [prevScore, setPrevScore] = useState<number | undefined>(undefined);
 
   useEffect(() => {
@@ -704,12 +705,17 @@ export function CheckPageClient() {
                 このスコアをREADMEやサイトに埋め込めます。
               </p>
               <div className="mb-3 flex items-center gap-4">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={`/api/badge?url=${encodeURIComponent(report.url)}&style=flat`}
-                  alt="GEO Score Badge"
-                  className="h-5"
-                />
+                {badgeLoadError ? (
+                  <p className="text-xs text-white/40">バッジの読み込みに失敗しました</p>
+                ) : (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={`/api/badge?url=${encodeURIComponent(report.url)}&style=flat`}
+                    alt="GEO Score Badge"
+                    className="h-5"
+                    onError={() => setBadgeLoadError(true)}
+                  />
+                )}
               </div>
               <div className="space-y-2">
                 {[

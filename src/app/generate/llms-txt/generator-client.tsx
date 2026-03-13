@@ -14,9 +14,24 @@ export function LlmsTxtGenerator() {
   const [apiInfo, setApiInfo] = useState("");
   const [output, setOutput] = useState("");
   const [copied, setCopied] = useState(false);
+  const [urlError, setUrlError] = useState("");
+
+  function validateUrl(value: string): string {
+    if (!value.trim()) return "";
+    const normalized = /^https?:\/\//.test(value.trim()) ? value.trim() : "https://" + value.trim();
+    try {
+      new URL(normalized);
+      return "";
+    } catch {
+      return "有効なURLを入力してください";
+    }
+  }
 
   function generate() {
     if (!siteName.trim() || !siteUrl.trim()) return;
+    const err = validateUrl(siteUrl);
+    if (err) { setUrlError(err); return; }
+    setUrlError("");
     const lines: string[] = [];
     lines.push(`# ${siteName.trim()}`);
     lines.push("");
@@ -82,12 +97,14 @@ export function LlmsTxtGenerator() {
           <Label htmlFor="llms-site-url" className="mb-1.5 text-white/70">サイトURL *</Label>
           <Input
             id="llms-site-url"
+            type="url"
             value={siteUrl}
-            onChange={(e) => setSiteUrl(e.target.value)}
+            onChange={(e) => { setSiteUrl(e.target.value); setUrlError(""); }}
             placeholder="例: https://ai-check.ezoai.jp"
             maxLength={2048}
             className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
           />
+          {urlError && <p className="mt-1 text-xs text-red-400">{urlError}</p>}
         </div>
         <div>
           <Label htmlFor="llms-description" className="mb-1.5 text-white/70">サイト説明</Label>

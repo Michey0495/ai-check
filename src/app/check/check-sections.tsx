@@ -309,7 +309,7 @@ export function QuickFixGuide({ report }: { report: CheckReport }) {
       {pct < 60 && (
         <div className="mt-4 rounded border border-white/5 bg-black/20 px-4 py-3">
           <p className="text-xs leading-relaxed text-white/40">
-            まずはステップ1から順に対応するのがおすすめです。上から3つを実施するだけでも、多くのサイトでCランク以上に改善できます。
+            まずはステップ1から順に対応するのがおすすめです。上位3項目を実施することでスコアの大幅な改善が期待できます。
           </p>
         </div>
       )}

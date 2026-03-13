@@ -217,7 +217,7 @@ export default function QuickStartGuidePage() {
         最低限必要な3つのファイルを設定するだけ。技術的な知識がなくても始められます。
       </p>
       <p className="mb-12 rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-primary/80">
-        この3つを設定するだけで、多くのサイトでGEOスコアがFランク→Cランク以上に改善します。
+        この3つを設定するだけで、GEOスコアの大幅な改善が期待できます。まずはチェックして現状を確認しましょう。
       </p>
 
       {/* Overview: 3 files */}
