@@ -11,6 +11,14 @@ export const metadata: Metadata = {
     title: "GEO対策ガイド - AI検索最適化の基本",
     description: "GEO（Generative Engine Optimization）対策の完全ガイド。ChatGPT, Perplexity, GeminiなどのAI検索エンジンに対応するための7つのステップを解説。",
     url: "https://ai-check.ezoai.jp/guides/geo",
+    images: [
+      {
+        url: "https://ai-check.ezoai.jp/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "GEO対策ガイド - AI検索最適化の基本",
+      },
+    ],
   },
 };
 

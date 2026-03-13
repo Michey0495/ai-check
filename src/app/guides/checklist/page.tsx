@@ -11,6 +11,14 @@ export const metadata: Metadata = {
     title: "GEO対策チェックリスト - AI検索対応 完全ガイド",
     description: "AI検索（ChatGPT・Perplexity・Gemini）に対応するためのGEO対策チェックリスト。7カテゴリ・全20項目を順番にクリアして、AI検索対応度を最大化。",
     url: "https://ai-check.ezoai.jp/guides/checklist",
+    images: [
+      {
+        url: "https://ai-check.ezoai.jp/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "GEO対策チェックリスト - AI検索対応 完全ガイド",
+      },
+    ],
   },
 };
 

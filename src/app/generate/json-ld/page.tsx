@@ -11,6 +11,14 @@ export const metadata: Metadata = {
     title: "JSON-LD 構造化データ生成ツール",
     description: "Schema.org準拠のJSON-LD構造化データをフォーム入力だけで自動生成。WebSite, Organization, FAQPage等に対応。",
     url: "https://ai-check.ezoai.jp/generate/json-ld",
+    images: [
+      {
+        url: "https://ai-check.ezoai.jp/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "JSON-LD 構造化データ生成ツール",
+      },
+    ],
   },
 };
 

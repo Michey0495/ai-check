@@ -11,6 +11,14 @@ export const metadata: Metadata = {
     title: "llms.txt 生成ツール",
     description: "AI向けサイト説明ファイル（llms.txt）をフォーム入力だけで自動生成。AI検索エンジンにサイト情報を正しく伝える第一歩。",
     url: "https://ai-check.ezoai.jp/generate/llms-txt",
+    images: [
+      {
+        url: "https://ai-check.ezoai.jp/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "llms.txt 生成ツール",
+      },
+    ],
   },
 };
 

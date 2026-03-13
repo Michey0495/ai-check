@@ -12,6 +12,14 @@ export const metadata: Metadata = {
     title: "GEOスコアバッジ生成 - サイトにスコアを埋め込む",
     description: "GEOスコアバッジを生成してREADMEやWebサイトに埋め込み。リアルタイムでAI検索対応度スコアを表示するSVGバッジ。",
     url: "https://ai-check.ezoai.jp/generate/badge",
+    images: [
+      {
+        url: "https://ai-check.ezoai.jp/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "GEOスコアバッジ生成 - サイトにスコアを埋め込む",
+      },
+    ],
   },
 };
 

@@ -11,6 +11,14 @@ export const metadata: Metadata = {
     title: "5分で始めるGEO対策 - クイックスタートガイド",
     description:
       "robots.txt、llms.txt、JSON-LDの3ファイルを設定するだけ。AI検索対応を最短で実現するクイックスタートガイド。",
+    images: [
+      {
+        url: "https://ai-check.ezoai.jp/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "5分で始めるGEO対策 - クイックスタートガイド",
+      },
+    ],
   },
   alternates: {
     canonical: "https://ai-check.ezoai.jp/guides/quick-start",

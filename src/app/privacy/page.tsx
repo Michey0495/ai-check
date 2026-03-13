@@ -10,6 +10,14 @@ export const metadata: Metadata = {
     title: "プライバシーポリシー",
     description: "AI Checkのプライバシーポリシー。個人情報の取り扱い、Cookie、Google Analyticsの利用について。",
     url: "https://ai-check.ezoai.jp/privacy",
+    images: [
+      {
+        url: "https://ai-check.ezoai.jp/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "プライバシーポリシー",
+      },
+    ],
   },
 };
 
@@ -30,7 +38,7 @@ export default function PrivacyPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <h1 className="mb-4 text-3xl font-bold text-white">プライバシーポリシー</h1>
-      <p className="mb-12 text-sm text-white/40">最終更新日: 2026年3月9日</p>
+      <p className="mb-12 text-sm text-white/40">最終更新日: 2026年3月14日</p>
 
       <div className="space-y-10 text-sm leading-relaxed text-white/60">
         <section>

@@ -11,6 +11,14 @@ export const metadata: Metadata = {
     title: "GEO対策 vs SEO対策 - 違いと両立する方法",
     description: "GEO（AI検索最適化）とSEO（検索エンジン最適化）の違いを徹底比較。ChatGPT・Perplexity時代に必要な対策と、SEOとの両立方法を解説。",
     url: "https://ai-check.ezoai.jp/guides/geo-vs-seo",
+    images: [
+      {
+        url: "https://ai-check.ezoai.jp/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "GEO対策 vs SEO対策 - 違いと両立する方法",
+      },
+    ],
   },
 };
 

@@ -10,6 +10,14 @@ export const metadata: Metadata = {
     title: "llms.txt書き方ガイド",
     description: "llms.txtの書き方を完全解説。AI検索エンジンやLLMにサイト情報を伝えるためのフォーマット、記載項目、設置方法を紹介。",
     url: "https://ai-check.ezoai.jp/guides/llms-txt",
+    images: [
+      {
+        url: "https://ai-check.ezoai.jp/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "llms.txt書き方ガイド",
+      },
+    ],
   },
 };
 

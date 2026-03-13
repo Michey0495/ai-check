@@ -11,6 +11,14 @@ export const metadata: Metadata = {
     title: "agent.json 生成ツール (A2A Agent Card)",
     description: "A2A（Agent-to-Agent）プロトコル対応のagent.jsonを自動生成。AIエージェント同士が連携するための名刺ファイル。",
     url: "https://ai-check.ezoai.jp/generate/agent-json",
+    images: [
+      {
+        url: "https://ai-check.ezoai.jp/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "agent.json 生成ツール (A2A Agent Card)",
+      },
+    ],
   },
 };
 
