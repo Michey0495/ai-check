@@ -1352,7 +1352,7 @@ export async function generateMetadata({
       type: "article",
       images: [
         {
-          url: "https://ai-check.ezoai.jp/opengraph-image",
+          url: `https://ai-check.ezoai.jp/for/${params.industry}/opengraph-image`,
           width: 1200,
           height: 630,
           alt: data.metaTitle,

@@ -558,7 +558,7 @@ export async function generateMetadata({
       type: "article",
       images: [
         {
-          url: `${BASE_URL}/opengraph-image`,
+          url: `${BASE_URL}/check/${indicator}/opengraph-image`,
           width: 1200,
           height: 630,
           alt: content.seoTitle,
@@ -569,7 +569,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: content.seoTitle,
       description: content.seoDescription,
-      images: [`${BASE_URL}/opengraph-image`],
+      images: [`${BASE_URL}/check/${indicator}/opengraph-image`],
     },
   };
 }
