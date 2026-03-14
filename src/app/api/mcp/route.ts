@@ -161,6 +161,20 @@ export async function POST(request: NextRequest) {
         const args = (params?.arguments ?? {}) as Record<string, any>;
 
         if (toolName === "check_geo_score") {
+          if (typeof args.url !== "string" || !args.url.trim()) {
+            return jsonRpcResponse({
+              jsonrpc: "2.0",
+              error: { code: -32602, message: "url must be a non-empty string" },
+              id,
+            });
+          }
+          if (args.url.length > 2048) {
+            return jsonRpcResponse({
+              jsonrpc: "2.0",
+              error: { code: -32602, message: "url exceeds 2048 characters" },
+              id,
+            });
+          }
           const checkRes = await fetch(new URL("/api/check", request.url), {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -184,7 +198,9 @@ export async function POST(request: NextRequest) {
           }
           if (args.pages?.length) {
             lines.push("## 主要ページ");
-            limitArray<string>(args.pages).forEach((p) => lines.push(`- ${sanitizeLine(p)}`));
+            limitArray<string>(args.pages)
+              .filter((p): p is string => typeof p === "string")
+              .forEach((p) => lines.push(`- ${sanitizeLine(p)}`));
             lines.push("");
           }
           lines.push("## 連絡先");
@@ -199,7 +215,7 @@ export async function POST(request: NextRequest) {
 
         if (toolName === "generate_robots_txt") {
           const crawlers = args.allowedCrawlers
-            ? limitArray<string>(args.allowedCrawlers)
+            ? limitArray<string>(args.allowedCrawlers).filter((c): c is string => typeof c === "string")
             : ["GPTBot", "ClaudeBot", "PerplexityBot", "Google-Extended"];
           const lines: string[] = ["User-agent: *", "Allow: /", ""];
           crawlers.forEach((c: string) => {
@@ -229,7 +245,7 @@ export async function POST(request: NextRequest) {
             });
           }
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          let jsonLd: Record<string, any> = {
+          const jsonLd: Record<string, any> = {
             "@context": "https://schema.org",
             "@type": schemaType,
             name: args.name,
@@ -271,8 +287,13 @@ export async function POST(request: NextRequest) {
             if (extra.image) jsonLd.image = extra.image;
           }
 
-          if (extra.additionalProperties) {
-            jsonLd = { ...jsonLd, ...extra.additionalProperties };
+          if (extra.additionalProperties && typeof extra.additionalProperties === "object" && !Array.isArray(extra.additionalProperties)) {
+            const ALLOWED_EXTRA = ["sameAs", "image", "logo", "alternateName", "disambiguatingDescription", "inLanguage", "keywords"];
+            for (const [key, value] of Object.entries(extra.additionalProperties)) {
+              if (ALLOWED_EXTRA.includes(key) && !key.startsWith("@")) {
+                jsonLd[key] = value;
+              }
+            }
           }
 
           const script = `<script type="application/ld+json">\n${JSON.stringify(jsonLd, null, 2)}\n</script>`;

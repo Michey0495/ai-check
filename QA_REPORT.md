@@ -1,11 +1,11 @@
 # QA Report - web-url-a (AI Check)
 
-**Date**: 2026-03-15
+**Date**: 2026-03-15 (7th QA pass)
 **Project**: web-url-a (ai-check.ezoai.jp)
 
 ## Summary
 
-All QA checks passed. The project is production-ready.
+All QA checks passed. API入力バリデーションの強化を実施。
 
 ## Checklist
 
@@ -30,9 +30,9 @@ All QA checks passed. The project is production-ready.
 | Item | Status | Notes |
 |------|--------|-------|
 | Metadata (OGP) | OK | layout.tsx に包括的メタデータ設定 |
-| 構造化データ (JSON-LD) | OK | Organization, WebSite, WebApplication, FAQ, HowTo |
-| robots.txt | OK | 主要AIクローラー全許可 (GPTBot, ClaudeBot, PerplexityBot等) |
-| sitemap.xml | OK | 37 URL、適切な priority/changeFrequency |
+| 構造化データ (JSON-LD) | OK | Organization, WebSite, WebApplication, FAQ, HowTo, BreadcrumbList |
+| robots.txt | OK | 12種のAIクローラー全許可 |
+| sitemap.xml | OK | 42 URL、適切な priority/changeFrequency |
 | /.well-known/agent.json | OK | A2A Agent Card 設置済み |
 | /llms.txt | OK | AI向けサイト説明 設置済み |
 | Dynamic OG images | OK | 各ルートに opengraph-image.tsx |
@@ -42,33 +42,54 @@ All QA checks passed. The project is production-ready.
 | Item | Status | Notes |
 |------|--------|-------|
 | Skip-to-content link | OK | layout.tsx に sr-only リンク |
-| Semantic HTML | OK | main, section, nav 等の適切な使用 |
-| Heading hierarchy | OK | H1 → H2 → H3 の正しい階層 |
-| ARIA attributes | OK | role, aria-label, aria-expanded 等 |
-| Form accessibility | OK | aria-label, aria-invalid, aria-describedby |
-| Keyboard navigation | OK | Escape キー対応、フォーカス管理 |
+| Semantic HTML | OK | header, main, footer, nav, article, section |
+| Heading hierarchy | OK | H1 - H2 - H3 の正しい階層 |
+| ARIA attributes | OK | role, aria-label, aria-expanded, aria-invalid, aria-describedby |
+| Keyboard navigation | OK | 矢印キー、Escape、Enter対応 |
 | Color contrast | OK | 黒背景に白テキスト (WCAG AA準拠) |
-| Image alt text | OK | 全 img タグに alt 属性 |
+| Form labels | OK | 全入力にlabel/htmlFor設定 |
+
+### Design System Compliance
+| Item | Status |
+|------|--------|
+| 背景色 #000000 | OK |
+| テキスト white系 | OK |
+| アクセントカラー 1色 (teal) | OK |
+| 絵文字なし | OK |
+| イラストアイコンなし | OK |
+| カード bg-white/5 border-white/10 | OK |
 
 ### Security & Edge Cases
 | Item | Status | Notes |
 |------|--------|-------|
 | 入力バリデーション | OK | URL長 2048文字制限、空入力チェック |
 | SSRF防止 | OK | isPrivateHostname チェック |
-| Rate limiting | OK | feedback API にIP制限、batch API に件数制限 |
-| Input sanitization | OK | generate API に sanitizeLine() |
-| Batch size limit | OK | 最大10件 |
+| Rate limiting | OK | feedback/check/batch 各APIにIP制限 |
+| Input sanitization | OK | sanitizeLine() でCRLFインジェクション防止 |
 | Body size limit | OK | generate API に50KB制限 |
-| XSS防止 | OK | React のエスケープ + サニタイズ関数 |
+| XSS防止 | OK | React エスケープ + サニタイズ関数 |
 
-### Code Quality
-| Item | Status | Notes |
-|------|--------|-------|
-| console.log の残留 | OK | なし (console.error はエラーハンドリング用のみ) |
-| 未使用インポート | OK | なし |
-| ハードコードURL | OK | 自ドメイン (ai-check.ezoai.jp) のみ、適切 |
-| 外部リンクのセキュリティ | OK | rel="noopener noreferrer" 設定済み |
+## Issues Found & Fixed (This Pass)
 
-## Issues Found
+### 1. MCP check_geo_score URL検証なし (Critical)
+- **修正**: string型チェック、空文字チェック、2048文字制限を追加
 
-なし。全チェック項目をクリア。
+### 2. MCP additionalPropertiesプロトタイプ汚染リスク (Critical)
+- **修正**: 許可リスト方式に変更、@プレフィックスキーをブロック
+
+### 3. MCP配列要素の型チェック不足 (High)
+- **修正**: pages/crawlers配列に `.filter(typeof === "string")` を追加
+
+### 4. Generate API dataパラメータ型未検証 (High)
+- **修正**: オブジェクト型チェック (`!== null`, `!Array.isArray`) を追加
+
+### 5. Batch API エラー種別未区別 (Medium)
+- **修正**: AbortError判定で タイムアウト/その他エラーを区別
+
+### 6. MCP jsonLd変数のlet→const (Lint)
+- **修正**: additionalProperties処理変更に伴いconstに修正
+
+## Accepted Risks
+
+- CORS `Access-Control-Allow-Origin: *` - 公開APIとして意図的
+- Feedback API: GITHUB_TOKEN未設定時のサイレント成功 - ローカル開発の利便性

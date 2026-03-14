@@ -29,6 +29,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (typeof data !== "object" || data === null || Array.isArray(data)) {
+      return NextResponse.json(
+        { error: "data はオブジェクトである必要があります。" },
+        { status: 400, headers: corsHeaders() }
+      );
+    }
+
     // Guard against oversized payloads
     const dataStr = JSON.stringify(data);
     if (dataStr.length > 50_000) {

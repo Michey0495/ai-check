@@ -104,8 +104,15 @@ export async function POST(request: NextRequest) {
           });
           const data = await res.json();
           return { url, status: res.ok ? ("ok" as const) : ("error" as const), ...data };
-        } catch {
-          return { url, status: "error" as const, error: "チェックがタイムアウトしました。サイトの応答が遅い可能性があります。" };
+        } catch (e) {
+          const isTimeout = e instanceof Error && e.name === "AbortError";
+          return {
+            url,
+            status: "error" as const,
+            error: isTimeout
+              ? "チェックがタイムアウトしました。サイトの応答が遅い可能性があります。"
+              : "チェック中にエラーが発生しました。",
+          };
         }
       })
     );
