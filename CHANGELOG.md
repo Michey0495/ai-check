@@ -2,6 +2,18 @@
 
 ## 2026-03-15
 
+### Maintenance (6th pass)
+
+- **check**: Build passes, TypeScript clean, 0 npm vulnerabilities
+- **check**: No open GitHub issues
+- **check**: AI public files verified (robots.ts, llms.txt, agent.json all valid)
+- **check**: No safe dependency updates available (eslint 9→10, @types/node 20→25 are major — skipped)
+- **fix**: Removed stale `public/robots.txt` (wrong domain `web-url-a.ezoai.jp`, conflicted with dynamic `src/app/robots.ts`)
+- **fix**: Corrected JSON-LD `sameAs` URL from `Michey0495/web-url-a` to `Michey0495/ai-check`
+- **fix**: Fixed feedback route `ALLOWED_REPOS` to use `ai-check` repo name (was `web-url-a`, causing GitHub issue creation to fail)
+- **fix**: Updated `FeedbackWidget` repoName prop to `ai-check`
+- **deployed**: Vercel production deploy
+
 ### Maintenance (5th pass)
 
 - **check**: Build passes, TypeScript clean, 0 npm vulnerabilities
