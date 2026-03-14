@@ -99,8 +99,14 @@ const TOOLS = [
   },
 ];
 
+const MAX_ARRAY_ITEMS = 50;
+
 function sanitizeLine(str: string): string {
-  return str.replace(/[\r\n]/g, " ").trim();
+  return str.replace(/[\r\n]/g, " ").trim().slice(0, 500);
+}
+
+function limitArray<T>(arr: unknown, max = MAX_ARRAY_ITEMS): T[] {
+  return Array.isArray(arr) ? arr.slice(0, max) : [];
 }
 
 function jsonRpcResponse(data: object, status = 200) {
@@ -178,7 +184,7 @@ export async function POST(request: NextRequest) {
           }
           if (args.pages?.length) {
             lines.push("## 主要ページ");
-            args.pages.forEach((p: string) => lines.push(`- ${sanitizeLine(p)}`));
+            limitArray<string>(args.pages).forEach((p) => lines.push(`- ${sanitizeLine(p)}`));
             lines.push("");
           }
           lines.push("## 連絡先");
@@ -192,12 +198,9 @@ export async function POST(request: NextRequest) {
         }
 
         if (toolName === "generate_robots_txt") {
-          const crawlers = args.allowedCrawlers ?? [
-            "GPTBot",
-            "ClaudeBot",
-            "PerplexityBot",
-            "Google-Extended",
-          ];
+          const crawlers = args.allowedCrawlers
+            ? limitArray<string>(args.allowedCrawlers)
+            : ["GPTBot", "ClaudeBot", "PerplexityBot", "Google-Extended"];
           const lines: string[] = ["User-agent: *", "Allow: /", ""];
           crawlers.forEach((c: string) => {
             lines.push(`User-agent: ${sanitizeLine(c)}`);
@@ -240,17 +243,17 @@ export async function POST(request: NextRequest) {
           const extra = args.data ?? {};
 
           if (schemaType === "FAQPage" && Array.isArray(extra.questions)) {
-            jsonLd.mainEntity = extra.questions
-              .filter((q: { question?: string; answer?: string }) => q.question && q.answer)
-              .map((q: { question: string; answer: string }) => ({
+            jsonLd.mainEntity = limitArray<{ question?: string; answer?: string }>(extra.questions)
+              .filter((q): q is { question: string; answer: string } => !!q.question && !!q.answer)
+              .map((q) => ({
                 "@type": "Question",
                 name: q.question,
                 acceptedAnswer: { "@type": "Answer", text: q.answer },
               }));
           } else if (schemaType === "HowTo" && Array.isArray(extra.steps)) {
-            jsonLd.step = extra.steps
-              .filter((s: { name?: string; text?: string }) => s.name && s.text)
-              .map((s: { name: string; text: string }, i: number) => ({
+            jsonLd.step = limitArray<{ name?: string; text?: string }>(extra.steps)
+              .filter((s): s is { name: string; text: string } => !!s.name && !!s.text)
+              .map((s, i) => ({
                 "@type": "HowToStep",
                 position: i + 1,
                 name: s.name,
@@ -286,8 +289,8 @@ export async function POST(request: NextRequest) {
             description: args.description ?? "",
             url: args.url,
             version: args.version ?? "1.0.0",
-            capabilities: args.capabilities ?? [],
-            api_endpoints: args.apiEndpoints ?? [],
+            capabilities: limitArray<string>(args.capabilities),
+            api_endpoints: limitArray<string>(args.apiEndpoints),
             protocol: "a2a",
             authentication: { type: "none" },
           };

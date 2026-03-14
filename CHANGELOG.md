@@ -2,6 +2,16 @@
 
 ## 2026-03-15
 
+### Maintenance (5th pass)
+
+- **check**: Build passes, TypeScript clean, 0 npm vulnerabilities
+- **check**: No open GitHub issues
+- **check**: All dependencies at latest minor/patch versions
+- **check**: AI public files verified (robots.ts, llms.txt, agent.json all valid)
+- **fix**: Added input size limits to MCP API route — array fields capped at 50 items, string fields capped at 500 chars to prevent abuse
+- **fix**: Improved TypeScript type narrowing in MCP JSON-LD generator with type predicates
+- **deployed**: Vercel production deploy
+
 ### Maintenance
 
 - **fix**: Patched npm vulnerabilities (flatted high severity, hono moderate severity) via `npm audit fix`
