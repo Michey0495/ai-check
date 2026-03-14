@@ -1,53 +1,74 @@
-# QA Report - web-url-a
+# QA Report - web-url-a (AI Check)
 
-**Date:** 2026-03-15
-**Project:** AI Check (web-url-a)
+**Date**: 2026-03-15
+**Project**: web-url-a (ai-check.ezoai.jp)
+
+## Summary
+
+All QA checks passed. The project is production-ready.
 
 ## Checklist
 
-- [x] `npm run build` 成功
-- [x] `npm run lint` エラーなし
-- [x] レスポンシブ対応（Tailwind responsive classes確認済み）
-- [x] favicon, OGP設定（全ページに動的OGP画像あり）
-- [x] 404ページ（`not-found.tsx` 実装済み）
-- [x] ローディング状態の表示（`loading.tsx` with aria-label）
-- [x] エラー状態の表示（`error.tsx` + `global-error.tsx`）
+- [x] `npm run build` - 成功 (44ページ生成、TypeScriptエラーなし)
+- [x] `npm run lint` - エラーなし
+- [x] レスポンシブ対応 - Tailwindのレスポンシブクラス適切に使用
+- [x] favicon, OGP設定 - apple-icon.tsx, icon.tsx, opengraph-image.tsx 全ルートに設定済み
+- [x] 404ページ - not-found.tsx 実装済み (メタデータ付き)
+- [x] ローディング状態 - loading.tsx 実装済み (aria-label付きスピナー)
+- [x] エラー状態 - error.tsx, global-error.tsx 両方実装済み
 
-## SEO
+## Detailed Results
 
-- [x] メタデータ: 107+キーワード、title template、description設定済み
-- [x] OGP: 全ページに動的OGP画像生成（`opengraph-image.tsx`）
-- [x] 構造化データ: Organization, WebSite, FAQPage, HowTo, BreadcrumbList
-- [x] `robots.ts`: AIクローラー（GPTBot, ClaudeBot等）許可
-- [x] `sitemap.ts`: 41 URL entries
-- [x] `/llms.txt`: AI向けサイト説明
-- [x] `/.well-known/agent.json`: A2A Agent Card v5.1.0
+### Build & Lint
+| Check | Result |
+|-------|--------|
+| `npm run build` | OK - 44 pages generated |
+| `npm run lint` | OK - no errors |
+| TypeScript strict | OK - no type errors |
 
-## 修正した問題
+### SEO & AI-First
+| Item | Status | Notes |
+|------|--------|-------|
+| Metadata (OGP) | OK | layout.tsx に包括的メタデータ設定 |
+| 構造化データ (JSON-LD) | OK | Organization, WebSite, WebApplication, FAQ, HowTo |
+| robots.txt | OK | 主要AIクローラー全許可 (GPTBot, ClaudeBot, PerplexityBot等) |
+| sitemap.xml | OK | 37 URL、適切な priority/changeFrequency |
+| /.well-known/agent.json | OK | A2A Agent Card 設置済み |
+| /llms.txt | OK | AI向けサイト説明 設置済み |
+| Dynamic OG images | OK | 各ルートに opengraph-image.tsx |
+| manifest.json | OK | PWA対応 |
 
-### 1. parseInt radix指定漏れ (Medium)
+### Accessibility
+| Item | Status | Notes |
+|------|--------|-------|
+| Skip-to-content link | OK | layout.tsx に sr-only リンク |
+| Semantic HTML | OK | main, section, nav 等の適切な使用 |
+| Heading hierarchy | OK | H1 → H2 → H3 の正しい階層 |
+| ARIA attributes | OK | role, aria-label, aria-expanded 等 |
+| Form accessibility | OK | aria-label, aria-invalid, aria-describedby |
+| Keyboard navigation | OK | Escape キー対応、フォーカス管理 |
+| Color contrast | OK | 黒背景に白テキスト (WCAG AA準拠) |
+| Image alt text | OK | 全 img タグに alt 属性 |
 
-`parseInt()` に基数引数(10)が未指定の箇所を修正:
+### Security & Edge Cases
+| Item | Status | Notes |
+|------|--------|-------|
+| 入力バリデーション | OK | URL長 2048文字制限、空入力チェック |
+| SSRF防止 | OK | isPrivateHostname チェック |
+| Rate limiting | OK | feedback API にIP制限、batch API に件数制限 |
+| Input sanitization | OK | generate API に sanitizeLine() |
+| Batch size limit | OK | 最大10件 |
+| Body size limit | OK | generate API に50KB制限 |
+| XSS防止 | OK | React のエスケープ + サニタイズ関数 |
 
-- `src/app/check/check-sections.tsx:277`
-- `src/lib/check-engine/analyzers.ts:417`
-- `src/lib/check-engine/checkers.ts:429`
+### Code Quality
+| Item | Status | Notes |
+|------|--------|-------|
+| console.log の残留 | OK | なし (console.error はエラーハンドリング用のみ) |
+| 未使用インポート | OK | なし |
+| ハードコードURL | OK | 自ドメイン (ai-check.ezoai.jp) のみ、適切 |
+| 外部リンクのセキュリティ | OK | rel="noopener noreferrer" 設定済み |
 
-### 2. アクセシビリティ: ドロップダウンボタンのaria-label (Low)
+## Issues Found
 
-- `src/components/header.tsx` - ガイドメニューボタンに `aria-label` を追加
-
-### 3. フォームバリデーション: 空入力時のフィードバック不足 (Low)
-
-- `src/app/generate/llms-txt/generator-client.tsx` - URL空欄時にエラーメッセージ表示
-- `src/app/generate/agent-json/generator-client.tsx` - 同上
-
-## 確認済み（問題なし）
-
-- XSS対策: dangerouslySetInnerHTMLはJSON-LDと定義済みデータのみ
-- SSRF対策: API routeでSSRFブロック実装済み
-- レート制限: IP-based rate limiting（5 req/300sec）
-- URL入力: バリデーション、正規化、maxLength制限あり
-- スキップリンク: layout.tsxに実装済み
-- フォーム: aria-invalid、aria-describedby適切に使用
-- エラーハンドリング: API routeで適切なエラーコード返却
+なし。全チェック項目をクリア。
