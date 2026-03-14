@@ -543,3 +543,9 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - チェック強化: meta robots / X-Robots-Tag の nofollow 検出追加（noindex検出に加え、nofollowが設定されている場合に警告・スコア減点、リンク評価伝播への影響を通知）
 - UX: チェック結果の詳細セクションに個別コードコピーボタン追加（各修正コードブロックの右上にコピーボタン、ワンクリックでクリップボードにコピー）
 - AI公開チャネル: agent.json v5.2.0に更新、llms.txtにnofollow検出情報追記
+
+### Night 58 (完了)
+- チェック強化: meta http-equiv="refresh"検出追加（meta refreshリダイレクトの遅延時間・リダイレクト先URLを検出・警告、AIクローラーへの影響を通知、301リダイレクトへの置換を推奨）
+- UX: チェック結果に「meta refreshリダイレクト」セクション追加（セキュリティ&ネットワークグループ内、警告色表示）
+- レポート: Markdownレポートを完全化（テキストレポートと同等の全セクションを網羅: リダイレクト、SSL/TLS、canonical、サーバー情報、Crawl-delay、パフォーマンスヒント、Core Web Vitals、画像最適化、PWA、OGプレビュー、見出し構造、重複メタタグ、ファビコン、フィード、ソーシャルメタ、外部リソース、JSON-LDブロック、AIコンテンツプレビュー、リンク品質、リッチリザルト、meta refresh）
+- AI公開チャネル: agent.json v5.3.0に更新、llms.txtにmeta refresh検出・Markdownレポート完全化情報追記

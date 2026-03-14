@@ -366,6 +366,14 @@ export function generateReportText(report: CheckReport): string {
     }
   }
 
+  if (report.metaRefresh) {
+    lines.push("");
+    lines.push("--- meta refreshリダイレクト ---");
+    lines.push(`遅延: ${report.metaRefresh.delay}秒`);
+    if (report.metaRefresh.url) lines.push(`リダイレクト先: ${report.metaRefresh.url}`);
+    lines.push("⚠ AIクローラーがmeta refreshを正しく処理できない場合があります。301リダイレクトを推奨。");
+  }
+
   const failItems = report.results.filter((r) => r.status === "fail");
   const warnItems = report.results.filter((r) => r.status === "warn");
 
@@ -439,6 +447,185 @@ export function generateMarkdownReport(report: CheckReport): string {
     lines.push(`- 単語数: ${report.contentMetrics.wordCount.toLocaleString()}`);
     lines.push(`- 文字数: ${report.contentMetrics.charCount.toLocaleString()}`);
     lines.push(`- テキスト/HTML比率: ${report.contentMetrics.textToHtmlRatio}%`);
+  }
+
+  if (report.redirectChain) {
+    lines.push("", "## リダイレクト", "");
+    lines.push(`- リダイレクト回数: ${report.redirectChain.hops}回`);
+    if (report.redirectChain.statusCodes?.length) {
+      lines.push(`- ステータスコード: ${report.redirectChain.statusCodes.map((c) => `${c} (${c === 301 ? "恒久" : c === 302 ? "一時" : c === 307 ? "一時" : c === 308 ? "恒久" : ""})`).join(" → ")}`);
+    }
+    lines.push(`- 最終URL: ${report.redirectChain.finalUrl}`);
+    if (report.redirectChain.hasHttpToHttps) lines.push("- HTTP→HTTPSリダイレクト: あり");
+    if (report.redirectChain.hasWwwRedirect) lines.push("- wwwリダイレクト: あり");
+  }
+
+  if (report.canonicalUrl) {
+    lines.push("", "## canonical URL", "");
+    lines.push(`- canonical: ${report.canonicalUrl}`);
+    if (report.canonicalMismatch) lines.push("- **警告**: canonical URLとアクセスURLが一致しません");
+  }
+
+  if (report.contentEncoding || report.serverHeader || report.httpVersion) {
+    lines.push("", "## サーバー情報", "");
+    if (report.httpVersion) lines.push(`- HTTPプロトコル: ${report.httpVersion}`);
+    if (report.contentEncoding) lines.push(`- コンテンツ圧縮: ${report.contentEncoding}`);
+    if (report.serverHeader) lines.push(`- Server: ${report.serverHeader}`);
+  }
+
+  if (report.sslCertificate) {
+    lines.push("", "## SSL/TLS証明書", "");
+    lines.push(`- 発行元: ${report.sslCertificate.issuer}`);
+    lines.push(`- プロトコル: ${report.sslCertificate.protocol}`);
+    lines.push(`- 有効期限: ${new Date(report.sslCertificate.validTo).toLocaleDateString("ja-JP")}`);
+    lines.push(`- 残り日数: ${report.sslCertificate.daysRemaining}日`);
+    if (report.sslCertificate.daysRemaining < 30) lines.push("- **警告**: 証明書の有効期限が30日以内です");
+  }
+
+  if (report.crawlDelay) {
+    lines.push("", "## Crawl-delay", "");
+    if (report.crawlDelay.hasGlobal) lines.push(`- 全体: ${report.crawlDelay.globalValue}秒`);
+    for (const d of report.crawlDelay.aiCrawlerDelays) {
+      lines.push(`- ${d.name}: ${d.value}秒`);
+    }
+  }
+
+  if (report.performanceHints) {
+    const p = report.performanceHints;
+    lines.push("", "## パフォーマンスヒント", "");
+    if (p.preconnectCount > 0) lines.push(`- preconnect: ${p.preconnectCount}件`);
+    if (p.prefetchCount > 0) lines.push(`- prefetch/preload: ${p.prefetchCount}件`);
+    lines.push(`- 画像の遅延読み込み: ${p.lazyImageCount}/${p.totalImageCount}枚`);
+    lines.push(`- スクリプト: ${p.totalScriptCount}件（defer: ${p.deferScriptCount}, async: ${p.asyncScriptCount}）`);
+  }
+
+  if (report.coreWebVitals) {
+    const c = report.coreWebVitals;
+    lines.push("", "## Core Web Vitals ヒント", "");
+    lines.push(`- レンダーブロッキングリソース: ${c.renderBlockingCount}件`);
+    if (c.lcpCandidate) lines.push(`- LCP候補: ${c.lcpCandidate}`);
+    lines.push(`- fetchpriority=high: ${c.hasFetchPriority ? "設定済み" : "未設定"}`);
+    lines.push(`- インラインCSS: ${c.inlineCssSize < 1024 ? `${c.inlineCssSize}B` : `${Math.round(c.inlineCssSize / 1024)}KB`}`);
+    if (c.clsRiskFactors.length > 0) lines.push(`- CLSリスク要因: ${c.clsRiskFactors.join("、")}`);
+  }
+
+  if (report.imageOptimization) {
+    const img = report.imageOptimization;
+    lines.push("", "## 画像最適化", "");
+    lines.push(`- 画像数: ${img.totalImages}枚`);
+    lines.push(`- 次世代フォーマット使用率: ${img.modernFormatRatio}%`);
+    if (img.webpCount > 0) lines.push(`- WebP: ${img.webpCount}枚`);
+    if (img.avifCount > 0) lines.push(`- AVIF: ${img.avifCount}枚`);
+    if (img.srcsetCount > 0) lines.push(`- srcset（レスポンシブ画像）: ${img.srcsetCount}枚`);
+    if (img.pictureElementCount > 0) lines.push(`- picture要素: ${img.pictureElementCount}件`);
+  }
+
+  if (report.pwaManifest?.exists) {
+    lines.push("", "## PWA対応", "");
+    lines.push(`- 名前: ${report.pwaManifest.hasName ? "設定済み" : "未設定"}`);
+    lines.push(`- アイコン: ${report.pwaManifest.hasIcons ? "設定済み" : "未設定"}`);
+    lines.push(`- start_url: ${report.pwaManifest.hasStartUrl ? "設定済み" : "未設定"}`);
+    lines.push(`- display: ${report.pwaManifest.hasDisplay ? "設定済み" : "未設定"}`);
+    lines.push(`- テーマカラー: ${report.pwaManifest.hasThemeColor ? "設定済み" : "未設定"}`);
+  }
+
+  if (report.ogPreview) {
+    lines.push("", "## OGプレビュー", "");
+    if (report.ogPreview.ogTitle) lines.push(`- og:title: ${report.ogPreview.ogTitle}`);
+    if (report.ogPreview.ogDescription) lines.push(`- og:description: ${report.ogPreview.ogDescription}`);
+    if (report.ogPreview.ogUrl) lines.push(`- og:url: ${report.ogPreview.ogUrl}`);
+    if (report.ogImage) lines.push(`- og:image: ${report.ogImage}`);
+    if (report.ogImageAccessible !== undefined) lines.push(`- OG画像アクセス: ${report.ogImageAccessible ? "OK" : "アクセス不可"}`);
+  }
+
+  if (report.headingTree && report.headingTree.length > 0) {
+    lines.push("", "## 見出し構造", "");
+    for (const h of report.headingTree.slice(0, 15)) {
+      lines.push(`${"  ".repeat(h.level - 1)}- h${h.level}: ${h.text}`);
+    }
+    if (report.headingTree.length > 15) lines.push(`- ... 他${report.headingTree.length - 15}件`);
+  }
+
+  if (report.duplicateMetaTags && report.duplicateMetaTags.length > 0) {
+    lines.push("", "## 重複メタタグ警告", "");
+    for (const d of report.duplicateMetaTags) {
+      lines.push(`- **${d.tag}**: ${d.count}個検出（推奨: 1個）`);
+    }
+  }
+
+  if (report.faviconAnalysis) {
+    lines.push("", "## ファビコン分析", "");
+    lines.push(`- favicon: ${report.faviconAnalysis.hasFavicon ? "あり" : "なし"}`);
+    lines.push(`- apple-touch-icon: ${report.faviconAnalysis.hasAppleTouchIcon ? "あり" : "なし"}`);
+    lines.push(`- SVGアイコン: ${report.faviconAnalysis.hasSvgIcon ? "あり" : "なし"}`);
+    if (report.faviconAnalysis.sizes.length > 0) lines.push(`- サイズ: ${report.faviconAnalysis.sizes.join(", ")}`);
+    lines.push(`- manifest icons: ${report.faviconAnalysis.hasWebManifestIcons ? "あり" : "なし"}`);
+  }
+
+  if (report.feedDetection) {
+    lines.push("", "## フィード検出", "");
+    if (report.feedDetection.hasRss) lines.push("- RSS: あり");
+    if (report.feedDetection.hasAtom) lines.push("- Atom: あり");
+    if (report.feedDetection.feedUrls.length > 0) {
+      report.feedDetection.feedUrls.forEach((u) => lines.push(`  - ${u}`));
+    }
+  }
+
+  if (report.socialMeta) {
+    const parts: string[] = [];
+    if (report.socialMeta.ogSiteName) parts.push(`og:site_name: ${report.socialMeta.ogSiteName}`);
+    if (report.socialMeta.twitterSite) parts.push(`twitter:site: ${report.socialMeta.twitterSite}`);
+    if (report.socialMeta.fbAppId) parts.push(`fb:app_id: ${report.socialMeta.fbAppId}`);
+    if (parts.length > 0) {
+      lines.push("", "## ソーシャルメタ", "");
+      parts.forEach((p) => lines.push(`- ${p}`));
+    }
+  }
+
+  if (report.externalResourceCount) {
+    lines.push("", "## 外部リソース", "");
+    lines.push(`- 外部CSS: ${report.externalResourceCount.externalCss}件`);
+    lines.push(`- 外部JS: ${report.externalResourceCount.externalJs}件`);
+    if (report.externalResourceCount.thirdPartyDomains && report.externalResourceCount.thirdPartyDomains.length > 0) {
+      lines.push(`- 外部ドメイン: ${report.externalResourceCount.thirdPartyDomains.join(", ")}`);
+    }
+  }
+
+  if (report.jsonLdBlocks && report.jsonLdBlocks.blockCount > 0) {
+    lines.push("", "## JSON-LDブロック", "");
+    lines.push(`- ブロック数: ${report.jsonLdBlocks.blockCount}`);
+    if (report.jsonLdBlocks.types.length > 0) {
+      lines.push(`- スキーマタイプ: ${report.jsonLdBlocks.types.join(", ")}`);
+    }
+  }
+
+  if (report.aiContentPreview && report.aiContentPreview.excerpt.length > 0) {
+    lines.push("", "## AIが見るコンテンツ", "");
+    lines.push(`- 読了時間: 約${report.aiContentPreview.estimatedReadingTimeMin}分`);
+    if (report.aiContentPreview.mainTopics.length > 0) {
+      lines.push(`- 主要トピック: ${report.aiContentPreview.mainTopics.join("、")}`);
+    }
+  }
+
+  if (report.linkQuality) {
+    const total = report.linkQuality.followCount + report.linkQuality.nofollowCount;
+    lines.push("", "## リンク品質", "");
+    lines.push(`- follow: ${report.linkQuality.followCount}件 / nofollow: ${report.linkQuality.nofollowCount}件 (合計: ${total}件)`);
+    if (report.linkQuality.sponsoredCount > 0) lines.push(`- sponsored: ${report.linkQuality.sponsoredCount}件`);
+    if (report.linkQuality.ugcCount > 0) lines.push(`- ugc: ${report.linkQuality.ugcCount}件`);
+  }
+
+  if (report.richResultsEligibility && report.richResultsEligibility.length > 0) {
+    lines.push("", "## リッチリザルト適格性", "");
+    for (const r of report.richResultsEligibility) {
+      lines.push(`- **${r.type}**: ${r.eligible}`);
+    }
+  }
+
+  if (report.metaRefresh) {
+    lines.push("", "## meta refreshリダイレクト", "");
+    lines.push(`- **警告**: meta http-equiv="refresh" が検出されました（${report.metaRefresh.delay}秒後に ${report.metaRefresh.url || "同ページ"}）`);
+    lines.push("- AIクローラーがmeta refreshを正しく処理できない場合があります。サーバーサイドの301リダイレクトを推奨します。");
   }
 
   const failItems = report.results.filter((r) => r.status === "fail");

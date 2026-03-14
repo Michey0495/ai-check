@@ -266,6 +266,10 @@ export type CheckReport = {
     globalValue?: number;
     aiCrawlerDelays: { name: string; value: number }[];
   };
+  metaRefresh?: {
+    delay: number;
+    url?: string;
+  };
 };
 
 export function getGrade(score: number, maxScore: number): CheckReport["grade"] {

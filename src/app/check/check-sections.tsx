@@ -343,6 +343,7 @@ export function SectionNav({ report }: { report: CheckReport }) {
       { id: "sec-pwa", label: "PWA", exists: !!report.pwaManifest?.exists },
       { id: "sec-social-meta", label: "ソーシャルメタ", exists: !!report.socialMeta },
       { id: "sec-redirect", label: "リダイレクト", exists: !!(report.redirectChain || report.canonicalUrl) },
+      { id: "sec-meta-refresh", label: "meta refresh", exists: !!report.metaRefresh },
       { id: "sec-content", label: "コンテンツ分析", exists: !!(report.contentMetrics && report.contentMetrics.wordCount > 0) },
       { id: "sec-feed", label: "フィード", exists: !!report.feedDetection },
       { id: "sec-favicon", label: "ファビコン", exists: !!report.faviconAnalysis },

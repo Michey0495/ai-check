@@ -44,6 +44,7 @@ import {
   analyzeAiContentPreview,
   analyzeLinkQuality,
   analyzeRichResultsEligibility,
+  analyzeMetaRefresh,
 } from "@/lib/check-engine";
 
 export async function OPTIONS() {
@@ -239,6 +240,7 @@ export async function POST(request: NextRequest) {
     const aiContentPreview = analyzeAiContentPreview(html);
     const linkQuality = analyzeLinkQuality(html);
     const richResultsEligibility = analyzeRichResultsEligibility(jsonLdBlocks.types);
+    const metaRefresh = analyzeMetaRefresh(html);
 
     const report: CheckReport = {
       url,
@@ -303,6 +305,7 @@ export async function POST(request: NextRequest) {
       linkQuality,
       richResultsEligibility,
       crawlDelay,
+      metaRefresh,
     };
 
     return NextResponse.json(report, {

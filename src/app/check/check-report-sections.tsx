@@ -995,3 +995,37 @@ export function RichResultsSection({ report }: { report: CheckReport }) {
     </div>
   );
 }
+
+export function MetaRefreshSection({ report }: { report: CheckReport }) {
+  if (!report.metaRefresh) return null;
+
+  return (
+    <div id="sec-meta-refresh" className="scroll-mt-16 rounded-lg border border-yellow-500/20 bg-yellow-500/5 p-6">
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-white">meta refreshリダイレクト</h2>
+        <span className="rounded-full bg-yellow-500/10 px-3 py-1 text-xs text-yellow-400">
+          警告
+        </span>
+      </div>
+      <p className="mb-3 text-sm text-white/60">
+        <code className="rounded bg-white/10 px-1.5 py-0.5 text-xs">meta http-equiv=&quot;refresh&quot;</code> が検出されました。
+        AIクローラーがmeta refreshを正しく処理できない場合があり、インデックス漏れの原因になります。
+      </p>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <div className="rounded-lg bg-black/20 px-4 py-3">
+          <p className="text-xs text-white/40">遅延時間</p>
+          <p className="text-sm font-medium text-white">{report.metaRefresh.delay}秒</p>
+        </div>
+        {report.metaRefresh.url && (
+          <div className="rounded-lg bg-black/20 px-4 py-3">
+            <p className="text-xs text-white/40">リダイレクト先</p>
+            <p className="text-sm font-medium text-white/70 break-all">{report.metaRefresh.url}</p>
+          </div>
+        )}
+      </div>
+      <p className="mt-3 text-xs text-white/40">
+        推奨: サーバーサイドの301リダイレクトに置き換えることで、AIクローラーの巡回効率とSEO評価が向上します。
+      </p>
+    </div>
+  );
+}

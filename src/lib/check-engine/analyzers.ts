@@ -582,6 +582,16 @@ export function analyzeRichResultsEligibility(jsonLdTypes: string[]) {
   return results.length > 0 ? results : undefined;
 }
 
+export function analyzeMetaRefresh(html: string): { delay: number; url?: string } | undefined {
+  const match = html.match(/<meta[^>]*http-equiv=["']refresh["'][^>]*content=["'](\d+)(?:\s*;\s*url=([^"']+))?["']/i)
+    ?? html.match(/<meta[^>]*content=["'](\d+)(?:\s*;\s*url=([^"']+))?["'][^>]*http-equiv=["']refresh["']/i);
+  if (!match) return undefined;
+  return {
+    delay: parseInt(match[1], 10),
+    url: match[2]?.trim(),
+  };
+}
+
 export function analyzeJsonLdBlocks(html: string) {
   const jsonLdBlocks = html.match(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi) ?? [];
   const types: string[] = [];

@@ -50,6 +50,7 @@ import {
   AiContentPreviewSection,
   LinkQualitySection,
   RichResultsSection,
+  MetaRefreshSection,
 } from "./check-report-sections";
 
 function downloadFile(filename: string, content: string, mimeType: string) {
@@ -586,13 +587,14 @@ export function CheckPageClient() {
           {/* Security & Network */}
           <CollapsibleGroup
             title="セキュリティ & ネットワーク"
-            sectionCount={[report.aiCrawlerStatus?.length, report.securityHeaders, report.sslCertificate, report.redirectChain || report.canonicalUrl].filter(Boolean).length}
+            sectionCount={[report.aiCrawlerStatus?.length, report.securityHeaders, report.sslCertificate, report.redirectChain || report.canonicalUrl, report.metaRefresh].filter(Boolean).length}
             defaultOpen
           >
             <AiCrawlerStatusSection report={report} />
             <SecurityHeadersSection report={report} />
             <SslCertificateSection report={report} />
             <RedirectCanonicalSection report={report} />
+            <MetaRefreshSection report={report} />
           </CollapsibleGroup>
 
           {/* Performance */}

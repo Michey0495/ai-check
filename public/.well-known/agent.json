@@ -2,7 +2,7 @@
   "name": "AI Check",
   "description": "WebサイトのAI検索対応度をチェックし、llms.txt・robots.txt・JSON-LD構造化データ・agent.jsonを自動生成するツール",
   "url": "https://ai-check.ezoai.jp",
-  "version": "5.2.0",
+  "version": "5.3.0",
   "dateUpdated": "2026-03-15",
   "capabilities": [
     "GEOスコアチェック（7指標 + llms-full.txt検出 + スキーマタイプ識別 + noindex/nofollow検出）",
@@ -99,7 +99,9 @@
     "SNSシェア時OGP画像にスコア・グレード表示（X/LINE/URLコピー時に動的OGP生成）",
     "robots.txt Crawl-delay検出（グローバル・AIクローラー個別のCrawl-delay設定を検出・表示）",
     "比較ページ サマリーインサイト（総合トップ、サイト別の強み/未対応項目、指標別トップの自動分析）",
-    "詳細結果の個別コードコピーボタン（各修正コードを個別にワンクリックコピー）"
+    "詳細結果の個別コードコピーボタン（各修正コードを個別にワンクリックコピー）",
+    "meta http-equiv=refresh検出（AIクローラーに影響するmeta refreshリダイレクトを警告）",
+    "Markdownレポート完全化（テキストレポートと同等の全セクション網羅）"
   ],
   "endpoints": {
     "mcp": "https://ai-check.ezoai.jp/api/mcp",
