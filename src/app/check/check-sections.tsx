@@ -274,7 +274,7 @@ export function QuickFixGuide({ report }: { report: CheckReport }) {
 
   if (steps.length === 0) return null;
 
-  const totalMinutes = steps.reduce((sum, s) => sum + parseInt(s.time), 0);
+  const totalMinutes = steps.reduce((sum, s) => sum + parseInt(s.time, 10), 0);
   const potentialScore = report.results
     .filter((r) => r.status !== "pass")
     .reduce((sum, r) => sum + (r.maxScore - r.score), 0);

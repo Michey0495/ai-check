@@ -28,7 +28,10 @@ export function AgentJsonGenerator() {
   }
 
   function generate() {
-    if (!agentName.trim() || !agentUrl.trim()) return;
+    if (!agentName.trim() || !agentUrl.trim()) {
+      if (!agentUrl.trim()) setUrlError("URLを入力してください");
+      return;
+    }
     const err = validateUrl(agentUrl);
     if (err) { setUrlError(err); return; }
     setUrlError("");

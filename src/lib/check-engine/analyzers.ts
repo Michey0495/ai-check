@@ -414,7 +414,7 @@ export function analyzeOgPreview(html: string) {
 export function analyzeHeadingTree(html: string) {
   const headingTreeMatches = [...html.matchAll(/<h([1-6])[^>]*>([\s\S]*?)<\/h\1>/gi)];
   const tree = headingTreeMatches.slice(0, 30).map((m) => ({
-    level: parseInt(m[1]),
+    level: parseInt(m[1], 10),
     text: m[2].replace(/<[^>]+>/g, "").trim().slice(0, 100),
   })).filter((h) => h.text.length > 0);
   return tree.length > 0 ? tree : undefined;

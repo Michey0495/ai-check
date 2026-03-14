@@ -84,6 +84,7 @@ export function Header() {
               aria-expanded={guidesOpen}
               aria-haspopup="true"
               aria-controls="guides-dropdown"
+              aria-label="ガイドメニュー"
             >
               ガイド
               <svg

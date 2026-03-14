@@ -28,7 +28,10 @@ export function LlmsTxtGenerator() {
   }
 
   function generate() {
-    if (!siteName.trim() || !siteUrl.trim()) return;
+    if (!siteName.trim() || !siteUrl.trim()) {
+      if (!siteUrl.trim()) setUrlError("URLを入力してください");
+      return;
+    }
     const err = validateUrl(siteUrl);
     if (err) { setUrlError(err); return; }
     setUrlError("");

@@ -1,50 +1,53 @@
-# QA Report - web-url-a (AI Check)
+# QA Report - web-url-a
 
-**Date**: 2026-03-15 (Night 55)
-**Project**: AI Check - AI検索対応度チェッカー & GEO対策ツール
-**QA Engineer**: Claude (automated)
+**Date:** 2026-03-15
+**Project:** AI Check (web-url-a)
 
-## チェックリスト
+## Checklist
 
-- [x] `npm run build` 成功 (44ページ、エラー/警告なし)
+- [x] `npm run build` 成功
 - [x] `npm run lint` エラーなし
-- [x] レスポンシブ対応（モバイル・デスクトップ）- 全ページでTailwindブレークポイント使用
-- [x] favicon, OGP設定 - 全ページにOGP画像自動生成、favicon/apple-icon実装済み
-- [x] 404ページ - `not-found.tsx` 実装済み、ナビゲーションリンク付き
-- [x] ローディング状態の表示 - `loading.tsx` + 各クライアントコンポーネントで実装
-- [x] エラー状態の表示 - `error.tsx` + `global-error.tsx` + 各API呼び出しのエラーハンドリング
+- [x] レスポンシブ対応（Tailwind responsive classes確認済み）
+- [x] favicon, OGP設定（全ページに動的OGP画像あり）
+- [x] 404ページ（`not-found.tsx` 実装済み）
+- [x] ローディング状態の表示（`loading.tsx` with aria-label）
+- [x] エラー状態の表示（`error.tsx` + `global-error.tsx`）
 
-## 今回の修正内容
+## SEO
 
-### 1. アクセシビリティ改善
-- `recent-checks.tsx`: 各リンクに`aria-label`追加（グレード・スコア情報含む）
-- `recent-checks.tsx`: プログレスバーに`role="progressbar"` + `aria-valuenow/min/max/label`追加
+- [x] メタデータ: 107+キーワード、title template、description設定済み
+- [x] OGP: 全ページに動的OGP画像生成（`opengraph-image.tsx`）
+- [x] 構造化データ: Organization, WebSite, FAQPage, HowTo, BreadcrumbList
+- [x] `robots.ts`: AIクローラー（GPTBot, ClaudeBot等）許可
+- [x] `sitemap.ts`: 41 URL entries
+- [x] `/llms.txt`: AI向けサイト説明
+- [x] `/.well-known/agent.json`: A2A Agent Card v5.1.0
 
-### 2. JSON-LDハードコード日付の動的化
-- `check/[indicator]/page.tsx`: `dateModified`をハードコード("2026-03-14")から`new Date().toISOString().split("T")[0]`に変更
+## 修正した問題
 
-### 3. エラーメッセージの改善
-- `check-client.tsx`: 汎用エラーメッセージにURL確認と再試行の案内を追加
-- `check-client.tsx`: タイムアウトメッセージに再試行の案内を追加
+### 1. parseInt radix指定漏れ (Medium)
 
-### 4. API入力バリデーション強化
-- `api/generate/route.ts`: `pages`配列に200件上限バリデーション追加
+`parseInt()` に基数引数(10)が未指定の箇所を修正:
 
-## 全体評価
+- `src/app/check/check-sections.tsx:277`
+- `src/lib/check-engine/analyzers.ts:417`
+- `src/lib/check-engine/checkers.ts:429`
 
-### 優れている点
-- **セキュリティ**: SSRF防止、レートリミット、XSSエスケープ、CORS設定が全APIで実装済み
-- **アクセシビリティ**: スキップリンク、適切な見出し階層、ARIA属性、キーボードナビゲーション
-- **SEO**: 全ページにメタデータ・OGP・JSON-LD構造化データ
-- **AI対応**: robots.txt、llms.txt、agent.json、MCP Serverエンドポイント
-- **エラーハンドリング**: 全API/クライアントコンポーネントで適切なエラー処理
-- **パフォーマンス**: 静的生成（SSG）活用、画像遅延読み込み、Edge Runtime
+### 2. アクセシビリティ: ドロップダウンボタンのaria-label (Low)
 
-### 軽微な改善候補（今回スコープ外）
-- ジェネレーター各フォームの個別フィールド長バリデーション追加
-- レーダーチャートのモバイル表示最適化
-- コードブロックのモバイル横スクロール改善
+- `src/components/header.tsx` - ガイドメニューボタンに `aria-label` を追加
 
-## 結論
+### 3. フォームバリデーション: 空入力時のフィードバック不足 (Low)
 
-プロジェクトは本番運用可能な品質です。ブロッキングイシューはありません。
+- `src/app/generate/llms-txt/generator-client.tsx` - URL空欄時にエラーメッセージ表示
+- `src/app/generate/agent-json/generator-client.tsx` - 同上
+
+## 確認済み（問題なし）
+
+- XSS対策: dangerouslySetInnerHTMLはJSON-LDと定義済みデータのみ
+- SSRF対策: API routeでSSRFブロック実装済み
+- レート制限: IP-based rate limiting（5 req/300sec）
+- URL入力: バリデーション、正規化、maxLength制限あり
+- スキップリンク: layout.tsxに実装済み
+- フォーム: aria-invalid、aria-describedby適切に使用
+- エラーハンドリング: API routeで適切なエラーコード返却

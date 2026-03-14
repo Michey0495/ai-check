@@ -426,7 +426,7 @@ export function checkContentStructure(html: string): CheckResult {
 
   const h1Count = (html.match(/<h1[^>]*>/gi) ?? []).length;
   const headingMatches = html.match(/<h[1-6][^>]*>/gi) ?? [];
-  const headingLevels = headingMatches.map((m) => parseInt(m.charAt(2)));
+  const headingLevels = headingMatches.map((m) => parseInt(m.charAt(2), 10));
 
   let hierarchyOk = true;
   let hierarchyNote = "";
