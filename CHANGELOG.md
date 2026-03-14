@@ -22,3 +22,14 @@
 - **check**: No open GitHub issues
 - **update**: Patch dependency updates — react 19.2.3→19.2.4, react-dom 19.2.3→19.2.4, eslint 9.39.3→9.39.4, shadcn 4.0.0→4.0.7
 - **fix**: Corrected repository URL in `public/.well-known/agent.json` (web-url-a → ai-check)
+
+### Maintenance (3rd pass)
+
+- **check**: Build passes, TypeScript clean, 0 npm vulnerabilities
+- **check**: No open GitHub issues
+- **check**: AI public files verified (robots.txt, llms.txt, agent.json all present and valid)
+- **check**: No TODO/FIXME/HACK comments in codebase
+- **check**: No debug console.log in client code (only appropriate error logging in API routes)
+- **update**: Updated `agent.json` dateUpdated to 2026-03-15
+- **skip**: @types/node 20→25 and eslint 9→10 are major version bumps (patch/minor only policy)
+- **deployed**: Vercel production deploy successful (`web-url-a.ezoai.jp`)
