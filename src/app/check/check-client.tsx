@@ -108,8 +108,18 @@ export function CheckPageClient() {
           setReport(data);
           saveToHistory(data);
         }
-      } catch {
-        if (!cancelled) setError("チェック中にエラーが発生しました。");
+      } catch (e) {
+        if (!cancelled) {
+          const isTimeout = e instanceof DOMException && e.name === "AbortError";
+          const isNetwork = e instanceof TypeError && e.message.includes("fetch");
+          if (isTimeout) {
+            setError("チェックがタイムアウトしました。対象サイトの応答が遅い可能性があります。");
+          } else if (isNetwork) {
+            setError("ネットワークエラーが発生しました。インターネット接続を確認してください。");
+          } else {
+            setError("チェック中にエラーが発生しました。");
+          }
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -240,7 +250,10 @@ export function CheckPageClient() {
       )}
 
       {report && (
-        <div className="space-y-8">
+        <div className="space-y-8" aria-live="polite">
+          <p className="sr-only">
+            チェック完了: {report.url} のGEOスコアは{Math.round((report.totalScore / report.maxScore) * 100)}点、グレード{report.grade}です。
+          </p>
           {/* Site preview with OG image */}
           {(report.ogImage || report.siteTitle) && (
             <div className="mx-auto max-w-xl overflow-hidden rounded-lg border border-white/10 bg-white/5">

@@ -201,6 +201,11 @@ export default function RootLayout({
           }}
         />
         <GoogleAnalytics />
+        <noscript>
+          <div style={{ background: "#1a1a1a", color: "#fff", padding: "1rem", textAlign: "center" }}>
+            AI Checkの全機能を利用するにはJavaScriptを有効にしてください。
+          </div>
+        </noscript>
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:text-black"
