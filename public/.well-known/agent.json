@@ -118,7 +118,7 @@
   },
   "protocols": ["mcp", "rest"],
   "documentation": "https://ai-check.ezoai.jp/developers",
-  "repository": "https://github.com/Michey0495/web-url-a",
+  "repository": "https://github.com/Michey0495/ai-check",
   "languages": ["ja", "en"],
   "pricing": "free"
 }

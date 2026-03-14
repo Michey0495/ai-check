@@ -15,3 +15,10 @@
 - **check**: No stale dates or outdated content found in source code
 - **note**: Domain `ai-check.ezoai.jp` DNS resolves to Xserver (162.43.104.27) instead of Vercel. SSL cert generation for Vercel alias failed. DNS CNAME record needs to be configured at Xserver to point to `cname.vercel-dns.com`
 - **deployed**: Vercel production deploy successful (`web-url-a.ezoai.jp`)
+
+### Maintenance (2nd pass)
+
+- **check**: Build passes, TypeScript clean, 0 npm vulnerabilities
+- **check**: No open GitHub issues
+- **update**: Patch dependency updates — react 19.2.3→19.2.4, react-dom 19.2.3→19.2.4, eslint 9.39.3→9.39.4, shadcn 4.0.0→4.0.7
+- **fix**: Corrected repository URL in `public/.well-known/agent.json` (web-url-a → ai-check)
