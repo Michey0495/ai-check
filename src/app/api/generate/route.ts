@@ -47,6 +47,12 @@ export async function POST(request: NextRequest) {
             { status: 400, headers: corsHeaders() }
           );
         }
+        if (Array.isArray(pages) && pages.length > 200) {
+          return NextResponse.json(
+            { error: "pages は200件以内にしてください。" },
+            { status: 400, headers: corsHeaders() }
+          );
+        }
         const lines: string[] = [];
         lines.push(`# ${sanitizeLine(siteName)}`);
         lines.push("");

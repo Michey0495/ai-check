@@ -113,11 +113,11 @@ export function CheckPageClient() {
           const isTimeout = e instanceof DOMException && e.name === "AbortError";
           const isNetwork = e instanceof TypeError && e.message.includes("fetch");
           if (isTimeout) {
-            setError("チェックがタイムアウトしました。対象サイトの応答が遅い可能性があります。");
+            setError("チェックがタイムアウトしました。対象サイトの応答が遅い可能性があります。時間をおいて再度お試しください。");
           } else if (isNetwork) {
             setError("ネットワークエラーが発生しました。インターネット接続を確認してください。");
           } else {
-            setError("チェック中にエラーが発生しました。");
+            setError("チェック中に予期しないエラーが発生しました。URLが正しいことを確認し、再度お試しください。");
           }
         }
       } finally {

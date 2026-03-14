@@ -63,6 +63,7 @@ export function RecentChecks() {
             <Link
               key={entry.url + entry.checkedAt}
               href={`/check?url=${encodeURIComponent(entry.url)}`}
+              aria-label={`${hostname} のチェック結果を見る（グレード${entry.grade}、${pct}点）`}
               className="flex items-center gap-4 rounded-lg border border-white/5 bg-white/[0.02] px-4 py-3 transition-all duration-200 hover:border-white/10 hover:bg-white/5"
             >
               <span className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold ${GRADE_BG[entry.grade] ?? "bg-red-500/10"} ${GRADE_TEXT_COLORS[entry.grade] ?? "text-red-400"}`}>
@@ -78,7 +79,7 @@ export function RecentChecks() {
                 <p className={`text-lg font-bold ${GRADE_TEXT_COLORS[entry.grade] ?? "text-red-400"}`}>{pct}</p>
                 <p className="text-xs text-white/30">/ 100</p>
               </div>
-              <div className="h-1.5 w-20 overflow-hidden rounded-full bg-white/10">
+              <div className="h-1.5 w-20 overflow-hidden rounded-full bg-white/10" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={`スコア ${pct}%`}>
                 <div
                   className={`h-full rounded-full ${entry.grade === "A" ? "bg-green-400" : entry.grade === "B" ? "bg-blue-400" : entry.grade === "C" ? "bg-yellow-400" : entry.grade === "D" ? "bg-orange-400" : "bg-red-400"}`}
                   style={{ width: `${pct}%` }}
