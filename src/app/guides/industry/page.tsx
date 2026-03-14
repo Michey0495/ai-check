@@ -48,7 +48,7 @@ const articleJsonLd = {
   description:
     "ECサイト、SaaS、メディア、士業など業界別のGEO対策を解説。AI検索で引用されるための業界固有の施策を紹介。",
   url: "https://ai-check.ezoai.jp/guides/industry",
-  datePublished: "2026-03-08",
+  datePublished: "2026-03-15",
   dateModified: new Date().toISOString().split("T")[0],
   publisher: {
     "@type": "Organization",
@@ -137,8 +137,8 @@ const industries = [
     "name": "著者名",
     "url": "https://example.com/author"
   },
-  "datePublished": "2026-03-08",
-  "dateModified": "2026-03-14"
+  "datePublished": "2026-03-15",
+  "dateModified": "2026-03-15"
 }`,
   },
   {

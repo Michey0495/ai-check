@@ -525,3 +525,10 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - アクセシビリティ: チェック結果にaria-liveリージョン追加（スクリーンリーダーにスコア・グレードを自動通知）
 - UX: チェック中のエラーメッセージを細分化（タイムアウト・ネットワークエラー・一般エラーを区別、適切な対処法を表示）
 - アクセシビリティ: noscriptフォールバック追加（JavaScript無効時にメッセージ表示）
+
+### Night 55 (完了)
+- 修正: 全ページのdatePublished/dateModifiedを2026-03-15に更新（check/[indicator]、for/[industry]、developers、guides/industry、guides/geo-vs-seo、JSON-LD生成ツールプレースホルダー）
+- セキュリティ: バッチチェックAPI（/api/check/batch）のレート制限をURL単位に変更（バッチ内のURL数分のレート制限を消費、内部呼び出しの二重カウントを防止）
+- UX: チェック結果のエクスポートボタンをドロップダウンメニューに統合（テキスト/JSON/Markdown/ZIP/印刷を「保存」メニューにまとめ、モバイルUI改善）
+- アクセシビリティ: 比較ページに完了時のaria-liveアナウンス追加（スクリーンリーダーに成功/エラー件数を通知）
+- AI公開チャネル: agent.json v5.1.0に更新

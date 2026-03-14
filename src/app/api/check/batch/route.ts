@@ -13,26 +13,9 @@ const PER_URL_TIMEOUT_MS = 15000;
 
 export async function POST(request: NextRequest) {
   try {
-    // Rate limit check
+    // Parse body first to know URL count for rate limiting
     const forwarded = request.headers.get("x-forwarded-for");
     const ip = forwarded?.split(",")[0]?.trim() ?? "unknown";
-    const rateResult = checkRateLimit(ip);
-
-    if (!rateResult.allowed) {
-      return NextResponse.json(
-        { error: "リクエスト回数の上限に達しました。しばらく待ってから再度お試しください。", errorCode: "RATE_LIMITED" },
-        {
-          status: 429,
-          headers: {
-            ...corsHeaders(),
-            "X-RateLimit-Limit": String(RATE_LIMIT),
-            "X-RateLimit-Remaining": "0",
-            "X-RateLimit-Reset": String(Math.ceil(rateResult.resetAt / 1000)),
-            "Retry-After": String(Math.ceil((rateResult.resetAt - Date.now()) / 1000)),
-          },
-        }
-      );
-    }
 
     let body: { urls?: string[] };
     try {
@@ -84,7 +67,27 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Rate limit: consume 1 slot per URL in the batch
+    const rateResult = checkRateLimit(ip, urls.length);
+
+    if (!rateResult.allowed) {
+      return NextResponse.json(
+        { error: "リクエスト回数の上限に達しました。しばらく待ってから再度お試しください。", errorCode: "RATE_LIMITED" },
+        {
+          status: 429,
+          headers: {
+            ...corsHeaders(),
+            "X-RateLimit-Limit": String(RATE_LIMIT),
+            "X-RateLimit-Remaining": String(rateResult.remaining),
+            "X-RateLimit-Reset": String(Math.ceil(rateResult.resetAt / 1000)),
+            "Retry-After": String(Math.ceil((rateResult.resetAt - Date.now()) / 1000)),
+          },
+        }
+      );
+    }
+
     // Call the single check API for each URL concurrently
+    // Use x-batch-internal header to skip double rate-limiting on internal calls
     const baseApiUrl = request.nextUrl.origin;
     const results = await Promise.all(
       urls.map(async (url) => {
@@ -94,6 +97,7 @@ export async function POST(request: NextRequest) {
             headers: {
               "Content-Type": "application/json",
               "x-forwarded-for": ip,
+              "x-batch-internal": "1",
             },
             body: JSON.stringify({ url }),
             signal: AbortSignal.timeout(PER_URL_TIMEOUT_MS),

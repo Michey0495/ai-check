@@ -384,6 +384,12 @@ export function CompareClient() {
 
       {hasResults && (
         <div className="mt-12 space-y-8">
+          {/* Screen reader announcement for completion */}
+          {!running && results.length > 0 && (
+            <p className="sr-only" role="status" aria-live="polite">
+              比較完了: {results.filter((r) => r.report).length}件成功、{results.filter((r) => r.error).length}件エラー
+            </p>
+          )}
           {/* Score overview */}
           {(() => {
             const completedReports = results.filter((r) => r.report !== null);

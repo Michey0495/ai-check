@@ -486,8 +486,8 @@ Sitemap: https://example.com/sitemap.xml`,
     "jobTitle": "生産性コンサルタント",
     "description": "大手IT企業でのマネジメント経験(実績年数)年。リモートワーク導入支援(実績数)社以上。"
   },
-  "datePublished": "2026-03-01",
-  "dateModified": "2026-03-14",
+  "datePublished": "2026-03-15",
+  "dateModified": "2026-03-15",
   "image": "https://example.com/images/remote-work.jpg",
   "publisher": {
     "@type": "Organization",
@@ -619,8 +619,8 @@ Sitemap: https://example.com/sitemap.xml`,
       "url": "https://example.com/logo.png"
     }
   },
-  "datePublished": "2026-03-01",
-  "dateModified": "2026-03-14",
+  "datePublished": "2026-03-15",
+  "dateModified": "2026-03-15",
   "mainEntityOfPage": "https://example.com/articles/remote-productivity",
   "image": "https://example.com/images/remote-work-hero.jpg",
   "articleSection": "リモートワーク",
@@ -1022,7 +1022,7 @@ Sitemap: https://example.com/sitemap.xml`,
     {
       "@type": "Review",
       "author": { "@type": "Person", "name": "（実際のレビュー投稿者名）" },
-      "datePublished": "2026-02-15",
+      "datePublished": "2026-03-15",
       "reviewRating": {
         "@type": "Rating",
         "ratingValue": "（実際の評価値を入力）"

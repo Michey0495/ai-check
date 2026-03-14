@@ -195,8 +195,8 @@ export async function GET() {
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "記事のタイトル",
-  "datePublished": "2026-03-07",
-  "dateModified": "2026-03-14",
+  "datePublished": "2026-03-15",
+  "dateModified": "2026-03-15",
   "author": {
     "@type": "Person",
     "name": "著者名"
@@ -294,9 +294,9 @@ export async function generateMetadata({ params }): Promise<Metadata> {
   <meta property="og:image"
     content="https://example.com/og-image.jpg" />
   <meta property="article:published_time"
-    content="2026-01-15T00:00:00Z" />
+    content="2026-03-15T00:00:00Z" />
   <meta property="article:modified_time"
-    content="2026-03-01T00:00:00Z" />
+    content="2026-03-15T00:00:00Z" />
   <link rel="canonical" href="https://example.com/page" />
 </head>`,
       },
@@ -480,19 +480,19 @@ location / {
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://example.com/</loc>
-    <lastmod>2026-03-01</lastmod>
+    <lastmod>2026-03-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://example.com/about</loc>
-    <lastmod>2026-02-15</lastmod>
+    <lastmod>2026-03-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://example.com/blog/post-1</loc>
-    <lastmod>2026-03-05</lastmod>
+    <lastmod>2026-03-15</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -625,7 +625,7 @@ export default async function IndicatorPage({
     headline: content.seoTitle,
     description: content.seoDescription,
     url: `${BASE_URL}/check/${indicator}`,
-    datePublished: "2026-03-07",
+    datePublished: "2026-03-15",
     dateModified: new Date().toISOString().split("T")[0],
     author: {
       "@type": "Organization",

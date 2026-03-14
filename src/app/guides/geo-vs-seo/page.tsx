@@ -38,7 +38,7 @@ const articleJsonLd = {
   description:
     "GEO（AI検索最適化）とSEO（検索エンジン最適化）の違いを徹底比較。ChatGPT・Perplexity時代に必要な対策と、SEOとの両立方法を解説。",
   url: "https://ai-check.ezoai.jp/guides/geo-vs-seo",
-  datePublished: "2026-03-08",
+  datePublished: "2026-03-15",
   dateModified: new Date().toISOString().split("T")[0],
   publisher: {
     "@type": "Organization",

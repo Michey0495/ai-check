@@ -39,7 +39,7 @@ const endpoints = [
   "maxScore": 100,
   "grade": "C",
   "results": [...],
-  "checkedAt": "2026-03-10T00:00:00.000Z",
+  "checkedAt": "2026-03-15T00:00:00.000Z",
   "accessibility": {
     "imgCount": 12,
     "imgWithAlt": 10,
@@ -74,7 +74,7 @@ const endpoints = [
       "code": null
     }
   ],
-  "checkedAt": "2026-03-10T00:00:00.000Z"
+  "checkedAt": "2026-03-15T00:00:00.000Z"
 }`,
     notes: "レート制限: 10リクエスト/分（IP単位）",
     curl: `curl -X POST ${BASE}/api/check \\
@@ -133,7 +133,7 @@ const endpoints = [
       "maxScore": 100,
       "grade": "C",
       "results": [...],
-      "checkedAt": "2026-03-11T00:00:00.000Z"
+      "checkedAt": "2026-03-15T00:00:00.000Z"
     },
     {
       "url": "https://example.org",

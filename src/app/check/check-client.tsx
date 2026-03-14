@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { UrlCheckForm } from "@/components/url-check-form";
@@ -68,6 +68,82 @@ function getHostname(url: string): string {
 
 function dateSuffix(): string {
   return new Date().toISOString().split("T")[0];
+}
+
+function ExportDropdown({
+  onDownloadText,
+  onDownloadJson,
+  onDownloadMarkdown,
+  onDownloadZip,
+  onPrint,
+}: {
+  onDownloadText: () => void;
+  onDownloadJson: () => void;
+  onDownloadMarkdown: () => void;
+  onDownloadZip?: () => void;
+  onPrint: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handleClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", handleClick);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [open]);
+
+  const items = [
+    { label: "テキストで保存", action: onDownloadText },
+    { label: "JSONで保存", action: onDownloadJson },
+    { label: "Markdownで保存", action: onDownloadMarkdown },
+    ...(onDownloadZip ? [{ label: "ZIPで一括保存", action: onDownloadZip }] : []),
+    { label: "印刷 / PDF", action: onPrint },
+  ];
+
+  return (
+    <div ref={ref} className="relative">
+      <Button
+        variant="outline"
+        size="sm"
+        className="cursor-pointer border-white/10 bg-white/5 text-white/70 transition-all duration-200 hover:bg-white/10 hover:text-white"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-haspopup="menu"
+      >
+        保存 ▾
+      </Button>
+      {open && (
+        <div
+          role="menu"
+          className="absolute left-1/2 top-full z-50 mt-1 min-w-[160px] -translate-x-1/2 rounded-lg border border-white/10 bg-[#111] py-1 shadow-xl"
+        >
+          {items.map((item) => (
+            <button
+              key={item.label}
+              role="menuitem"
+              className="w-full cursor-pointer px-4 py-2 text-left text-sm text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+              onClick={() => {
+                item.action();
+                setOpen(false);
+              }}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
 export function CheckPageClient() {
@@ -444,40 +520,13 @@ export function CheckPageClient() {
               >
                 {copied ? "コピーしました" : "レポートをコピー"}
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="cursor-pointer border-white/10 bg-white/5 text-white/70 transition-all duration-200 hover:bg-white/10 hover:text-white"
-                onClick={handleDownloadReport}
-              >
-                テキストで保存
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="cursor-pointer border-white/10 bg-white/5 text-white/70 transition-all duration-200 hover:bg-white/10 hover:text-white"
-                onClick={handleDownloadJson}
-              >
-                JSONで保存
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="cursor-pointer border-white/10 bg-white/5 text-white/70 transition-all duration-200 hover:bg-white/10 hover:text-white"
-                onClick={handleDownloadMarkdown}
-              >
-                Markdownで保存
-              </Button>
-              {report.results.some((r) => r.code) && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="cursor-pointer border-primary/30 bg-primary/10 text-primary transition-all duration-200 hover:bg-primary/20"
-                  onClick={handleDownloadZip}
-                >
-                  ZIPで一括保存
-                </Button>
-              )}
+              <ExportDropdown
+                onDownloadText={handleDownloadReport}
+                onDownloadJson={handleDownloadJson}
+                onDownloadMarkdown={handleDownloadMarkdown}
+                onDownloadZip={report.results.some((r) => r.code) ? handleDownloadZip : undefined}
+                onPrint={() => window.print()}
+              />
               <Button
                 variant="outline"
                 size="sm"
@@ -510,14 +559,6 @@ export function CheckPageClient() {
                 disabled={loading}
               >
                 再チェック
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="no-print cursor-pointer border-white/10 bg-white/5 text-white/70 transition-all duration-200 hover:bg-white/10 hover:text-white"
-                onClick={() => window.print()}
-              >
-                印刷 / PDF
               </Button>
             </div>
           </div>

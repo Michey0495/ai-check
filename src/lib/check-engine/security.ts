@@ -5,7 +5,7 @@ const RATE_LIMIT = 10;
 const RATE_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX_ENTRIES = 10_000;
 
-export function checkRateLimit(ip: string): { allowed: boolean; remaining: number; resetAt: number } {
+export function checkRateLimit(ip: string, cost = 1): { allowed: boolean; remaining: number; resetAt: number } {
   const now = Date.now();
 
   if (rateLimitMap.size > RATE_LIMIT_MAX_ENTRIES) {
@@ -17,13 +17,17 @@ export function checkRateLimit(ip: string): { allowed: boolean; remaining: numbe
   const entry = rateLimitMap.get(ip);
   if (!entry || now > entry.resetAt) {
     const resetAt = now + RATE_WINDOW_MS;
-    rateLimitMap.set(ip, { count: 1, resetAt });
-    return { allowed: true, remaining: RATE_LIMIT - 1, resetAt };
+    if (cost > RATE_LIMIT) {
+      rateLimitMap.set(ip, { count: RATE_LIMIT, resetAt });
+      return { allowed: false, remaining: 0, resetAt };
+    }
+    rateLimitMap.set(ip, { count: cost, resetAt });
+    return { allowed: true, remaining: RATE_LIMIT - cost, resetAt };
   }
-  if (entry.count >= RATE_LIMIT) {
-    return { allowed: false, remaining: 0, resetAt: entry.resetAt };
+  if (entry.count + cost > RATE_LIMIT) {
+    return { allowed: false, remaining: Math.max(0, RATE_LIMIT - entry.count), resetAt: entry.resetAt };
   }
-  entry.count++;
+  entry.count += cost;
   return { allowed: true, remaining: RATE_LIMIT - entry.count, resetAt: entry.resetAt };
 }
 

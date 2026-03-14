@@ -70,7 +70,12 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  const rateLimit = checkRateLimit(ip);
+  const isBatchInternal = request.headers.get("x-batch-internal") === "1";
+
+  // Skip rate limiting for internal batch calls (already rate-limited by batch endpoint)
+  const rateLimit = isBatchInternal
+    ? { allowed: true, remaining: RATE_LIMIT, resetAt: Date.now() + 60_000 }
+    : checkRateLimit(ip);
   const rateLimitHeaders = {
     "X-RateLimit-Limit": String(RATE_LIMIT),
     "X-RateLimit-Remaining": String(rateLimit.remaining),
