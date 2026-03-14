@@ -2,6 +2,16 @@
 
 ## 2026-03-15
 
+### Maintenance (9th pass)
+
+- **check**: Build passes, TypeScript clean, ESLint clean, 0 npm vulnerabilities
+- **check**: No open GitHub issues
+- **check**: AI public files verified (robots.ts, llms.txt, agent.json all valid)
+- **check**: Sitemap complete — all 32 URLs covered
+- **check**: All API routes have proper input validation, rate limiting, and error handling
+- **check**: No safe dependency updates available (eslint 9→10, @types/node 20→25 are major — skipped)
+- **note**: DNS for `*.ezoai.jp` still resolves to Xserver (SSL cert mismatch on all subdomains). Requires CNAME: `web-url-a.ezoai.jp → cname.vercel-dns.com`
+
 ### Maintenance (8th pass)
 
 - **check**: Build passes, TypeScript clean, ESLint clean, 0 npm vulnerabilities
