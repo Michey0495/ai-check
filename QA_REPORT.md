@@ -1,11 +1,11 @@
 # QA Report - web-url-a (AI Check)
 
-**Date**: 2026-03-15 (7th QA pass)
+**Date**: 2026-03-15 (8th QA pass)
 **Project**: web-url-a (ai-check.ezoai.jp)
 
 ## Summary
 
-All QA checks passed. API入力バリデーションの強化を実施。
+All QA checks passed. クリップボード操作の誤表示バグ修正、セキュリティ強化 (favicon URL検証)、ゼロ除算ガード追加を実施。
 
 ## Checklist
 
@@ -68,28 +68,29 @@ All QA checks passed. API入力バリデーションの強化を実施。
 | Input sanitization | OK | sanitizeLine() でCRLFインジェクション防止 |
 | Body size limit | OK | generate API に50KB制限 |
 | XSS防止 | OK | React エスケープ + サニタイズ関数 |
+| Favicon URL検証 | OK | javascript:/data:/vbscript: プロトコルをブロック |
 
 ## Issues Found & Fixed (This Pass)
 
-### 1. MCP check_geo_score URL検証なし (Critical)
-- **修正**: string型チェック、空文字チェック、2048文字制限を追加
+### 1. クリップボード操作の誤表示 (High - UX Bug)
+- **問題**: `navigator.clipboard.writeText()` が失敗しても「コピー済み」と表示されていた
+- **影響ファイル**: check-client.tsx (CodeCopyButton, handleCopyReport, handleCopyShareUrl, badge copy), curl-copy.tsx, badge/generator-client.tsx
+- **修正**: `.then()` 内でのみ成功表示するように変更。失敗時はサイレント
 
-### 2. MCP additionalPropertiesプロトタイプ汚染リスク (Critical)
-- **修正**: 許可リスト方式に変更、@プレフィックスキーをブロック
+### 2. Favicon URL セキュリティ検証なし (Medium - Security)
+- **問題**: HTMLから抽出した favicon URL に `javascript:`, `data:`, `vbscript:` プロトコルが含まれうる
+- **影響ファイル**: api/check/route.ts
+- **修正**: 危険なプロトコルを正規表現でチェックし、該当する場合は `undefined` に設定
 
-### 3. MCP配列要素の型チェック不足 (High)
-- **修正**: pages/crawlers配列に `.filter(typeof === "string")` を追加
+### 3. スコア進捗バーのゼロ除算 (Low - Edge Case)
+- **問題**: `r.maxScore` が 0 の場合に `(r.score / r.maxScore) * 100` で NaN が生成される
+- **影響ファイル**: check-client.tsx line 740
+- **修正**: `r.maxScore > 0` のガードを追加
 
-### 4. Generate API dataパラメータ型未検証 (High)
-- **修正**: オブジェクト型チェック (`!== null`, `!Array.isArray`) を追加
-
-### 5. Batch API エラー種別未区別 (Medium)
-- **修正**: AbortError判定で タイムアウト/その他エラーを区別
-
-### 6. MCP jsonLd変数のlet→const (Lint)
-- **修正**: additionalProperties処理変更に伴いconstに修正
-
-## Accepted Risks
+## Known Issues (Accepted / Low Priority)
 
 - CORS `Access-Control-Allow-Origin: *` - 公開APIとして意図的
 - Feedback API: GITHUB_TOKEN未設定時のサイレント成功 - ローカル開発の利便性
+- Rate limit map のリニアスキャン (5000エントリ超過時) - 現時点で問題なし
+- 色のみによるステータス表示 (green/yellow/red) - テキストラベルも併記済み (pass/warn/fail)
+- localStorage QuotaExceededError の未キャッチ - ブラウザデフォルトの処理に委任

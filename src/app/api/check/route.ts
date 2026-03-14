@@ -207,8 +207,12 @@ export async function POST(request: NextRequest) {
     const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
     const faviconMatch = html.match(/<link[^>]*rel=["'](?:icon|shortcut icon)["'][^>]*href=["']([^"']+)["']/i);
     let faviconUrl = faviconMatch?.[1];
-    if (faviconUrl && !faviconUrl.startsWith("http")) {
-      faviconUrl = faviconUrl.startsWith("/") ? `${baseUrl}${faviconUrl}` : `${baseUrl}/${faviconUrl}`;
+    if (faviconUrl) {
+      if (/^(javascript|data|vbscript):/i.test(faviconUrl)) {
+        faviconUrl = undefined;
+      } else if (!faviconUrl.startsWith("http")) {
+        faviconUrl = faviconUrl.startsWith("/") ? `${baseUrl}${faviconUrl}` : `${baseUrl}/${faviconUrl}`;
+      }
     }
 
     const htmlSizeKB = Math.round((new TextEncoder().encode(html).length) / 1024);

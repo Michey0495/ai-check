@@ -77,9 +77,10 @@ function CodeCopyButton({ code }: { code: string }) {
     <button
       className="cursor-pointer rounded bg-white/5 px-2 py-1 text-xs text-white/40 transition-all duration-200 hover:bg-white/10 hover:text-white/70"
       onClick={() => {
-        navigator.clipboard.writeText(code).catch(() => {});
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        navigator.clipboard.writeText(code).then(() => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        }).catch(() => {});
       }}
     >
       {copied ? "コピー済み" : "コピー"}
@@ -233,9 +234,10 @@ export function CheckPageClient() {
 
   const handleCopyReport = useCallback(() => {
     if (!report) return;
-    navigator.clipboard.writeText(generateReportText(report)).catch(() => {});
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    navigator.clipboard.writeText(generateReportText(report)).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }).catch(() => {});
   }, [report]);
 
   const handleDownloadReport = useCallback(() => {
@@ -304,9 +306,10 @@ export function CheckPageClient() {
   const handleCopyShareUrl = useCallback(() => {
     if (!report) return;
     const shareUrl = getShareUrl(report);
-    navigator.clipboard.writeText(shareUrl).catch(() => {});
-    setUrlCopied(true);
-    setTimeout(() => setUrlCopied(false), 2000);
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      setUrlCopied(true);
+      setTimeout(() => setUrlCopied(false), 2000);
+    }).catch(() => {});
   }, [report, getShareUrl]);
 
   return (
@@ -737,7 +740,7 @@ export function CheckPageClient() {
                     <div
                       className="h-1.5 rounded-full transition-all duration-500"
                       style={{
-                        width: `${(r.score / r.maxScore) * 100}%`,
+                        width: `${r.maxScore > 0 ? (r.score / r.maxScore) * 100 : 0}%`,
                         backgroundColor: r.status === "pass" ? "#4ade80" : r.status === "warn" ? "#facc15" : "#f87171",
                       }}
                     />
@@ -816,9 +819,10 @@ export function CheckPageClient() {
                     key={item.key}
                     className="flex w-full cursor-pointer items-center justify-between rounded bg-black/30 px-3 py-2 text-left text-xs transition-all duration-200 hover:bg-black/50"
                     onClick={() => {
-                      navigator.clipboard.writeText(item.code).catch(() => {});
-                      setBadgeCopied(item.key);
-                      setTimeout(() => setBadgeCopied(""), 2000);
+                      navigator.clipboard.writeText(item.code).then(() => {
+                        setBadgeCopied(item.key);
+                        setTimeout(() => setBadgeCopied(""), 2000);
+                      }).catch(() => {});
                     }}
                   >
                     <span className="text-white/40">{item.label}</span>

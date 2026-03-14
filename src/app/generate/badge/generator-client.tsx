@@ -60,8 +60,7 @@ export function BadgeGenerator() {
       setCopied(type);
       setTimeout(() => setCopied(null), 2000);
     }).catch(() => {
-      setCopied(type);
-      setTimeout(() => setCopied(null), 2000);
+      // clipboard failed – do not show success
     });
   }
 
