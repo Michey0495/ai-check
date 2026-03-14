@@ -33,3 +33,12 @@
 - **update**: Updated `agent.json` dateUpdated to 2026-03-15
 - **skip**: @types/node 20→25 and eslint 9→10 are major version bumps (patch/minor only policy)
 - **deployed**: Vercel production deploy successful (`web-url-a.ezoai.jp`)
+
+### Maintenance (4th pass)
+
+- **check**: Build passes, TypeScript clean, 0 npm vulnerabilities
+- **check**: No open GitHub issues
+- **check**: All dependencies at latest minor/patch versions
+- **fix**: Removed stale `public/robots.txt` (referenced wrong domain `web-url-a.ezoai.jp`). Dynamic `src/app/robots.ts` (using `ai-check.ezoai.jp`) is the authoritative source
+- **check**: AI public files verified (llms.txt, agent.json valid; dynamic robots.ts serves correct robots.txt)
+- **check**: Code quality scan — no security issues, no unused imports, accessibility good, no stale dates
