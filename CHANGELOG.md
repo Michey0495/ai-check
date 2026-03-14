@@ -2,6 +2,16 @@
 
 ## 2026-03-15
 
+### Maintenance (7th pass)
+
+- **check**: Build passes, TypeScript clean, 0 npm vulnerabilities
+- **check**: No open GitHub issues
+- **check**: AI public files verified (robots.ts, llms.txt, agent.json all valid)
+- **check**: No safe dependency updates available (eslint 9→10, @types/node 20→25 are major — skipped)
+- **fix**: Made `dateModified` dynamic in 5 page JSON-LD schemas (page.tsx, geo, checklist, glossary, quick-start) — prevents stale dates
+- **fix**: Renamed package.json `name` from `web-url-a` to `ai-check` for consistency with actual project name
+- **deployed**: Vercel production deploy
+
 ### Maintenance (6th pass)
 
 - **check**: Build passes, TypeScript clean, 0 npm vulnerabilities

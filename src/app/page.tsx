@@ -64,7 +64,7 @@ const jsonLd = {
     url: "https://ezoai.jp",
   },
   datePublished: "2026-03-15",
-  dateModified: "2026-03-15",
+  dateModified: new Date().toISOString().split("T")[0],
   // NOTE: aggregateRating は実データが無いため設置禁止（Google ガイドライン違反）
 };
 

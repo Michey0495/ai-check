@@ -93,7 +93,7 @@ const howToJsonLd = {
     name: "AI Check - GEO対策ツール",
   },
   datePublished: "2026-03-15",
-  dateModified: "2026-03-15",
+  dateModified: new Date().toISOString().split("T")[0],
 };
 
 const steps = [
