@@ -319,6 +319,7 @@ export function checkMetaTags(html: string, responseHeaders?: Record<string, str
   const robotsContent = robotsMetaMatch?.[1]?.toLowerCase() ?? "";
   const xRobotsTag = responseHeaders?.["x-robots-tag"]?.toLowerCase() ?? "";
   const hasNoindex = robotsContent.includes("noindex") || xRobotsTag.includes("noindex");
+  const hasNofollow = robotsContent.includes("nofollow") || xRobotsTag.includes("nofollow");
 
   const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
   const titleText = titleMatch?.[1]?.trim() ?? "";
@@ -366,8 +367,25 @@ export function checkMetaTags(html: string, responseHeaders?: Record<string, str
     };
   }
 
+  const nofollowWarningText = hasNofollow
+    ? (() => {
+        const src = xRobotsTag.includes("nofollow") ? "X-Robots-Tagレスポンスヘッダー" : "meta robotsタグ";
+        return ` ${src}に nofollow が設定されています。リンク先の評価が検索エンジンに伝わらないため、GEO対策上の効果が制限される可能性があります。`;
+      })()
+    : "";
+
   if (coreScore >= 4) {
     const bonusText = bonusDetails.length > 0 ? ` ${bonusDetails.join("、")}。` : "";
+    if (hasNofollow) {
+      return {
+        id: "meta-tags",
+        score: 12,
+        maxScore: 15,
+        status: "warn",
+        message: "メタタグ: nofollow検出",
+        details: `title, description, OGPタグが設定されています。${bonusText}${extractedText}${nofollowWarningText}`,
+      };
+    }
     if (lengthWarnings.length > 0) {
       return {
         id: "meta-tags",

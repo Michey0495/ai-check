@@ -70,6 +70,22 @@ function dateSuffix(): string {
   return new Date().toISOString().split("T")[0];
 }
 
+function CodeCopyButton({ code }: { code: string }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <button
+      className="cursor-pointer rounded bg-white/5 px-2 py-1 text-xs text-white/40 transition-all duration-200 hover:bg-white/10 hover:text-white/70"
+      onClick={() => {
+        navigator.clipboard.writeText(code).catch(() => {});
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }}
+    >
+      {copied ? "コピー済み" : "コピー"}
+    </button>
+  );
+}
+
 function ExportDropdown({
   onDownloadText,
   onDownloadJson,
@@ -705,9 +721,14 @@ export function CheckPageClient() {
                   </p>
                 )}
                 {r.code && (
-                  <pre className="overflow-x-auto rounded-lg bg-black/50 p-4 text-xs text-white/70">
-                    <code>{r.code}</code>
-                  </pre>
+                  <div className="relative">
+                    <div className="absolute right-2 top-2">
+                      <CodeCopyButton code={r.code} />
+                    </div>
+                    <pre className="overflow-x-auto rounded-lg bg-black/50 p-4 pr-20 text-xs text-white/70">
+                      <code>{r.code}</code>
+                    </pre>
+                  </div>
                 )}
                 <div className="mt-3 flex items-center gap-3">
                   <div className="h-1.5 flex-1 rounded-full bg-white/10" role="progressbar" aria-valuenow={r.score} aria-valuemin={0} aria-valuemax={r.maxScore} aria-label={`${r.id}: ${r.score}/${r.maxScore}`}>

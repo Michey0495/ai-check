@@ -537,3 +537,9 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - 修正: 残存していたdatePublished古い日付を2026-03-15に統一（guides/checklist, quick-start, geo, glossary, for/[industry]の6箇所）
 - UX: Viewportにcolor-scheme: dark, themeColor: #000000を追加（モバイルブラウザのアドレスバー色統一、リーダーモード対応、PWA連携改善）
 - アクセシビリティ: URL入力フォームのヒントテキストコントラスト比改善（text-white/20→text-white/40、WCAG AA準拠）
+
+### Night 57 (完了)
+- 修正: トップページ「急成長」ラベルを「利用者拡大」に変更（未検証の主張を中立的表現に置換）
+- チェック強化: meta robots / X-Robots-Tag の nofollow 検出追加（noindex検出に加え、nofollowが設定されている場合に警告・スコア減点、リンク評価伝播への影響を通知）
+- UX: チェック結果の詳細セクションに個別コードコピーボタン追加（各修正コードブロックの右上にコピーボタン、ワンクリックでクリップボードにコピー）
+- AI公開チャネル: agent.json v5.2.0に更新、llms.txtにnofollow検出情報追記

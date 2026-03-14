@@ -45,7 +45,7 @@
 1. AIクローラーアクセス (robots.txt) - 10種のAIクローラー検出、全ブロック（User-agent: * / Disallow: /）対応
 2. llms.txt - 存在・文字数・品質チェック（見出し・URL・API情報の有無評価）
 3. 構造化データ (JSON-LD) - スキーマタイプ識別、必須プロパティ検証（17スキーマタイプ対応）、agent.json検出、おすすめスキーマ推定
-4. メタタグ & 鮮度 - title/description文字数最適化判定（title: 30-60文字、description: 70-160文字推奨）、noindex検出
+4. メタタグ & 鮮度 - title/description文字数最適化判定（title: 30-60文字、description: 70-160文字推奨）、noindex検出、nofollow検出
 5. コンテンツ構造 (セマンティックHTML) - 見出し階層バリデーション
 6. サーバーサイドレンダリング
 7. サイトマップ品質 - URL数・lastmod設定状況表示・サイトマップインデックス検出・URL数上限（50,000件）チェック

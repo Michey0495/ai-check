@@ -207,7 +207,7 @@ export default function Home() {
             <p className="mt-2 text-sm text-white/50">AI回答で検索が完結 -- サイトへの流入なしにユーザーの疑問が解決</p>
           </div>
           <div className="rounded-lg border border-white/10 bg-white/5 p-6 text-center">
-            <p className="text-3xl font-bold text-primary">急成長</p>
+            <p className="text-3xl font-bold text-primary">利用者拡大</p>
             <p className="mt-2 text-sm text-white/50">ChatGPT・Perplexity・Gemini等 AI検索エンジンの利用者が増加</p>
           </div>
         </div>
