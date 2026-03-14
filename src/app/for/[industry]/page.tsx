@@ -394,7 +394,7 @@ Sitemap: https://example.com/sitemap.xml`,
   "url": "https://taskflow.example.com",
   "screenshot": "https://taskflow.example.com/images/dashboard.png",
   "softwareVersion": "3.2.0",
-  "datePublished": "2026-03-09",
+  "datePublished": "2026-03-15",
   "offers": [
     {
       "@type": "Offer",
@@ -1412,7 +1412,7 @@ export default async function IndustryPage({
     headline: `${data.name}のGEO対策 - AI検索で見つけてもらうために`,
     description: data.metaDescription,
     url: `https://ai-check.ezoai.jp/for/${slug}`,
-    datePublished: "2026-03-09",
+    datePublished: "2026-03-15",
     dateModified: new Date().toISOString().split("T")[0],
     publisher: {
       "@type": "Organization",

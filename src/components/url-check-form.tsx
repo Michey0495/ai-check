@@ -174,7 +174,7 @@ export function UrlCheckForm({ size = "lg" }: { size?: "lg" | "sm" }) {
                   <span className="font-mono text-xs">{s}</span>
                 </li>
               ))}
-              <li role="none" className="border-t border-white/5 px-3 py-1.5 text-xs text-white/20">
+              <li role="none" className="border-t border-white/5 px-3 py-1.5 text-xs text-white/40">
                 チェック履歴から候補を表示
               </li>
             </ul>

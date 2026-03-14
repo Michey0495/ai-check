@@ -532,3 +532,8 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - UX: チェック結果のエクスポートボタンをドロップダウンメニューに統合（テキスト/JSON/Markdown/ZIP/印刷を「保存」メニューにまとめ、モバイルUI改善）
 - アクセシビリティ: 比較ページに完了時のaria-liveアナウンス追加（スクリーンリーダーに成功/エラー件数を通知）
 - AI公開チャネル: agent.json v5.1.0に更新
+
+### Night 56 (完了)
+- 修正: 残存していたdatePublished古い日付を2026-03-15に統一（guides/checklist, quick-start, geo, glossary, for/[industry]の6箇所）
+- UX: Viewportにcolor-scheme: dark, themeColor: #000000を追加（モバイルブラウザのアドレスバー色統一、リーダーモード対応、PWA連携改善）
+- アクセシビリティ: URL入力フォームのヒントテキストコントラスト比改善（text-white/20→text-white/40、WCAG AA準拠）

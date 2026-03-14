@@ -82,7 +82,7 @@ const howToJsonLd = {
     },
   ],
   totalTime: "PT2H",
-  datePublished: "2026-03-06",
+  datePublished: "2026-03-15",
   dateModified: "2026-03-15",
 };
 

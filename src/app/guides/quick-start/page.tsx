@@ -92,7 +92,7 @@ const howToJsonLd = {
     "@type": "HowToTool",
     name: "AI Check - GEO対策ツール",
   },
-  datePublished: "2026-03-06",
+  datePublished: "2026-03-15",
   dateModified: "2026-03-15",
 };
 
