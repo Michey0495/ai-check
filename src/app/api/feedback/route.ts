@@ -53,8 +53,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Message too long" }, { status: 400 });
   }
 
-  const ALLOWED_REPOS = ["web-url-a"];
-  const targetRepo = typeof repo === "string" && ALLOWED_REPOS.includes(repo) ? repo : "web-url-a";
+  const ALLOWED_REPOS = ["ai-check"];
+  const targetRepo = typeof repo === "string" && ALLOWED_REPOS.includes(repo) ? repo : "ai-check";
 
   const labels: Record<string, string> = {
     bug: "bug",

@@ -182,7 +182,7 @@ export default function RootLayout({
                 description:
                   "AI検索対応度チェッカー & GEO対策ツール。URLを入力するだけでAI検索最適化を実現。",
                 areaServed: "JP",
-                sameAs: ["https://github.com/Michey0495/web-url-a"],
+                sameAs: ["https://github.com/Michey0495/ai-check"],
               },
               {
                 "@context": "https://schema.org",
@@ -217,7 +217,7 @@ export default function RootLayout({
         <Header />
         <main id="main-content" className="mx-auto max-w-5xl px-4">{children}</main>
         <Footer />
-        <FeedbackWidget repoName="web-url-a" />
+        <FeedbackWidget repoName="ai-check" />
         <ScrollToTop />
       </body>
     </html>
