@@ -74,18 +74,21 @@ function dateSuffix(): string {
 }
 
 function CodeCopyButton({ code }: { code: string }) {
-  const [copied, setCopied] = useState(false);
+  const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
   return (
     <button
-      className="cursor-pointer rounded bg-white/5 px-2 py-1 text-xs text-white/40 transition-all duration-200 hover:bg-white/10 hover:text-white/70"
+      className={`cursor-pointer rounded bg-white/5 px-2 py-1 text-xs transition-all duration-200 hover:bg-white/10 hover:text-white/70 ${state === "failed" ? "text-red-400" : "text-white/40"}`}
       onClick={() => {
         navigator.clipboard.writeText(code).then(() => {
-          setCopied(true);
-          setTimeout(() => setCopied(false), 2000);
-        }).catch(() => {});
+          setState("copied");
+          setTimeout(() => setState("idle"), 2000);
+        }).catch(() => {
+          setState("failed");
+          setTimeout(() => setState("idle"), 2000);
+        });
       }}
     >
-      {copied ? "コピー済み" : "コピー"}
+      {state === "copied" ? "コピー済み" : state === "failed" ? "コピー失敗" : "コピー"}
     </button>
   );
 }

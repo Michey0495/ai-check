@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { normalizeUrl } from "@/lib/url-utils";
 
 const HISTORY_KEY = "aicheck-history";
 
@@ -110,10 +111,7 @@ export function UrlCheckForm({ size = "lg" }: { size?: "lg" | "sm" }) {
       setError("URLを入力してください。");
       return;
     }
-    let normalized = url.trim();
-    if (!/^https?:\/\//i.test(normalized)) {
-      normalized = "https://" + normalized;
-    }
+    const normalized = normalizeUrl(url);
     try {
       const parsed = new URL(normalized);
       if (!["http:", "https:"].includes(parsed.protocol)) {

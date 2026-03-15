@@ -575,3 +575,8 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - UX: 「AI連携プロトコル」セクションを「Well-Known ファイル」に拡張（agent.json + ai-plugin.json + security.txt の3ファイル検出表示）
 - 生成ツール: robots.txt生成ツールのAIクローラーリストを8→11種に拡大（ChatGPT-User、anthropic-ai、Applebot-Extended追加、チェッカーとの一致を確保）
 - AI公開チャネル: agent.json v5.8.0に更新、llms.txtにsecurity.txt検出・クローラー拡大情報追記
+
+### Night 63 (完了)
+- 修正: 比較ページのAbortController管理をuseState→useRefに修正（不正なhooksパターンの解消、再レンダリング時の状態不整合バグ修正）
+- リファクタリング: URL正規化処理を共通ユーティリティ（lib/url-utils.ts）に抽出（url-check-form, compare-clientの重複排除）
+- UX: CodeCopyButtonのクリップボード操作失敗時にエラーフィードバック追加（「コピー失敗」表示、赤色ハイライト）

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { CheckReport } from "@/lib/check-indicators";
 import { GRADE_TEXT_COLORS } from "@/lib/grade-colors";
+import { normalizeUrl } from "@/lib/url-utils";
 
 function generateCSV(results: { url: string; report: CheckReport | null; error: string }[]): string {
   const reports = results.filter((r) => r.report !== null);
@@ -230,15 +231,14 @@ export function CompareClient() {
     setUrls((prev) => (prev.length > 2 ? prev.filter((_, i) => i !== index) : prev));
   }, []);
 
-  const controllerRef = useState<AbortController | null>(null);
+  const controllerRef = useRef<AbortController | null>(null);
 
   const handleCompare = useCallback(async () => {
     const validUrls = urls.filter((u) => u.trim().length > 0);
     if (validUrls.length < 2 || running) return;
 
     for (const u of validUrls) {
-      let normalized = u.trim();
-      if (!/^https?:\/\//i.test(normalized)) normalized = `https://${normalized}`;
+      const normalized = normalizeUrl(u);
       try { new URL(normalized); } catch {
         setResults(validUrls.map((url) => ({ url: url.trim(), report: null, error: url === u ? "有効なURLを入力してください" : "", loading: false })));
         return;
@@ -246,9 +246,9 @@ export function CompareClient() {
     }
 
     // Abort any in-flight requests
-    controllerRef[0]?.abort();
+    controllerRef.current?.abort();
     const controller = new AbortController();
-    controllerRef[1](controller);
+    controllerRef.current = controller;
 
     setRunning(true);
     const initial: CompareResult[] = validUrls.map((url) => ({
@@ -261,10 +261,7 @@ export function CompareClient() {
 
     const promises = validUrls.map(async (url, i) => {
       try {
-        let normalizedUrl = url.trim();
-        if (!/^https?:\/\//i.test(normalizedUrl)) {
-          normalizedUrl = `https://${normalizedUrl}`;
-        }
+        const normalizedUrl = normalizeUrl(url);
         const res = await fetch("/api/check", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -297,7 +294,7 @@ export function CompareClient() {
     if (!controller.signal.aborted) {
       setRunning(false);
     }
-  }, [urls, running, controllerRef]);
+  }, [urls, running]);
 
   const [csvError, setCsvError] = useState("");
 
