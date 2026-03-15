@@ -30,4 +30,5 @@ export {
   analyzeMetaRefresh,
   analyzeSnippetControl,
   detectOpenSearch,
+  analyzeAiPlugin,
 } from "./analyzers";

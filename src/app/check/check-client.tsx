@@ -52,6 +52,7 @@ import {
   RichResultsSection,
   MetaRefreshSection,
   SnippetControlSection,
+  AiProtocolFilesSection,
 } from "./check-report-sections";
 
 function downloadFile(filename: string, content: string, mimeType: string) {
@@ -632,9 +633,10 @@ export function CheckPageClient() {
           {/* Tech & Social */}
           <CollapsibleGroup
             title="テクノロジー & ソーシャル"
-            sectionCount={[report.detectedTech?.length, report.pwaManifest?.exists, report.socialMeta, report.faviconAnalysis, report.accessibility?.imgCount || report.accessibility?.ariaLandmarks].filter(Boolean).length}
+            sectionCount={[report.detectedTech?.length, report.pwaManifest?.exists, report.socialMeta, report.faviconAnalysis, report.accessibility?.imgCount || report.accessibility?.ariaLandmarks, report.aiProtocolFiles].filter(Boolean).length}
           >
             <DetectedTechSection report={report} />
+            <AiProtocolFilesSection report={report} />
             <PwaManifestSection report={report} />
             <SocialMetaSection report={report} />
             <FaviconAnalysisSection report={report} />

@@ -276,6 +276,13 @@ export type CheckReport = {
     maxVideoPreview?: number;
   };
   openSearch?: string; // title of OpenSearch description
+  aiProtocolFiles?: {
+    hasAiPlugin: boolean;
+    hasAgentJson: boolean;
+    aiPluginName?: string;
+    aiPluginDescription?: string;
+    agentJsonVersion?: string;
+  };
 };
 
 export function getGrade(score: number, maxScore: number): CheckReport["grade"] {

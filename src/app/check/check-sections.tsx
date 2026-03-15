@@ -356,6 +356,7 @@ export function SectionNav({ report }: { report: CheckReport }) {
       { id: "sec-link-quality", label: "リンク品質", exists: !!report.linkQuality },
       { id: "sec-rich-results", label: "リッチリザルト", exists: !!(report.richResultsEligibility && report.richResultsEligibility.length > 0) },
       { id: "sec-snippet-control", label: "スニペット制御", exists: !!(report.snippetControl || report.openSearch) },
+      { id: "sec-ai-protocols", label: "AI連携", exists: !!report.aiProtocolFiles },
     ];
     return s.filter((x) => x.exists);
   }, [report]);

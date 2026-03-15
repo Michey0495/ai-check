@@ -107,6 +107,7 @@
 - Markdownレポート完全化（テキストレポートと同等の全セクション網羅: リダイレクト、SSL、canonical、PWA、CWV、画像最適化、ファビコン、OGプレビュー、見出し構造、リンク品質、リッチリザルト等）
 - スニペット制御検出（meta robotsの max-snippet、max-image-preview、max-video-preview ディレクティブを検出。AI検索エンジンがコンテンツを引用・表示する際の制限を可視化）
 - OpenSearch記述ファイル検出（link rel="search" type="application/opensearchdescription+xml" の存在を検出。ブラウザやAIエージェントのサイト内検索対応状況を表示）
+- AI連携プロトコル検出（ai-plugin.json（ChatGPTプラグインマニフェスト）と agent.json（A2A Agent Card）の存在を検出。プラグイン名・説明・バージョンを表示。AIエージェントがサービスを自動発見・利用できる状態かを可視化）
 
 ## API
 - GET /api/check?url=URL: URLのGEOスコアチェック（GETメソッド対応、ブラウザから直接アクセス可）。CORS対応

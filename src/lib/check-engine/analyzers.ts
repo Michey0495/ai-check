@@ -651,3 +651,49 @@ export function analyzeJsonLdBlocks(html: string) {
   }
   return { blockCount: jsonLdBlocks.length, types };
 }
+
+export async function analyzeAiPlugin(
+  baseUrl: string,
+  agentRes: FetchResult
+): Promise<{
+  hasAiPlugin: boolean;
+  hasAgentJson: boolean;
+  aiPluginName?: string;
+  aiPluginDescription?: string;
+  agentJsonVersion?: string;
+} | undefined> {
+  let hasAiPlugin = false;
+  let aiPluginName: string | undefined;
+  let aiPluginDescription: string | undefined;
+
+  try {
+    const res = await safeFetch(`${baseUrl}/.well-known/ai-plugin.json`);
+    if (res.ok && res.text.length > 10) {
+      const data = JSON.parse(res.text);
+      if (data.name_for_human || data.name_for_model) {
+        hasAiPlugin = true;
+        aiPluginName = data.name_for_human ?? data.name_for_model;
+        aiPluginDescription = data.description_for_human ?? data.description_for_model;
+      }
+    }
+  } catch {
+    // ignore parse errors
+  }
+
+  let hasAgentJson = false;
+  let agentJsonVersion: string | undefined;
+  if (agentRes.ok && agentRes.text.length > 10) {
+    try {
+      const data = JSON.parse(agentRes.text);
+      if (data.name || data.url) {
+        hasAgentJson = true;
+        agentJsonVersion = data.version;
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  if (!hasAiPlugin && !hasAgentJson) return undefined;
+  return { hasAiPlugin, hasAgentJson, aiPluginName, aiPluginDescription, agentJsonVersion };
+}

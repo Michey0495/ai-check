@@ -157,8 +157,7 @@ export async function POST(request: NextRequest) {
 
       case "tools/call": {
         const toolName = params?.name;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const args = (params?.arguments ?? {}) as Record<string, any>;
+        const args = (params?.arguments ?? {}) as Record<string, unknown>;
 
         if (toolName === "check_geo_score") {
           if (typeof args.url !== "string" || !args.url.trim()) {
@@ -190,13 +189,13 @@ export async function POST(request: NextRequest) {
 
         if (toolName === "generate_llms_txt") {
           const lines: string[] = [];
-          lines.push(`# ${sanitizeLine(args.siteName ?? "")}`);
+          lines.push(`# ${sanitizeLine(String(args.siteName ?? ""))}`);
           lines.push("");
           if (args.description) {
-            lines.push(`> ${sanitizeLine(args.description)}`);
+            lines.push(`> ${sanitizeLine(String(args.description))}`);
             lines.push("");
           }
-          if (args.pages?.length) {
+          if (Array.isArray(args.pages) && args.pages.length > 0) {
             lines.push("## 主要ページ");
             limitArray<string>(args.pages)
               .filter((p): p is string => typeof p === "string")
@@ -204,7 +203,7 @@ export async function POST(request: NextRequest) {
             lines.push("");
           }
           lines.push("## 連絡先");
-          lines.push(`- サイト: ${sanitizeLine(args.siteUrl ?? "")}`);
+          lines.push(`- サイト: ${sanitizeLine(String(args.siteUrl ?? ""))}`);
 
           return jsonRpcResponse({
             jsonrpc: "2.0",
@@ -214,7 +213,7 @@ export async function POST(request: NextRequest) {
         }
 
         if (toolName === "generate_robots_txt") {
-          const crawlers = args.allowedCrawlers
+          const crawlers = Array.isArray(args.allowedCrawlers)
             ? limitArray<string>(args.allowedCrawlers).filter((c): c is string => typeof c === "string")
             : ["GPTBot", "ClaudeBot", "PerplexityBot", "Google-Extended"];
           const lines: string[] = ["User-agent: *", "Allow: /", ""];
@@ -223,7 +222,7 @@ export async function POST(request: NextRequest) {
             lines.push("Allow: /");
             lines.push("");
           });
-          if (args.sitemapUrl) {
+          if (typeof args.sitemapUrl === "string") {
             lines.push(`Sitemap: ${sanitizeLine(args.sitemapUrl)}`);
           }
 
@@ -236,7 +235,7 @@ export async function POST(request: NextRequest) {
 
         if (toolName === "generate_json_ld") {
           const validTypes = ["WebSite", "Organization", "FAQPage", "HowTo", "Product", "Article"];
-          const schemaType = args.type;
+          const schemaType = String(args.type ?? "");
           if (!validTypes.includes(schemaType)) {
             return jsonRpcResponse({
               jsonrpc: "2.0",
@@ -244,8 +243,7 @@ export async function POST(request: NextRequest) {
               id,
             });
           }
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const jsonLd: Record<string, any> = {
+          const jsonLd: Record<string, unknown> = {
             "@context": "https://schema.org",
             "@type": schemaType,
             name: args.name,
@@ -256,7 +254,7 @@ export async function POST(request: NextRequest) {
             jsonLd.description = args.description;
           }
 
-          const extra = args.data ?? {};
+          const extra = (typeof args.data === "object" && args.data !== null ? args.data : {}) as Record<string, unknown>;
 
           if (schemaType === "FAQPage" && Array.isArray(extra.questions)) {
             jsonLd.mainEntity = limitArray<{ question?: string; answer?: string }>(extra.questions)
@@ -280,7 +278,7 @@ export async function POST(request: NextRequest) {
             if (extra.sameAs) jsonLd.sameAs = extra.sameAs;
           } else if (schemaType === "Product") {
             if (extra.brand) jsonLd.brand = { "@type": "Brand", name: extra.brand };
-            if (extra.offers) jsonLd.offers = { "@type": "Offer", ...extra.offers };
+            if (typeof extra.offers === "object" && extra.offers !== null) jsonLd.offers = { "@type": "Offer", ...extra.offers };
           } else if (schemaType === "Article") {
             if (extra.author) jsonLd.author = { "@type": "Person", name: extra.author };
             if (extra.datePublished) jsonLd.datePublished = extra.datePublished;
@@ -289,7 +287,7 @@ export async function POST(request: NextRequest) {
 
           if (extra.additionalProperties && typeof extra.additionalProperties === "object" && !Array.isArray(extra.additionalProperties)) {
             const ALLOWED_EXTRA = ["sameAs", "image", "logo", "alternateName", "disambiguatingDescription", "inLanguage", "keywords"];
-            for (const [key, value] of Object.entries(extra.additionalProperties)) {
+            for (const [key, value] of Object.entries(extra.additionalProperties as Record<string, unknown>)) {
               if (ALLOWED_EXTRA.includes(key) && !key.startsWith("@")) {
                 jsonLd[key] = value;
               }
@@ -307,9 +305,9 @@ export async function POST(request: NextRequest) {
         if (toolName === "generate_agent_json") {
           const agentCard = {
             name: args.name,
-            description: args.description ?? "",
+            description: String(args.description ?? ""),
             url: args.url,
-            version: args.version ?? "1.0.0",
+            version: String(args.version ?? "1.0.0"),
             capabilities: limitArray<string>(args.capabilities),
             api_endpoints: limitArray<string>(args.apiEndpoints),
             protocol: "a2a",

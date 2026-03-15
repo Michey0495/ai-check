@@ -1102,3 +1102,55 @@ export function SnippetControlSection({ report }: { report: CheckReport }) {
     </div>
   );
 }
+
+export function AiProtocolFilesSection({ report }: { report: CheckReport }) {
+  const ap = report.aiProtocolFiles;
+  if (!ap) return null;
+
+  const fileCount = [ap.hasAiPlugin, ap.hasAgentJson].filter(Boolean).length;
+
+  return (
+    <div id="sec-ai-protocols" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-white">AI連携プロトコル</h2>
+        <span className={`rounded-full px-3 py-1 text-xs ${fileCount >= 2 ? "bg-green-500/10 text-green-400" : fileCount === 1 ? "bg-yellow-500/10 text-yellow-400" : "bg-white/5 text-white/40"}`}>
+          {fileCount}/2 ファイル検出
+        </span>
+      </div>
+      <div className="space-y-3">
+        <div className={`flex items-center justify-between rounded-lg px-4 py-3 ${ap.hasAgentJson ? "bg-green-500/10" : "bg-white/[0.03]"}`}>
+          <div>
+            <p className="text-sm font-medium text-white/80">agent.json (A2A Agent Card)</p>
+            <p className="text-xs text-white/40">AIエージェント間の自動発見・接続に使用</p>
+            {ap.hasAgentJson && ap.agentJsonVersion && (
+              <p className="mt-1 text-xs text-white/50">バージョン: {ap.agentJsonVersion}</p>
+            )}
+          </div>
+          <span className={`text-sm ${ap.hasAgentJson ? "text-green-400" : "text-white/30"}`}>
+            {ap.hasAgentJson ? "検出" : "未検出"}
+          </span>
+        </div>
+        <div className={`flex items-center justify-between rounded-lg px-4 py-3 ${ap.hasAiPlugin ? "bg-green-500/10" : "bg-white/[0.03]"}`}>
+          <div>
+            <p className="text-sm font-medium text-white/80">ai-plugin.json (ChatGPTプラグイン)</p>
+            <p className="text-xs text-white/40">ChatGPT等のAIプラットフォームからのプラグイン接続に使用</p>
+            {ap.hasAiPlugin && ap.aiPluginName && (
+              <p className="mt-1 text-xs text-white/50">プラグイン名: {ap.aiPluginName}</p>
+            )}
+            {ap.hasAiPlugin && ap.aiPluginDescription && (
+              <p className="text-xs text-white/40">{ap.aiPluginDescription.slice(0, 120)}{ap.aiPluginDescription.length > 120 ? "..." : ""}</p>
+            )}
+          </div>
+          <span className={`text-sm ${ap.hasAiPlugin ? "text-green-400" : "text-white/30"}`}>
+            {ap.hasAiPlugin ? "検出" : "未検出"}
+          </span>
+        </div>
+      </div>
+      {fileCount === 0 && (
+        <p className="mt-3 text-xs text-white/40">
+          AI連携プロトコルファイルが検出されませんでした。agent.jsonやai-plugin.jsonを設置すると、AIエージェントがサービスを自動的に発見・利用できるようになります。
+        </p>
+      )}
+    </div>
+  );
+}

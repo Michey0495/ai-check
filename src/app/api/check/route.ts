@@ -47,6 +47,7 @@ import {
   analyzeMetaRefresh,
   analyzeSnippetControl,
   detectOpenSearch,
+  analyzeAiPlugin,
 } from "@/lib/check-engine";
 
 export async function OPTIONS() {
@@ -249,6 +250,7 @@ export async function POST(request: NextRequest) {
     const metaRefresh = analyzeMetaRefresh(html);
     const snippetControl = analyzeSnippetControl(html, responseHdrs);
     const openSearch = detectOpenSearch(html);
+    const aiProtocolFiles = await analyzeAiPlugin(baseUrl, agentRes);
 
     const report: CheckReport = {
       url,
@@ -316,6 +318,7 @@ export async function POST(request: NextRequest) {
       metaRefresh,
       snippetControl,
       openSearch: openSearch || undefined,
+      aiProtocolFiles: aiProtocolFiles || undefined,
     };
 
     return NextResponse.json(report, {
