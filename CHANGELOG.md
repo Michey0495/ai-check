@@ -2,6 +2,15 @@
 
 ## 2026-03-16
 
+### Maintenance (12th pass)
+
+- **check**: Build passes, TypeScript clean, ESLint clean, 0 npm vulnerabilities
+- **check**: No open GitHub issues
+- **check**: AI public files verified (robots.ts route, llms.txt, agent.json all valid)
+- **check**: No TODO/FIXME comments in codebase
+- **check**: No safe dependency updates available (eslint 9→10, @types/node 20→25 are major — skipped)
+- **note**: DNS for `ai-check.ezoai.jp` / `web-url-a.ezoai.jp` still resolves to Xserver (162.43.104.27). No CNAME records set. Requires CNAME: `ai-check.ezoai.jp → cname.vercel-dns.com` (or `web-url-a.ezoai.jp` depending on desired subdomain)
+
 ### Maintenance (11th pass)
 
 - **check**: Build passes, TypeScript clean, ESLint clean, 0 npm vulnerabilities
