@@ -2,6 +2,15 @@
 
 ## 2026-03-16
 
+### Maintenance (11th pass)
+
+- **check**: Build passes, TypeScript clean, ESLint clean, 0 npm vulnerabilities
+- **check**: No open GitHub issues
+- **check**: AI public files verified (robots.ts route, llms.txt, agent.json all valid)
+- **check**: Source code security scan — all API routes clean, SSRF/rate-limiting/input validation intact
+- **check**: No safe dependency updates available (eslint 9→10, @types/node 20→25 are major — skipped)
+- **note**: DNS for `ai-check.ezoai.jp` still points to Xserver. Requires A record: `ai-check.ezoai.jp → 76.76.21.21`
+
 ### Maintenance (10th pass)
 
 - **check**: Build passes, TypeScript clean, 0 npm vulnerabilities
