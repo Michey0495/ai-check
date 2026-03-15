@@ -5,7 +5,7 @@ export function Footer() {
     <footer className="border-t border-white/10 py-12">
       <div className="mx-auto max-w-5xl px-4">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
+          <nav aria-label="チェック">
             <h3 className="mb-3 text-sm font-semibold text-white">チェック</h3>
             <ul className="space-y-2 text-sm text-white/50">
               <li>
@@ -39,8 +39,8 @@ export function Footer() {
                 </Link>
               </li>
             </ul>
-          </div>
-          <div>
+          </nav>
+          <nav aria-label="生成ツール">
             <h3 className="mb-3 text-sm font-semibold text-white">生成ツール</h3>
             <ul className="space-y-2 text-sm text-white/50">
               <li>
@@ -74,8 +74,8 @@ export function Footer() {
                 </Link>
               </li>
             </ul>
-          </div>
-          <div>
+          </nav>
+          <nav aria-label="ガイド">
             <h3 className="mb-3 text-sm font-semibold text-white">ガイド</h3>
             <ul className="space-y-2 text-sm text-white/50">
               <li>
@@ -129,8 +129,8 @@ export function Footer() {
                 </Link>
               </li>
             </ul>
-          </div>
-          <div>
+          </nav>
+          <nav aria-label="業界別GEO対策">
             <h3 className="mb-3 text-sm font-semibold text-white">業界別GEO対策</h3>
             <ul className="space-y-2 text-sm text-white/50">
               <li>
@@ -164,7 +164,7 @@ export function Footer() {
                 </Link>
               </li>
             </ul>
-          </div>
+          </nav>
         </div>
         <div className="mt-8 flex flex-col items-center gap-2 border-t border-white/10 pt-8 text-xs text-white/30">
           <div className="flex gap-4">

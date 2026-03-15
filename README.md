@@ -556,3 +556,10 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - UX: チェック結果に「スニペット制御 & 検索機能」セクション追加（コンテンツ&SEOグループ内、制限ありの場合は黄色警告表示、推奨設定をガイド）
 - レポート: テキストレポート・Markdownレポートにスニペット制御・OpenSearch情報を追加
 - AI公開チャネル: agent.json v5.4.0に更新、llms.txtにスニペット制御・OpenSearch検出情報追記
+
+### Night 60 (完了)
+- 修正: stale `public/robots.txt`を削除（誤ったドメイン`web-url-a.ezoai.jp`が動的`src/app/robots.ts`をシャドウしていた問題を解消）
+- アクセシビリティ: ヘッダーのガイドドロップダウンにキーボードナビゲーション追加（ArrowUp/Down/Escape/Enter/Spaceキー対応、role="menu"/"menuitem"、フォーカス管理）
+- アクセシビリティ: ナビゲーションリンクにaria-current="page"属性追加（デスクトップ+モバイル、スクリーンリーダーの現在ページ認識向上）
+- アクセシビリティ: フッターの4カラムリンクグループをセマンティック`<nav>`要素に変更（aria-label付き、ランドマークナビゲーション対応）
+- AI公開チャネル: agent.json v5.6.0に更新

@@ -2,7 +2,7 @@
   "name": "AI Check",
   "description": "WebサイトのAI検索対応度をチェックし、llms.txt・robots.txt・JSON-LD構造化データ・agent.jsonを自動生成するツール",
   "url": "https://ai-check.ezoai.jp",
-  "version": "5.5.0",
+  "version": "5.6.0",
   "dateUpdated": "2026-03-16",
   "capabilities": [
     "GEOスコアチェック（7指標 + llms-full.txt検出 + スキーマタイプ識別 + noindex/nofollow検出）",

@@ -27,6 +27,8 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [guidesOpen, setGuidesOpen] = useState(false);
   const guidesRef = useRef<HTMLDivElement>(null);
+  const guidesButtonRef = useRef<HTMLButtonElement>(null);
+  const dropdownItemsRef = useRef<(HTMLAnchorElement | null)[]>([]);
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
   const isGuideActive = guideLinks.some((link) => isActive(link.href));
@@ -53,6 +55,40 @@ export function Header() {
     }
   }, [mobileOpen]);
 
+  function handleDropdownKeyDown(e: React.KeyboardEvent) {
+    if (!guidesOpen) {
+      if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        setGuidesOpen(true);
+        setTimeout(() => dropdownItemsRef.current[0]?.focus(), 0);
+      }
+      return;
+    }
+    if (e.key === "Escape") {
+      e.preventDefault();
+      setGuidesOpen(false);
+      guidesButtonRef.current?.focus();
+    }
+  }
+
+  function handleDropdownItemKeyDown(e: React.KeyboardEvent, index: number) {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      const next = index + 1 < guideLinks.length ? index + 1 : 0;
+      dropdownItemsRef.current[next]?.focus();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      const prev = index - 1 >= 0 ? index - 1 : guideLinks.length - 1;
+      dropdownItemsRef.current[prev]?.focus();
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      setGuidesOpen(false);
+      guidesButtonRef.current?.focus();
+    } else if (e.key === "Tab") {
+      setGuidesOpen(false);
+    }
+  }
+
   return (
     <header className="border-b border-white/10">
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4">
@@ -69,18 +105,20 @@ export function Header() {
               className={`cursor-pointer transition-all duration-200 hover:text-white ${
                 isActive(link.href) ? "text-white font-medium" : "text-white/70"
               }`}
+              {...(isActive(link.href) ? { "aria-current": "page" as const } : {})}
             >
               {link.label}
             </Link>
           ))}
           <div ref={guidesRef} className="relative">
             <button
+              ref={guidesButtonRef}
               type="button"
               className={`flex cursor-pointer items-center gap-1 transition-all duration-200 hover:text-white ${
                 isGuideActive ? "text-white font-medium" : "text-white/70"
               }`}
               onClick={() => setGuidesOpen(!guidesOpen)}
-              onKeyDown={(e) => { if (e.key === "Escape") setGuidesOpen(false); }}
+              onKeyDown={handleDropdownKeyDown}
               aria-expanded={guidesOpen}
               aria-haspopup="true"
               aria-controls="guides-dropdown"
@@ -101,13 +139,17 @@ export function Header() {
               </svg>
             </button>
             {guidesOpen && (
-              <div id="guides-dropdown" className="absolute right-0 top-full z-50 mt-2 w-48 rounded-lg border border-white/10 bg-black/95 py-1 shadow-xl backdrop-blur-sm">
-                {guideLinks.map((link) => (
+              <div id="guides-dropdown" role="menu" className="absolute right-0 top-full z-50 mt-2 w-48 rounded-lg border border-white/10 bg-black/95 py-1 shadow-xl backdrop-blur-sm">
+                {guideLinks.map((link, i) => (
                   <Link
                     key={link.href}
+                    ref={(el) => { dropdownItemsRef.current[i] = el; }}
                     href={link.href}
-                    className="block cursor-pointer px-4 py-2 text-sm text-white/70 transition-all duration-200 hover:bg-white/5 hover:text-white"
+                    role="menuitem"
+                    tabIndex={-1}
+                    className="block cursor-pointer px-4 py-2 text-sm text-white/70 transition-all duration-200 hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white focus:outline-none"
                     onClick={() => setGuidesOpen(false)}
+                    onKeyDown={(e) => handleDropdownItemKeyDown(e, i)}
                   >
                     {link.label}
                   </Link>
@@ -155,6 +197,7 @@ export function Header() {
                   isActive(link.href) ? "bg-white/5 text-white font-medium" : "text-white/70"
                 }`}
                 onClick={() => setMobileOpen(false)}
+                {...(isActive(link.href) ? { "aria-current": "page" as const } : {})}
               >
                 {link.label}
               </Link>
