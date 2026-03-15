@@ -74,7 +74,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  const isBatchInternal = request.headers.get("x-batch-internal") === "1";
+  const batchSecret = request.headers.get("x-batch-internal");
+  const isBatchInternal = batchSecret === process.env.BATCH_INTERNAL_SECRET;
 
   // Skip rate limiting for internal batch calls (already rate-limited by batch endpoint)
   const rateLimit = isBatchInternal

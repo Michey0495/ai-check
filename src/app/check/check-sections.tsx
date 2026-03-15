@@ -52,6 +52,7 @@ export function CollapsibleGroup({
         </span>
       </button>
       <div
+        aria-hidden={!open}
         className={`overflow-hidden transition-all duration-300 ${
           open ? "max-h-[9999px] opacity-100" : "max-h-0 opacity-0"
         }`}

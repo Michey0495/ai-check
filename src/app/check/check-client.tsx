@@ -189,12 +189,15 @@ export function CheckPageClient() {
     if (!url) return;
     let cancelled = false;
 
+    const controller = new AbortController();
+
     const runCheck = async () => {
       try {
         const res = await fetch("/api/check", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ url }),
+          signal: controller.signal,
         });
         const data = await res.json();
         if (cancelled) return;
@@ -226,7 +229,7 @@ export function CheckPageClient() {
     setLoading(true);
     runCheck();
 
-    return () => { cancelled = true; };
+    return () => { cancelled = true; controller.abort(); };
   }, [url, recheckKey]);
 
   const handleRecheck = useCallback(() => {

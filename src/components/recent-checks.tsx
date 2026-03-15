@@ -55,7 +55,7 @@ export function RecentChecks() {
       </div>
       <div className="space-y-2">
         {history.map((entry) => {
-          const pct = Math.round((entry.totalScore / entry.maxScore) * 100);
+          const pct = entry.maxScore > 0 ? Math.round((entry.totalScore / entry.maxScore) * 100) : 0;
           const hostname = (() => {
             try { return new URL(entry.url).hostname; } catch { return entry.url; }
           })();

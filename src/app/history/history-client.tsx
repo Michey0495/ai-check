@@ -145,12 +145,17 @@ export function HistoryClient() {
   };
 
   const removeEntry = (url: string) => {
-    const current: HistoryEntry[] = JSON.parse(
-      localStorage.getItem(HISTORY_KEY) ?? "[]"
-    );
-    const updated = current.filter((e) => e.url !== url);
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
-    window.dispatchEvent(new Event("storage"));
+    try {
+      const current: HistoryEntry[] = JSON.parse(
+        localStorage.getItem(HISTORY_KEY) ?? "[]"
+      );
+      const updated = current.filter((e) => e.url !== url);
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
+      window.dispatchEvent(new Event("storage"));
+    } catch {
+      localStorage.removeItem(HISTORY_KEY);
+      window.dispatchEvent(new Event("storage"));
+    }
   };
 
   // Stats

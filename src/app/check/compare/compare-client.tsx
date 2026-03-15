@@ -234,6 +234,15 @@ export function CompareClient() {
     const validUrls = urls.filter((u) => u.trim().length > 0);
     if (validUrls.length < 2) return;
 
+    for (const u of validUrls) {
+      let normalized = u.trim();
+      if (!/^https?:\/\//i.test(normalized)) normalized = `https://${normalized}`;
+      try { new URL(normalized); } catch {
+        setResults(validUrls.map((url) => ({ url: url.trim(), report: null, error: url === u ? "有効なURLを入力してください" : "", loading: false })));
+        return;
+      }
+    }
+
     setRunning(true);
     const initial: CompareResult[] = validUrls.map((url) => ({
       url: url.trim(),
