@@ -2,6 +2,17 @@
 
 ## 2026-03-16
 
+### Maintenance (14th pass)
+
+- **check**: Build passes, TypeScript clean, ESLint clean, 0 npm vulnerabilities
+- **check**: No open GitHub issues
+- **check**: AI public files verified (robots.txt, llms.txt, agent.json all valid and up-to-date)
+- **check**: No TODO/FIXME/HACK comments in codebase
+- **check**: No safe dependency updates available (eslint 9→10, @types/node 20→25 are major — skipped)
+- **check**: No hardcoded secrets or API keys in source code
+- **check**: Server-side console.error in error boundaries and API catch blocks — acceptable for production logging
+- **note**: DNS for `ai-check.ezoai.jp` still needs CNAME → `cname.vercel-dns.com`
+
 ### Maintenance (12th pass)
 
 - **check**: Build passes, TypeScript clean, ESLint clean, 0 npm vulnerabilities
