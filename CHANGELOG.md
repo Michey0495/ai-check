@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-03-16
+
+### Maintenance (10th pass)
+
+- **check**: Build passes, TypeScript clean, 0 npm vulnerabilities
+- **check**: No open GitHub issues
+- **check**: AI public files verified (robots.ts route, llms.txt, agent.json all valid)
+- **update**: shadcn 4.0.7 → 4.0.8 (patch update)
+- **note**: eslint 9→10, @types/node 20→25 are major version bumps — skipped per policy
+- **note**: DNS CNAME for `ai-check.ezoai.jp` still needs to be pointed to Vercel
+
 ## 2026-03-15
 
 ### Maintenance (9th pass)
