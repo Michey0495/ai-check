@@ -257,8 +257,9 @@ export function HistoryClient() {
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <div className="flex gap-2">
           <button
+            type="button"
             onClick={() => setSortBy("date")}
-            className={`rounded-md px-3 py-1.5 text-sm transition-all duration-200 ${
+            className={`cursor-pointer rounded-md px-3 py-1.5 text-sm transition-all duration-200 ${
               sortBy === "date"
                 ? "bg-primary/20 text-primary"
                 : "text-white/50 hover:text-white/70"
@@ -267,8 +268,9 @@ export function HistoryClient() {
             日付順
           </button>
           <button
+            type="button"
             onClick={() => setSortBy("score")}
-            className={`rounded-md px-3 py-1.5 text-sm transition-all duration-200 ${
+            className={`cursor-pointer rounded-md px-3 py-1.5 text-sm transition-all duration-200 ${
               sortBy === "score"
                 ? "bg-primary/20 text-primary"
                 : "text-white/50 hover:text-white/70"
@@ -341,7 +343,7 @@ export function HistoryClient() {
                       </span>
                     )}
                   </div>
-                  <p className="mt-1 truncate text-sm text-white/60">
+                  <p className="mt-1 truncate text-sm text-white/60" title={entry.url}>
                     {entry.url}
                   </p>
                   <p className="mt-0.5 text-xs text-white/30">
@@ -362,8 +364,9 @@ export function HistoryClient() {
                     比較
                   </Link>
                   <button
+                    type="button"
                     onClick={() => removeEntry(entry.url)}
-                    className="rounded-md px-3 py-1.5 text-sm text-white/30 opacity-0 transition-all duration-200 hover:text-red-400 group-hover:opacity-100"
+                    className="cursor-pointer rounded-md px-3 py-1.5 text-sm text-white/30 opacity-0 transition-all duration-200 hover:text-red-400 group-hover:opacity-100"
                     aria-label={`${entry.url}の履歴を削除`}
                   >
                     削除
