@@ -2,6 +2,16 @@
 
 ## 2026-03-16
 
+### Maintenance (15th pass)
+
+- **fix(a11y)**: Restore keyboard focus to ExportDropdown trigger button on Escape key close
+- **check**: Build passes, TypeScript clean, ESLint clean, 0 npm vulnerabilities
+- **check**: No open GitHub issues
+- **check**: AI public files verified (robots.txt, llms.txt, agent.json all valid and up-to-date)
+- **check**: No TODO/FIXME/HACK comments in codebase
+- **check**: No safe dependency updates available (eslint 9→10, @types/node 20→25 are major — skipped)
+- **note**: DNS for `ai-check.ezoai.jp` still needs CNAME → `cname.vercel-dns.com`
+
 ### QA Pass 14 — Security & Robustness
 
 - **fix(security)**: Block TEST-NET reserved IP ranges (192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24) in SSRF protection

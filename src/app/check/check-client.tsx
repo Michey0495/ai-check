@@ -108,6 +108,7 @@ function ExportDropdown({
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -115,7 +116,10 @@ function ExportDropdown({
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     };
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") {
+        setOpen(false);
+        buttonRef.current?.focus();
+      }
     };
     document.addEventListener("mousedown", handleClick);
     document.addEventListener("keydown", handleKey);
@@ -136,6 +140,7 @@ function ExportDropdown({
   return (
     <div ref={ref} className="relative">
       <Button
+        ref={buttonRef}
         variant="outline"
         size="sm"
         className="cursor-pointer border-white/10 bg-white/5 text-white/70 transition-all duration-200 hover:bg-white/10 hover:text-white"
