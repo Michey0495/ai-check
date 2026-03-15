@@ -487,7 +487,7 @@ Sitemap: https://example.com/sitemap.xml`,
     "description": "大手IT企業でのマネジメント経験(実績年数)年。リモートワーク導入支援(実績数)社以上。"
   },
   "datePublished": "2026-03-15",
-  "dateModified": "2026-03-15",
+  "dateModified": "2026-03-16",
   "image": "https://example.com/images/remote-work.jpg",
   "publisher": {
     "@type": "Organization",
@@ -620,7 +620,7 @@ Sitemap: https://example.com/sitemap.xml`,
     }
   },
   "datePublished": "2026-03-15",
-  "dateModified": "2026-03-15",
+  "dateModified": "2026-03-16",
   "mainEntityOfPage": "https://example.com/articles/remote-productivity",
   "image": "https://example.com/images/remote-work-hero.jpg",
   "articleSection": "リモートワーク",

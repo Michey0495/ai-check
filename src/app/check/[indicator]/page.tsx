@@ -196,7 +196,7 @@ export async function GET() {
   "@type": "Article",
   "headline": "記事のタイトル",
   "datePublished": "2026-03-15",
-  "dateModified": "2026-03-15",
+  "dateModified": "2026-03-16",
   "author": {
     "@type": "Person",
     "name": "著者名"
