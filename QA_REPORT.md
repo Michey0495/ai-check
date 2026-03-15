@@ -1,11 +1,11 @@
 # QA Report - web-url-a (AI Check)
 
-**Date**: 2026-03-16 (12th QA pass)
+**Date**: 2026-03-16 (13th QA pass)
 **Project**: web-url-a (ai-check.ezoai.jp)
 
 ## Summary
 
-3 security fixes and 1 a11y fix applied. Build and lint pass cleanly.
+6 fixes applied (2 security, 2 robustness, 1 race condition, 1 a11y). Build and lint pass cleanly.
 
 ## Checklist
 
@@ -16,6 +16,29 @@
 - [x] 404ページ - not-found.tsx 実装済み (メタデータ付き)
 - [x] ローディング状態 - loading.tsx 実装済み (aria-label付きスピナー)
 - [x] エラー状態 - error.tsx, global-error.tsx 両方実装済み
+
+## Issues Found & Fixed (Pass 13)
+
+### Critical
+
+| # | Issue | File | Fix |
+|---|-------|------|-----|
+| 1 | BATCH_INTERNAL_SECRET fallback to guessable "1" | `api/check/batch/route.ts:106` | Changed fallback to `crypto.randomUUID()` — no env var = no bypass |
+| 2 | MCP JSON-LD additionalProperties accepts arbitrary nested objects | `api/mcp/route.ts:288-294` | Restrict to primitive types and string arrays only |
+
+### Medium
+
+| # | Issue | File | Fix |
+|---|-------|------|-----|
+| 3 | Compare page fetch race condition (no AbortController, double-click causes interleaved state) | `check/compare/compare-client.tsx:233-288` | Added AbortController, abort guard on running, cleanup on unmount |
+| 4 | MCP error messages reflect user input (schemaType, toolName) | `api/mcp/route.ts:242,326` | Removed user input from error messages |
+
+### Low
+
+| # | Issue | File | Fix |
+|---|-------|------|-----|
+| 5 | Checklist localStorage.setItem without try-catch (QuotaExceeded crash) | `guides/checklist/checklist-client.tsx:176` | Added try-catch around setItem and removeItem |
+| 6 | Compare ScoreBar missing ARIA progressbar role | `check/compare/compare-client.tsx:194` | Added `role="progressbar"` with aria-valuenow/min/max |
 
 ## Issues Found & Fixed (Pass 12)
 
@@ -56,6 +79,8 @@
 | 4 | `manifest.json` に 192x192/512x512 アイコンなし（PWA Lighthouse 警告） | Low | 動的アイコン生成のみ。必要時に追加 |
 | 5 | 全クライアントで `navigator.clipboard.writeText` の失敗が無視される | Low | 非 HTTPS 環境でコピー失敗のフィードバックなし |
 | 6 | ドメイン `ai-check.ezoai.jp` がクライアントコード内にハードコード | Low | 環境変数化推奨だが現時点では動作に影響なし |
+| 7 | `x-forwarded-for` ヘッダーを直接信頼（レート制限バイパス可能性） | Medium | Vercel プロキシ経由のみ使用のため実害なし。プロキシ信頼設定で対応推奨 |
+| 8 | SSRF保護でポート番号未検証（非標準ポートへのアクセス可能性） | Low | 実害は限定的。必要時にポートベースのバリデーション追加 |
 
 ## SEO & AI-First Status
 

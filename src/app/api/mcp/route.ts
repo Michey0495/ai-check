@@ -235,11 +235,11 @@ export async function POST(request: NextRequest) {
 
         if (toolName === "generate_json_ld") {
           const validTypes = ["WebSite", "Organization", "FAQPage", "HowTo", "Product", "Article"];
-          const schemaType = String(args.type ?? "");
+          const schemaType = String(args.type ?? "").slice(0, 50);
           if (!validTypes.includes(schemaType)) {
             return jsonRpcResponse({
               jsonrpc: "2.0",
-              error: { code: -32602, message: `Invalid schema type: ${schemaType}. Must be one of: ${validTypes.join(", ")}` },
+              error: { code: -32602, message: `Invalid schema type. Must be one of: ${validTypes.join(", ")}` },
               id,
             });
           }
@@ -289,7 +289,12 @@ export async function POST(request: NextRequest) {
             const ALLOWED_EXTRA = ["sameAs", "image", "logo", "alternateName", "disambiguatingDescription", "inLanguage", "keywords"];
             for (const [key, value] of Object.entries(extra.additionalProperties as Record<string, unknown>)) {
               if (ALLOWED_EXTRA.includes(key) && !key.startsWith("@")) {
-                jsonLd[key] = value;
+                // Only allow primitive values or arrays of strings
+                if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+                  jsonLd[key] = value;
+                } else if (Array.isArray(value) && value.every((v) => typeof v === "string")) {
+                  jsonLd[key] = value;
+                }
               }
             }
           }
@@ -323,7 +328,7 @@ export async function POST(request: NextRequest) {
 
         return jsonRpcResponse({
           jsonrpc: "2.0",
-          error: { code: -32601, message: `Unknown tool: ${toolName}` },
+          error: { code: -32601, message: "Unknown tool" },
           id,
         });
       }

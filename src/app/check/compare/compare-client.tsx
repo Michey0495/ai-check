@@ -192,7 +192,7 @@ function ScoreBar({ score, maxScore, status }: { score: number; maxScore: number
   const color = status === "pass" ? "#4ade80" : status === "warn" ? "#facc15" : "#f87171";
   return (
     <div className="flex items-center gap-2">
-      <div className="h-1.5 flex-1 rounded-full bg-white/10">
+      <div className="h-1.5 flex-1 rounded-full bg-white/10" role="progressbar" aria-valuenow={score} aria-valuemin={0} aria-valuemax={maxScore}>
         <div
           className="h-1.5 rounded-full transition-all duration-500"
           style={{ width: `${pct}%`, backgroundColor: color }}
@@ -230,9 +230,11 @@ export function CompareClient() {
     setUrls((prev) => (prev.length > 2 ? prev.filter((_, i) => i !== index) : prev));
   }, []);
 
+  const controllerRef = useState<AbortController | null>(null);
+
   const handleCompare = useCallback(async () => {
     const validUrls = urls.filter((u) => u.trim().length > 0);
-    if (validUrls.length < 2) return;
+    if (validUrls.length < 2 || running) return;
 
     for (const u of validUrls) {
       let normalized = u.trim();
@@ -242,6 +244,11 @@ export function CompareClient() {
         return;
       }
     }
+
+    // Abort any in-flight requests
+    controllerRef[0]?.abort();
+    const controller = new AbortController();
+    controllerRef[1](controller);
 
     setRunning(true);
     const initial: CompareResult[] = validUrls.map((url) => ({
@@ -262,8 +269,10 @@ export function CompareClient() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ url: normalizedUrl }),
+          signal: controller.signal,
         });
         const data = await res.json();
+        if (controller.signal.aborted) return;
         setResults((prev) => {
           const next = [...prev];
           if (data.error) {
@@ -274,6 +283,7 @@ export function CompareClient() {
           return next;
         });
       } catch (err) {
+        if (err instanceof DOMException && err.name === "AbortError") return;
         const msg = err instanceof TypeError ? "ネットワークエラー: サーバーに接続できません" : "チェックに失敗しました";
         setResults((prev) => {
           const next = [...prev];
@@ -284,8 +294,10 @@ export function CompareClient() {
     });
 
     await Promise.all(promises);
-    setRunning(false);
-  }, [urls]);
+    if (!controller.signal.aborted) {
+      setRunning(false);
+    }
+  }, [urls, running, controllerRef]);
 
   const [csvError, setCsvError] = useState("");
 

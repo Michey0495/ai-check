@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
             headers: {
               "Content-Type": "application/json",
               "x-forwarded-for": ip,
-              "x-batch-internal": process.env.BATCH_INTERNAL_SECRET ?? "1",
+              "x-batch-internal": process.env.BATCH_INTERNAL_SECRET || crypto.randomUUID(),
             },
             body: JSON.stringify({ url }),
             signal: AbortSignal.timeout(PER_URL_TIMEOUT_MS),

@@ -173,7 +173,11 @@ function loadChecked(): Record<string, boolean> {
 }
 
 function saveChecked(checked: Record<string, boolean>) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(checked));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(checked));
+  } catch {
+    // QuotaExceededError — silently ignore
+  }
 }
 
 export function ChecklistClient() {
@@ -193,7 +197,7 @@ export function ChecklistClient() {
 
   const handleReset = useCallback(() => {
     setChecked({});
-    localStorage.removeItem(STORAGE_KEY);
+    try { localStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
   }, []);
 
   return (
