@@ -9,6 +9,7 @@ const AI_CRAWLER_LABELS: Record<string, string> = {
   "anthropic-ai": "Anthropic",
   PerplexityBot: "Perplexity",
   "Google-Extended": "Gemini",
+  Amazonbot: "Amazon Alexa",
   Bytespider: "ByteDance",
   CCBot: "Common Crawl",
   "Applebot-Extended": "Apple AI",

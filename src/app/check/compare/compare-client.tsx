@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type { CheckReport } from "@/lib/check-indicators";
+import { INDICATOR_SHORT_NAMES, type CheckReport } from "@/lib/check-indicators";
 import { GRADE_TEXT_COLORS } from "@/lib/grade-colors";
 import { normalizeUrl } from "@/lib/url-utils";
 
@@ -75,15 +75,6 @@ type CompareResult = {
   loading: boolean;
 };
 
-const INDICATOR_SHORT_NAMES = [
-  "クローラー",
-  "llms.txt",
-  "構造化",
-  "メタタグ",
-  "構造",
-  "SSR",
-  "サイトマップ",
-];
 
 const CHART_COLORS = [
   "#60a5fa", // blue

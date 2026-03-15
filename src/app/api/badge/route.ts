@@ -121,6 +121,7 @@ export async function GET(request: NextRequest) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ url }),
+      signal: AbortSignal.timeout(20000),
     });
 
     if (!res.ok) {

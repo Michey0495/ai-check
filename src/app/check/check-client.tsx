@@ -77,6 +77,7 @@ function CodeCopyButton({ code }: { code: string }) {
   const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
   return (
     <button
+      aria-label="コードをコピー"
       className={`cursor-pointer rounded bg-white/5 px-2 py-1 text-xs transition-all duration-200 hover:bg-white/10 hover:text-white/70 ${state === "failed" ? "text-red-400" : "text-white/40"}`}
       onClick={() => {
         navigator.clipboard.writeText(code).then(() => {
@@ -250,7 +251,9 @@ export function CheckPageClient() {
     navigator.clipboard.writeText(generateReportText(report)).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    }).catch(() => {});
+    }).catch(() => {
+      setCopied(false);
+    });
   }, [report]);
 
   const handleDownloadReport = useCallback(() => {
@@ -322,7 +325,9 @@ export function CheckPageClient() {
     navigator.clipboard.writeText(shareUrl).then(() => {
       setUrlCopied(true);
       setTimeout(() => setUrlCopied(false), 2000);
-    }).catch(() => {});
+    }).catch(() => {
+      setUrlCopied(false);
+    });
   }, [report, getShareUrl]);
 
   return (
@@ -788,7 +793,7 @@ export function CheckPageClient() {
                           >
                             {s}
                           </Link>
-                          {i < report.suggestedSchemas!.length - 1 ? ", " : ""}
+                          {i < (report.suggestedSchemas?.length ?? 0) - 1 ? ", " : ""}
                         </span>
                       ))}
                       （ページ内容から推定）
@@ -837,7 +842,9 @@ export function CheckPageClient() {
                       navigator.clipboard.writeText(item.code).then(() => {
                         setBadgeCopied(item.key);
                         setTimeout(() => setBadgeCopied(""), 2000);
-                      }).catch(() => {});
+                      }).catch(() => {
+                        setBadgeCopied("");
+                      });
                     }}
                   >
                     <span className="text-white/40">{item.label}</span>

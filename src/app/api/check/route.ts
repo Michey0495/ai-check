@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
   const batchSecret = request.headers.get("x-batch-internal");
-  const isBatchInternal = batchSecret === process.env.BATCH_INTERNAL_SECRET;
+  const isBatchInternal = !!process.env.BATCH_INTERNAL_SECRET && batchSecret === process.env.BATCH_INTERNAL_SECRET;
 
   // Skip rate limiting for internal batch calls (already rate-limited by batch endpoint)
   const rateLimit = isBatchInternal
@@ -212,7 +212,7 @@ export async function POST(request: NextRequest) {
     const faviconMatch = html.match(/<link[^>]*rel=["'](?:icon|shortcut icon)["'][^>]*href=["']([^"']+)["']/i);
     let faviconUrl = faviconMatch?.[1];
     if (faviconUrl) {
-      if (/^(javascript|data|vbscript|blob|about):/i.test(faviconUrl)) {
+      if (/^(javascript|data|vbscript|blob|about|file):/i.test(faviconUrl)) {
         faviconUrl = undefined;
       } else if (!faviconUrl.startsWith("http")) {
         faviconUrl = faviconUrl.startsWith("/") ? `${baseUrl}${faviconUrl}` : `${baseUrl}/${faviconUrl}`;

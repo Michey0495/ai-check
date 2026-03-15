@@ -4,22 +4,12 @@ import { useState, useMemo, useRef, useEffect, useSyncExternalStore, type ReactN
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { CheckReport } from "@/lib/check-indicators";
+import { INDICATOR_SHORT_NAMES, type CheckReport } from "@/lib/check-indicators";
 import { GRADE_TEXT_COLORS, GRADE_HEX_COLORS } from "@/lib/grade-colors";
 import { getHistory, type HistoryEntry } from "./check-utils";
 
 const GRADE_COLORS = GRADE_TEXT_COLORS;
 const STROKE_COLORS = GRADE_HEX_COLORS;
-
-const INDICATOR_SHORT_NAMES = [
-  "クローラー",
-  "llms.txt",
-  "構造化",
-  "メタタグ",
-  "構造",
-  "SSR",
-  "サイトマップ",
-];
 
 export function CollapsibleGroup({
   title,
@@ -579,7 +569,7 @@ export function ScoreRadarChart({ report }: { report: CheckReport }) {
   const cy = 140;
   const r = 100;
   const levels = 4;
-  const n = 7;
+  const n = report.results.length;
 
   const angleStep = (2 * Math.PI) / n;
   const startAngle = -Math.PI / 2;
@@ -604,12 +594,12 @@ export function ScoreRadarChart({ report }: { report: CheckReport }) {
   });
   const dataPath = dataPts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ") + " Z";
 
-  const labels = INDICATOR_SHORT_NAMES.map((name, i) => {
+  const labels = report.results.map((result, i) => {
     const p = point(startAngle + i * angleStep, r + 20);
     let anchor: "middle" | "end" | "start" = "middle";
     if (p.x < cx - 10) anchor = "end";
     else if (p.x > cx + 10) anchor = "start";
-    return { ...p, name, anchor };
+    return { ...p, name: INDICATOR_SHORT_NAMES[i] ?? result.id, anchor };
   });
 
   return (
@@ -637,7 +627,7 @@ export function ScoreRadarChart({ report }: { report: CheckReport }) {
       <div className="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-white/40">
         {report.results.map((result, i) => (
           <span key={result.id}>
-            {INDICATOR_SHORT_NAMES[i]}: {result.score}/{result.maxScore}
+            {INDICATOR_SHORT_NAMES[i] ?? result.id}: {result.score}/{result.maxScore}
           </span>
         ))}
       </div>

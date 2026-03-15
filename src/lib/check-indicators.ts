@@ -58,6 +58,16 @@ export const CHECK_INDICATORS: CheckIndicator[] = [
   },
 ];
 
+export const INDICATOR_SHORT_NAMES = [
+  "クローラー",
+  "llms.txt",
+  "構造化",
+  "メタタグ",
+  "構造",
+  "SSR",
+  "サイトマップ",
+] as const;
+
 export const GENERATOR_TYPES = [
   {
     id: "llms-txt",

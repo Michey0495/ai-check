@@ -580,3 +580,15 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - 修正: 比較ページのAbortController管理をuseState→useRefに修正（不正なhooksパターンの解消、再レンダリング時の状態不整合バグ修正）
 - リファクタリング: URL正規化処理を共通ユーティリティ（lib/url-utils.ts）に抽出（url-check-form, compare-clientの重複排除）
 - UX: CodeCopyButtonのクリップボード操作失敗時にエラーフィードバック追加（「コピー失敗」表示、赤色ハイライト）
+
+### Night 64 (完了)
+- セキュリティ: バッチAPIの内部シークレットフォールバックを修正（BATCH_INTERNAL_SECRET未設定時のレート制限バイパスを防止）
+- セキュリティ: チェックAPIのバッチ内部認証チェックを強化（env未設定時のundefined一致によるバイパスを防止）
+- セキュリティ: faviconのURL検証にfile://プロトコルブロックを追加
+- UX: バッジAPIの内部チェック呼び出しにタイムアウト追加（20秒、ハング防止）
+- リファクタリング: INDICATOR_SHORT_NAMESをcheck-indicators.tsに統合（check-sections, compare-clientの重複排除）
+- 修正: レーダーチャートのハードコードn=7をreport.results.lengthに変更（堅牢性向上）
+- 修正: AIクローラーラベルにAmazonbot追加（チェッカーとの一致を確保）
+- アクセシビリティ: CodeCopyButtonにaria-label追加
+- UX: クリップボード操作の全catchブロックにフォールバック状態リセット追加（サイレントエラー解消）
+- 修正: suggestedSchemasの非nullアサーション（!）をオプショナルチェーン（?.）に修正
