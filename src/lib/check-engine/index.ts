@@ -28,4 +28,6 @@ export {
   analyzeLinkQuality,
   analyzeRichResultsEligibility,
   analyzeMetaRefresh,
+  analyzeSnippetControl,
+  detectOpenSearch,
 } from "./analyzers";

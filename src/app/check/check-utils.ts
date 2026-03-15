@@ -374,6 +374,19 @@ export function generateReportText(report: CheckReport): string {
     lines.push("⚠ AIクローラーがmeta refreshを正しく処理できない場合があります。301リダイレクトを推奨。");
   }
 
+  if (report.snippetControl) {
+    lines.push("");
+    lines.push("--- スニペット制御 ---");
+    const sc = report.snippetControl;
+    if (sc.maxSnippet !== undefined) lines.push(`max-snippet: ${sc.maxSnippet === -1 ? "無制限" : sc.maxSnippet === 0 ? "スニペット無効" : `${sc.maxSnippet}文字`}`);
+    if (sc.maxImagePreview !== undefined) lines.push(`max-image-preview: ${sc.maxImagePreview}`);
+    if (sc.maxVideoPreview !== undefined) lines.push(`max-video-preview: ${sc.maxVideoPreview === -1 ? "無制限" : sc.maxVideoPreview === 0 ? "プレビュー無効" : `${sc.maxVideoPreview}秒`}`);
+  }
+  if (report.openSearch) {
+    lines.push("");
+    lines.push(`OpenSearch: ${report.openSearch} (検出)`);
+  }
+
   const failItems = report.results.filter((r) => r.status === "fail");
   const warnItems = report.results.filter((r) => r.status === "warn");
 
@@ -626,6 +639,18 @@ export function generateMarkdownReport(report: CheckReport): string {
     lines.push("", "## meta refreshリダイレクト", "");
     lines.push(`- **警告**: meta http-equiv="refresh" が検出されました（${report.metaRefresh.delay}秒後に ${report.metaRefresh.url || "同ページ"}）`);
     lines.push("- AIクローラーがmeta refreshを正しく処理できない場合があります。サーバーサイドの301リダイレクトを推奨します。");
+  }
+
+  if (report.snippetControl) {
+    lines.push("", "## スニペット制御", "");
+    const sc = report.snippetControl;
+    if (sc.maxSnippet !== undefined) lines.push(`- **max-snippet**: ${sc.maxSnippet === -1 ? "無制限" : sc.maxSnippet === 0 ? "スニペット無効" : `${sc.maxSnippet}文字`}`);
+    if (sc.maxImagePreview !== undefined) lines.push(`- **max-image-preview**: ${sc.maxImagePreview}`);
+    if (sc.maxVideoPreview !== undefined) lines.push(`- **max-video-preview**: ${sc.maxVideoPreview === -1 ? "無制限" : sc.maxVideoPreview === 0 ? "プレビュー無効" : `${sc.maxVideoPreview}秒`}`);
+  }
+  if (report.openSearch) {
+    lines.push("", "## OpenSearch", "");
+    lines.push(`- OpenSearch記述ファイル検出: **${report.openSearch}**`);
   }
 
   const failItems = report.results.filter((r) => r.status === "fail");

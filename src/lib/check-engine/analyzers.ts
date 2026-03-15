@@ -582,6 +582,35 @@ export function analyzeRichResultsEligibility(jsonLdTypes: string[]) {
   return results.length > 0 ? results : undefined;
 }
 
+export function analyzeSnippetControl(html: string, responseHeaders: Record<string, string>) {
+  const robotsMeta = html.match(/<meta[^>]*name=["']robots["'][^>]*content=["']([^"']+)["']/i)?.[1]
+    ?? html.match(/<meta[^>]*content=["']([^"']+)["'][^>]*name=["']robots["']/i)?.[1]
+    ?? "";
+  const googlebotMeta = html.match(/<meta[^>]*name=["']googlebot["'][^>]*content=["']([^"']+)["']/i)?.[1]
+    ?? html.match(/<meta[^>]*content=["']([^"']+)["'][^>]*name=["']googlebot["']/i)?.[1]
+    ?? "";
+  const xRobotsTag = responseHeaders["x-robots-tag"] ?? "";
+  const combined = [robotsMeta, googlebotMeta, xRobotsTag].join(", ").toLowerCase();
+
+  const maxSnippetMatch = combined.match(/max-snippet\s*:\s*(-?\d+)/);
+  const maxImagePreviewMatch = combined.match(/max-image-preview\s*:\s*(none|standard|large)/i);
+  const maxVideoPreviewMatch = combined.match(/max-video-preview\s*:\s*(-?\d+)/);
+
+  const maxSnippet = maxSnippetMatch ? parseInt(maxSnippetMatch[1], 10) : undefined;
+  const maxImagePreview = maxImagePreviewMatch ? maxImagePreviewMatch[1].toLowerCase() as "none" | "standard" | "large" : undefined;
+  const maxVideoPreview = maxVideoPreviewMatch ? parseInt(maxVideoPreviewMatch[1], 10) : undefined;
+
+  if (maxSnippet === undefined && maxImagePreview === undefined && maxVideoPreview === undefined) return undefined;
+  return { maxSnippet, maxImagePreview, maxVideoPreview };
+}
+
+export function detectOpenSearch(html: string): string | undefined {
+  const match = html.match(/<link[^>]*type=["']application\/opensearchdescription\+xml["'][^>]*>/i);
+  if (!match) return undefined;
+  const titleMatch = match[0].match(/title=["']([^"']+)["']/i);
+  return titleMatch?.[1] ?? "OpenSearch";
+}
+
 export function analyzeMetaRefresh(html: string): { delay: number; url?: string } | undefined {
   const match = html.match(/<meta[^>]*http-equiv=["']refresh["'][^>]*content=["'](\d+)(?:\s*;\s*url=([^"']+))?["']/i)
     ?? html.match(/<meta[^>]*content=["'](\d+)(?:\s*;\s*url=([^"']+))?["'][^>]*http-equiv=["']refresh["']/i);

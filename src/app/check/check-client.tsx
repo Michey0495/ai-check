@@ -51,6 +51,7 @@ import {
   LinkQualitySection,
   RichResultsSection,
   MetaRefreshSection,
+  SnippetControlSection,
 } from "./check-report-sections";
 
 function downloadFile(filename: string, content: string, mimeType: string) {
@@ -614,7 +615,7 @@ export function CheckPageClient() {
           {/* Content & SEO */}
           <CollapsibleGroup
             title="コンテンツ & SEO"
-            sectionCount={[report.aiContentPreview, report.contentMetrics?.wordCount, report.headingTree?.length, report.jsonLdBlocks?.blockCount, report.richResultsEligibility?.length, report.linkQuality, report.duplicateMetaTags?.length, report.feedDetection, report.ogPreview || report.ogImage].filter(Boolean).length}
+            sectionCount={[report.aiContentPreview, report.contentMetrics?.wordCount, report.headingTree?.length, report.jsonLdBlocks?.blockCount, report.richResultsEligibility?.length, report.linkQuality, report.duplicateMetaTags?.length, report.feedDetection, report.ogPreview || report.ogImage, report.snippetControl || report.openSearch].filter(Boolean).length}
           >
             <AiContentPreviewSection report={report} />
             <ContentMetricsSection report={report} />
@@ -622,6 +623,7 @@ export function CheckPageClient() {
             <JsonLdBlocksSection report={report} />
             <RichResultsSection report={report} />
             <LinkQualitySection report={report} />
+            <SnippetControlSection report={report} />
             <DuplicateMetaTagsSection report={report} />
             <OgPreviewSection report={report} />
             <FeedDetectionSection report={report} />

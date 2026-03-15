@@ -45,6 +45,8 @@ import {
   analyzeLinkQuality,
   analyzeRichResultsEligibility,
   analyzeMetaRefresh,
+  analyzeSnippetControl,
+  detectOpenSearch,
 } from "@/lib/check-engine";
 
 export async function OPTIONS() {
@@ -245,6 +247,8 @@ export async function POST(request: NextRequest) {
     const linkQuality = analyzeLinkQuality(html);
     const richResultsEligibility = analyzeRichResultsEligibility(jsonLdBlocks.types);
     const metaRefresh = analyzeMetaRefresh(html);
+    const snippetControl = analyzeSnippetControl(html, responseHdrs);
+    const openSearch = detectOpenSearch(html);
 
     const report: CheckReport = {
       url,
@@ -310,6 +314,8 @@ export async function POST(request: NextRequest) {
       richResultsEligibility,
       crawlDelay,
       metaRefresh,
+      snippetControl,
+      openSearch: openSearch || undefined,
     };
 
     return NextResponse.json(report, {

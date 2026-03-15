@@ -270,6 +270,12 @@ export type CheckReport = {
     delay: number;
     url?: string;
   };
+  snippetControl?: {
+    maxSnippet?: number;
+    maxImagePreview?: "none" | "standard" | "large";
+    maxVideoPreview?: number;
+  };
+  openSearch?: string; // title of OpenSearch description
 };
 
 export function getGrade(score: number, maxScore: number): CheckReport["grade"] {

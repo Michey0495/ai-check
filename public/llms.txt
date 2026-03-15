@@ -105,6 +105,8 @@
 - 比較ページ サマリーインサイト（総合トップサイト表示、サイト別の強み/未対応項目をタグ表示、指標別トップの自動分析）
 - meta http-equiv="refresh"検出（AIクローラーに影響するmeta refreshリダイレクトを検出・警告、301リダイレクトへの置換を推奨）
 - Markdownレポート完全化（テキストレポートと同等の全セクション網羅: リダイレクト、SSL、canonical、PWA、CWV、画像最適化、ファビコン、OGプレビュー、見出し構造、リンク品質、リッチリザルト等）
+- スニペット制御検出（meta robotsの max-snippet、max-image-preview、max-video-preview ディレクティブを検出。AI検索エンジンがコンテンツを引用・表示する際の制限を可視化）
+- OpenSearch記述ファイル検出（link rel="search" type="application/opensearchdescription+xml" の存在を検出。ブラウザやAIエージェントのサイト内検索対応状況を表示）
 
 ## API
 - GET /api/check?url=URL: URLのGEOスコアチェック（GETメソッド対応、ブラウザから直接アクセス可）。CORS対応

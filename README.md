@@ -549,3 +549,10 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - UX: チェック結果に「meta refreshリダイレクト」セクション追加（セキュリティ&ネットワークグループ内、警告色表示）
 - レポート: Markdownレポートを完全化（テキストレポートと同等の全セクションを網羅: リダイレクト、SSL/TLS、canonical、サーバー情報、Crawl-delay、パフォーマンスヒント、Core Web Vitals、画像最適化、PWA、OGプレビュー、見出し構造、重複メタタグ、ファビコン、フィード、ソーシャルメタ、外部リソース、JSON-LDブロック、AIコンテンツプレビュー、リンク品質、リッチリザルト、meta refresh）
 - AI公開チャネル: agent.json v5.3.0に更新、llms.txtにmeta refresh検出・Markdownレポート完全化情報追記
+
+### Night 59 (完了)
+- チェック強化: スニペット制御ディレクティブ検出追加（max-snippet、max-image-preview、max-video-previewをmeta robots / googlebot / X-Robots-Tagから検出。AI検索エンジンのコンテンツ引用制限を可視化）
+- チェック強化: OpenSearch記述ファイル検出追加（link rel="search" type="application/opensearchdescription+xml" の存在を検出、タイトル表示）
+- UX: チェック結果に「スニペット制御 & 検索機能」セクション追加（コンテンツ&SEOグループ内、制限ありの場合は黄色警告表示、推奨設定をガイド）
+- レポート: テキストレポート・Markdownレポートにスニペット制御・OpenSearch情報を追加
+- AI公開チャネル: agent.json v5.4.0に更新、llms.txtにスニペット制御・OpenSearch検出情報追記

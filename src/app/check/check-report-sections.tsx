@@ -1029,3 +1029,76 @@ export function MetaRefreshSection({ report }: { report: CheckReport }) {
     </div>
   );
 }
+
+export function SnippetControlSection({ report }: { report: CheckReport }) {
+  if (!report.snippetControl && !report.openSearch) return null;
+
+  const sc = report.snippetControl;
+  const snippetRestricted = sc?.maxSnippet !== undefined && sc.maxSnippet >= 0 && sc.maxSnippet < 160;
+  const imageRestricted = sc?.maxImagePreview === "none" || sc?.maxImagePreview === "standard";
+
+  return (
+    <div id="sec-snippet-control" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-white">スニペット制御 & 検索機能</h2>
+        {sc && (snippetRestricted || imageRestricted) ? (
+          <span className="rounded-full bg-yellow-500/10 px-3 py-1 text-xs text-yellow-400">制限あり</span>
+        ) : (
+          <span className="rounded-full bg-green-500/10 px-3 py-1 text-xs text-green-400">制限なし</span>
+        )}
+      </div>
+
+      {sc && (
+        <>
+          <p className="mb-3 text-sm text-white/60">
+            検索エンジンやAIがコンテンツを引用・表示する際のスニペット量を制御するmeta robotsディレクティブの検出状況です。
+          </p>
+          <div className="grid gap-2 sm:grid-cols-3">
+            {sc.maxSnippet !== undefined && (
+              <div className={`rounded-lg px-4 py-3 ${sc.maxSnippet === 0 ? "bg-red-500/10" : sc.maxSnippet > 0 && sc.maxSnippet < 160 ? "bg-yellow-500/10" : "bg-green-500/10"}`}>
+                <p className="text-xs text-white/40">max-snippet</p>
+                <p className={`text-sm font-medium ${sc.maxSnippet === 0 ? "text-red-400" : sc.maxSnippet < 160 ? "text-yellow-400" : "text-green-400"}`}>
+                  {sc.maxSnippet === -1 ? "無制限" : sc.maxSnippet === 0 ? "スニペット無効" : `${sc.maxSnippet}文字`}
+                </p>
+              </div>
+            )}
+            {sc.maxImagePreview !== undefined && (
+              <div className={`rounded-lg px-4 py-3 ${sc.maxImagePreview === "none" ? "bg-red-500/10" : sc.maxImagePreview === "standard" ? "bg-yellow-500/10" : "bg-green-500/10"}`}>
+                <p className="text-xs text-white/40">max-image-preview</p>
+                <p className={`text-sm font-medium ${sc.maxImagePreview === "none" ? "text-red-400" : sc.maxImagePreview === "standard" ? "text-yellow-400" : "text-green-400"}`}>
+                  {sc.maxImagePreview === "none" ? "画像プレビュー無効" : sc.maxImagePreview === "standard" ? "標準サイズ" : "大サイズ"}
+                </p>
+              </div>
+            )}
+            {sc.maxVideoPreview !== undefined && (
+              <div className={`rounded-lg px-4 py-3 ${sc.maxVideoPreview === 0 ? "bg-red-500/10" : "bg-green-500/10"}`}>
+                <p className="text-xs text-white/40">max-video-preview</p>
+                <p className={`text-sm font-medium ${sc.maxVideoPreview === 0 ? "text-red-400" : "text-green-400"}`}>
+                  {sc.maxVideoPreview === -1 ? "無制限" : sc.maxVideoPreview === 0 ? "プレビュー無効" : `${sc.maxVideoPreview}秒`}
+                </p>
+              </div>
+            )}
+          </div>
+          {(snippetRestricted || imageRestricted) && (
+            <p className="mt-3 text-xs text-yellow-400/70">
+              スニペットや画像プレビューが制限されています。AI検索エンジンがコンテンツを十分に引用できない可能性があります。
+              GEO対策には max-snippet:-1, max-image-preview:large の設定を推奨します。
+            </p>
+          )}
+        </>
+      )}
+
+      {report.openSearch && (
+        <div className={`${sc ? "mt-4 border-t border-white/5 pt-3" : ""}`}>
+          <div className="flex items-center gap-2">
+            <span className="rounded-full bg-green-500/10 px-3 py-1 text-xs text-green-400">OpenSearch</span>
+            <p className="text-sm text-white/70">{report.openSearch}</p>
+          </div>
+          <p className="mt-1 text-xs text-white/40">
+            OpenSearch記述ファイルが検出されました。ブラウザやAIエージェントがサイト内検索機能を利用できます。
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
