@@ -626,7 +626,7 @@ export default async function IndicatorPage({
     description: content.seoDescription,
     url: `${BASE_URL}/check/${indicator}`,
     datePublished: "2026-03-15",
-    dateModified: new Date().toISOString().split("T")[0],
+    dateModified: "2026-03-16",
     author: {
       "@type": "Organization",
       name: "AI Check",
