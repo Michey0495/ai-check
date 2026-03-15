@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { corsHeaders, corsOptionsResponse } from "@/lib/cors";
-import { checkRateLimit, RATE_LIMIT } from "@/lib/check-engine/security";
+import { checkRateLimit, isPrivateHostname, RATE_LIMIT } from "@/lib/check-engine/security";
 
 export async function OPTIONS() {
   return corsOptionsResponse();
@@ -55,13 +55,19 @@ export async function POST(request: NextRequest) {
         const parsed = new URL(url);
         if (!["http:", "https:"].includes(parsed.protocol)) {
           return NextResponse.json(
-            { error: `http/httpsのURLを指定してください: ${url}`, errorCode: "INVALID_PROTOCOL" },
+            { error: "http/httpsのURLを指定してください。", errorCode: "INVALID_PROTOCOL" },
+            { status: 400, headers: corsHeaders() }
+          );
+        }
+        if (isPrivateHostname(parsed.hostname)) {
+          return NextResponse.json(
+            { error: "プライベートネットワークのURLはチェックできません。", errorCode: "SSRF_BLOCKED" },
             { status: 400, headers: corsHeaders() }
           );
         }
       } catch {
         return NextResponse.json(
-          { error: `有効なURLを指定してください: ${url}`, errorCode: "INVALID_URL" },
+          { error: "有効なURLを指定してください。", errorCode: "INVALID_URL" },
           { status: 400, headers: corsHeaders() }
         );
       }

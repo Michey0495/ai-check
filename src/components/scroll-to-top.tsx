@@ -19,7 +19,7 @@ export function ScrollToTop() {
     <button
       type="button"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      className="fixed bottom-20 right-4 z-40 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-black/80 text-white/60 shadow-lg backdrop-blur-sm transition-all duration-200 hover:border-white/20 hover:text-white print:hidden"
+      className="fixed bottom-20 right-4 z-40 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-black/80 text-white/60 shadow-lg backdrop-blur-sm transition-all duration-200 hover:border-white/20 hover:text-white focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none print:hidden"
       aria-label="ページトップへ戻る"
     >
       <svg

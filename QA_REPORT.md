@@ -1,11 +1,11 @@
 # QA Report - web-url-a (AI Check)
 
-**Date**: 2026-03-16 (11th QA pass)
+**Date**: 2026-03-16 (12th QA pass)
 **Project**: web-url-a (ai-check.ezoai.jp)
 
 ## Summary
 
-3 minor issues found and fixed. Build and lint pass cleanly.
+3 security fixes and 1 a11y fix applied. Build and lint pass cleanly.
 
 ## Checklist
 
@@ -17,9 +17,28 @@
 - [x] ローディング状態 - loading.tsx 実装済み (aria-label付きスピナー)
 - [x] エラー状態 - error.tsx, global-error.tsx 両方実装済み
 
-## Issues Found & Fixed (Pass 11)
+## Issues Found & Fixed (Pass 12)
+
+### Critical
+
+| # | Issue | File | Fix |
+|---|-------|------|-----|
+| 1 | Missing SSRF protection in batch endpoint (no `isPrivateHostname` check) | `api/check/batch/route.ts:47-68` | Added `isPrivateHostname()` check in URL validation loop |
+| 2 | Redirect chain SSRF: redirect targets not validated against private IPs | `lib/check-engine/network.ts:81` | Added `isPrivateHostname()` check on resolved redirect URLs |
+
+### Medium
+
+| # | Issue | File | Fix |
+|---|-------|------|-----|
+| 3 | URL reflection in batch error messages (potential XSS in error responses) | `api/check/batch/route.ts:58,64` | Removed user URL from error messages, use generic messages |
 
 ### Low
+
+| # | Issue | File | Fix |
+|---|-------|------|-----|
+| 4 | ScrollToTop button missing `focus-visible` styling | `components/scroll-to-top.tsx:22` | Added `focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none` |
+
+### Issues Found & Fixed (Pass 11)
 
 | # | Issue | File | Fix |
 |---|-------|------|-----|

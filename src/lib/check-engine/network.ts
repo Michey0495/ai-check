@@ -79,6 +79,10 @@ export async function detectRedirectChain(url: string, maxHops = 5): Promise<Red
         if (!location) break;
         statusCodes.push(res.status);
         const nextUrl = location.startsWith("http") ? location : new URL(location, currentUrl).toString();
+        try {
+          const nextParsed = new URL(nextUrl);
+          if (isPrivateHostname(nextParsed.hostname)) break;
+        } catch { break; }
         chain.push(nextUrl);
         if (currentUrl.startsWith("http://") && nextUrl.startsWith("https://")) {
           hasHttpToHttps = true;
