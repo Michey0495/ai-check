@@ -3,13 +3,15 @@ import { NextRequest, NextResponse } from "next/server";
 const feedbackRateMap = new Map<string, { count: number; resetAt: number }>();
 const FEEDBACK_RATE_LIMIT = 5;
 const FEEDBACK_RATE_WINDOW_MS = 300_000;
+let feedbackLastCleanup = Date.now();
 
 function checkFeedbackRate(ip: string): boolean {
   const now = Date.now();
-  if (feedbackRateMap.size > 5_000) {
+  if (feedbackRateMap.size > 5_000 || now - feedbackLastCleanup > 300_000) {
     for (const [key, val] of feedbackRateMap) {
       if (now > val.resetAt) feedbackRateMap.delete(key);
     }
+    feedbackLastCleanup = now;
   }
   const entry = feedbackRateMap.get(ip);
   if (!entry || now > entry.resetAt) {

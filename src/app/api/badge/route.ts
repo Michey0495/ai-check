@@ -10,13 +10,15 @@ function escapeXml(str: string): string {
 const badgeRateMap = new Map<string, { count: number; resetAt: number }>();
 const BADGE_RATE_LIMIT = 30;
 const BADGE_RATE_WINDOW_MS = 60_000;
+let badgeLastCleanup = Date.now();
 
 function checkBadgeRate(ip: string): boolean {
   const now = Date.now();
-  if (badgeRateMap.size > 5_000) {
+  if (badgeRateMap.size > 5_000 || now - badgeLastCleanup > 60_000) {
     for (const [key, val] of badgeRateMap) {
       if (now > val.resetAt) badgeRateMap.delete(key);
     }
+    badgeLastCleanup = now;
   }
   const entry = badgeRateMap.get(ip);
   if (!entry || now > entry.resetAt) {

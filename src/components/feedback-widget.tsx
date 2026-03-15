@@ -11,6 +11,11 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
   const [submitError, setSubmitError] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(null);
+
+  useEffect(() => {
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, []);
 
   useEffect(() => {
     if (open && textareaRef.current) {
@@ -36,7 +41,7 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
         return;
       }
       setSent(true);
-      setTimeout(() => {
+      timerRef.current = setTimeout(() => {
         setOpen(false);
         setSent(false);
         setMessage("");

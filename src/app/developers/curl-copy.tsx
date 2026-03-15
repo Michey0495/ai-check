@@ -3,13 +3,16 @@
 import { useState } from "react";
 
 export function CurlCopy({ curl }: { curl: string }) {
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<"idle" | "copied" | "failed">("idle");
 
   function handleCopy() {
     navigator.clipboard.writeText(curl).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }).catch(() => {});
+      setCopied("copied");
+      setTimeout(() => setCopied("idle"), 2000);
+    }).catch(() => {
+      setCopied("failed");
+      setTimeout(() => setCopied("idle"), 2000);
+    });
   }
 
   return (
@@ -23,7 +26,7 @@ export function CurlCopy({ curl }: { curl: string }) {
           onClick={handleCopy}
           className="cursor-pointer text-xs text-white/40 transition-all duration-200 hover:text-white/60"
         >
-          {copied ? "コピー済み" : "コピー"}
+          {copied === "copied" ? "コピー済み" : copied === "failed" ? "コピー失敗" : "コピー"}
         </button>
       </div>
       <pre className="mt-1 overflow-x-auto rounded-lg border border-white/10 bg-black/50 p-3 text-xs leading-relaxed text-white/50">

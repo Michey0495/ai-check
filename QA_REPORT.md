@@ -1,11 +1,11 @@
 # QA Report - web-url-a (AI Check)
 
-**Date**: 2026-03-16 (13th QA pass)
+**Date**: 2026-03-16 (14th QA pass)
 **Project**: web-url-a (ai-check.ezoai.jp)
 
 ## Summary
 
-6 fixes applied (2 security, 2 robustness, 1 race condition, 1 a11y). Build and lint pass cleanly.
+5 fixes applied (2 security, 2 robustness, 1 UX). Build and lint pass cleanly.
 
 ## Checklist
 
@@ -16,6 +16,23 @@
 - [x] 404ページ - not-found.tsx 実装済み (メタデータ付き)
 - [x] ローディング状態 - loading.tsx 実装済み (aria-label付きスピナー)
 - [x] エラー状態 - error.tsx, global-error.tsx 両方実装済み
+
+## Issues Found & Fixed (Pass 14)
+
+### Medium
+
+| # | Issue | File | Fix |
+|---|-------|------|-----|
+| 1 | SSRF: TEST-NET reserved IP ranges not blocked (192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24) | `lib/check-engine/security.ts:62-64` | Added explicit checks for TEST-NET-1/2/3 ranges |
+| 2 | Favicon URL allows `blob:` and `about:` protocol (potential XSS vector) | `api/check/route.ts:215` | Extended blocked protocol list to include `blob:` and `about:` |
+| 3 | Rate limiter memory leak: cleanup only triggers on size threshold, not time | `security.ts`, `badge/route.ts`, `feedback/route.ts` | Added periodic time-based cleanup (60s/300s intervals) |
+
+### Low
+
+| # | Issue | File | Fix |
+|---|-------|------|-----|
+| 4 | FeedbackWidget setTimeout fires after unmount (React warning) | `components/feedback-widget.tsx:39-43` | Added timerRef with cleanup on unmount |
+| 5 | CurlCopy clipboard error silently ignored | `developers/curl-copy.tsx:12` | Show "コピー失敗" feedback on clipboard error |
 
 ## Issues Found & Fixed (Pass 13)
 
@@ -77,7 +94,7 @@
 | 2 | `/api/generate` と `/api/mcp` にレートリミットなし | Medium | 生成系はリソース消費が軽微。トラフィック増加時に対応 |
 | 3 | インメモリ Map によるレートリミットはサーバーレス環境で非効率 | Low | Vercel KV/Upstash 等の外部ストア導入で対応推奨 |
 | 4 | `manifest.json` に 192x192/512x512 アイコンなし（PWA Lighthouse 警告） | Low | 動的アイコン生成のみ。必要時に追加 |
-| 5 | 全クライアントで `navigator.clipboard.writeText` の失敗が無視される | Low | 非 HTTPS 環境でコピー失敗のフィードバックなし |
+| 5 | 一部クライアントで `navigator.clipboard.writeText` の失敗が無視される | Low | CurlCopyは修正済み。他のジェネレーター系コンポーネントも同様に対応推奨 |
 | 6 | ドメイン `ai-check.ezoai.jp` がクライアントコード内にハードコード | Low | 環境変数化推奨だが現時点では動作に影響なし |
 | 7 | `x-forwarded-for` ヘッダーを直接信頼（レート制限バイパス可能性） | Medium | Vercel プロキシ経由のみ使用のため実害なし。プロキシ信頼設定で対応推奨 |
 | 8 | SSRF保護でポート番号未検証（非標準ポートへのアクセス可能性） | Low | 実害は限定的。必要時にポートベースのバリデーション追加 |

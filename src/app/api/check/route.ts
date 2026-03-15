@@ -212,7 +212,7 @@ export async function POST(request: NextRequest) {
     const faviconMatch = html.match(/<link[^>]*rel=["'](?:icon|shortcut icon)["'][^>]*href=["']([^"']+)["']/i);
     let faviconUrl = faviconMatch?.[1];
     if (faviconUrl) {
-      if (/^(javascript|data|vbscript):/i.test(faviconUrl)) {
+      if (/^(javascript|data|vbscript|blob|about):/i.test(faviconUrl)) {
         faviconUrl = undefined;
       } else if (!faviconUrl.startsWith("http")) {
         faviconUrl = faviconUrl.startsWith("/") ? `${baseUrl}${faviconUrl}` : `${baseUrl}/${faviconUrl}`;

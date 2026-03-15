@@ -2,6 +2,14 @@
 
 ## 2026-03-16
 
+### QA Pass 14 — Security & Robustness
+
+- **fix(security)**: Block TEST-NET reserved IP ranges (192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24) in SSRF protection
+- **fix(security)**: Block `blob:` and `about:` protocols in favicon URL validation
+- **fix(perf)**: Add periodic time-based cleanup to all rate limiters (prevent unbounded memory growth)
+- **fix(ux)**: Show clipboard error feedback in CurlCopy component
+- **fix(react)**: Clean up FeedbackWidget setTimeout on unmount to prevent React warnings
+
 ### Maintenance (14th pass)
 
 - **check**: Build passes, TypeScript clean, ESLint clean, 0 npm vulnerabilities
