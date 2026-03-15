@@ -33,7 +33,7 @@ function validateJsonLdItem(item: Record<string, unknown>): { type: string; vali
   return { type, valid: missing.length === 0, missing };
 }
 
-export const AI_CRAWLERS = ["GPTBot", "ChatGPT-User", "ClaudeBot", "anthropic-ai", "PerplexityBot", "Google-Extended", "Bytespider", "CCBot", "Applebot-Extended", "cohere-ai"];
+export const AI_CRAWLERS = ["GPTBot", "ChatGPT-User", "ClaudeBot", "anthropic-ai", "PerplexityBot", "Google-Extended", "Amazonbot", "Bytespider", "CCBot", "Applebot-Extended", "cohere-ai"];
 
 export function analyzeAiCrawlerStatus(robotsText: string | null): { name: string; allowed: boolean }[] {
   if (robotsText === null || robotsText === "") {

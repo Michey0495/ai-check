@@ -389,10 +389,11 @@ export function generateReportText(report: CheckReport): string {
 
   if (report.aiProtocolFiles) {
     lines.push("");
-    lines.push("--- AI連携プロトコル ---");
+    lines.push("--- Well-Known ファイル ---");
     const ap = report.aiProtocolFiles;
     lines.push(`agent.json (A2A): ${ap.hasAgentJson ? "検出" : "未検出"}${ap.agentJsonVersion ? ` (v${ap.agentJsonVersion})` : ""}`);
     lines.push(`ai-plugin.json (ChatGPT): ${ap.hasAiPlugin ? "検出" : "未検出"}${ap.aiPluginName ? ` (${ap.aiPluginName})` : ""}`);
+    lines.push(`security.txt (RFC 9116): ${ap.hasSecurityTxt ? "検出" : "未検出"}${ap.securityTxtContact ? ` (${ap.securityTxtContact})` : ""}`);
   }
 
   const failItems = report.results.filter((r) => r.status === "fail");
@@ -662,13 +663,14 @@ export function generateMarkdownReport(report: CheckReport): string {
   }
 
   if (report.aiProtocolFiles) {
-    lines.push("", "## AI連携プロトコル", "");
+    lines.push("", "## Well-Known ファイル", "");
     const ap = report.aiProtocolFiles;
     lines.push(`- **agent.json (A2A Agent Card)**: ${ap.hasAgentJson ? "検出" : "未検出"}${ap.agentJsonVersion ? ` (v${ap.agentJsonVersion})` : ""}`);
     lines.push(`- **ai-plugin.json (ChatGPTプラグイン)**: ${ap.hasAiPlugin ? "検出" : "未検出"}${ap.aiPluginName ? ` (${ap.aiPluginName})` : ""}`);
     if (ap.hasAiPlugin && ap.aiPluginDescription) {
       lines.push(`  - ${ap.aiPluginDescription.slice(0, 200)}`);
     }
+    lines.push(`- **security.txt (RFC 9116)**: ${ap.hasSecurityTxt ? "検出" : "未検出"}${ap.securityTxtContact ? ` (連絡先: ${ap.securityTxtContact})` : ""}`);
   }
 
   const failItems = report.results.filter((r) => r.status === "fail");

@@ -7,10 +7,13 @@ import { Label } from "@/components/ui/label";
 
 const AI_CRAWLERS = [
   { id: "GPTBot", name: "GPTBot (ChatGPT)", default: true },
+  { id: "ChatGPT-User", name: "ChatGPT-User (ChatGPT Browse)", default: true },
   { id: "ClaudeBot", name: "ClaudeBot (Claude)", default: true },
+  { id: "anthropic-ai", name: "anthropic-ai (Anthropic)", default: true },
   { id: "PerplexityBot", name: "PerplexityBot (Perplexity)", default: true },
   { id: "Google-Extended", name: "Google-Extended (Gemini)", default: true },
   { id: "Amazonbot", name: "Amazonbot (Alexa)", default: true },
+  { id: "Applebot-Extended", name: "Applebot-Extended (Apple AI)", default: true },
   { id: "cohere-ai", name: "Cohere AI", default: true },
   { id: "Bytespider", name: "Bytespider (TikTok)", default: false },
   { id: "CCBot", name: "CCBot (Common Crawl)", default: false },

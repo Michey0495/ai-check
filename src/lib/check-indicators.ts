@@ -282,6 +282,8 @@ export type CheckReport = {
     aiPluginName?: string;
     aiPluginDescription?: string;
     agentJsonVersion?: string;
+    hasSecurityTxt: boolean;
+    securityTxtContact?: string;
   };
 };
 

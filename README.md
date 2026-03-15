@@ -568,3 +568,10 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - 修正: 全ページのJSON-LD dateModifiedを動的生成からハードコード"2026-03-16"に統一（9ファイル: トップ、GEOガイド、クイックスタート、GEO vs SEO、用語集、業界別ガイド、チェックリスト、チェック項目別、業界別LP）
 - 修正: 業界別ページ（/for/[industry]）の未検証の主張を事実ベースに修正（「ECサイトは多く」→「ECサイトもあり」、「成長戦略の柱」→「重要な施策の一つ」、「非常に多いパターン」→「よく使われるパターン」、捏造評価例「4.5/300件」を削除）
 - AI公開チャネル: agent.json v5.7.0に更新
+
+### Night 62 (完了)
+- チェック強化: security.txt（RFC 9116）検出追加（/.well-known/security.txt の存在・Contact情報を検出・レポートに表示）
+- チェック強化: AIクローラー検出にAmazonbot追加（10→11種に拡大）
+- UX: 「AI連携プロトコル」セクションを「Well-Known ファイル」に拡張（agent.json + ai-plugin.json + security.txt の3ファイル検出表示）
+- 生成ツール: robots.txt生成ツールのAIクローラーリストを8→11種に拡大（ChatGPT-User、anthropic-ai、Applebot-Extended追加、チェッカーとの一致を確保）
+- AI公開チャネル: agent.json v5.8.0に更新、llms.txtにsecurity.txt検出・クローラー拡大情報追記

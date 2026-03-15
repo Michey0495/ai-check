@@ -661,15 +661,23 @@ export async function analyzeAiPlugin(
   aiPluginName?: string;
   aiPluginDescription?: string;
   agentJsonVersion?: string;
+  hasSecurityTxt: boolean;
+  securityTxtContact?: string;
 } | undefined> {
   let hasAiPlugin = false;
   let aiPluginName: string | undefined;
   let aiPluginDescription: string | undefined;
+  let hasSecurityTxt = false;
+  let securityTxtContact: string | undefined;
+
+  const [aiPluginRes, securityTxtRes] = await Promise.all([
+    safeFetch(`${baseUrl}/.well-known/ai-plugin.json`),
+    safeFetch(`${baseUrl}/.well-known/security.txt`),
+  ]);
 
   try {
-    const res = await safeFetch(`${baseUrl}/.well-known/ai-plugin.json`);
-    if (res.ok && res.text.length > 10) {
-      const data = JSON.parse(res.text);
+    if (aiPluginRes.ok && aiPluginRes.text.length > 10) {
+      const data = JSON.parse(aiPluginRes.text);
       if (data.name_for_human || data.name_for_model) {
         hasAiPlugin = true;
         aiPluginName = data.name_for_human ?? data.name_for_model;
@@ -678,6 +686,17 @@ export async function analyzeAiPlugin(
     }
   } catch {
     // ignore parse errors
+  }
+
+  if (securityTxtRes.ok && securityTxtRes.text.length > 10) {
+    const text = securityTxtRes.text;
+    if (text.includes("Contact:") || text.includes("contact:")) {
+      hasSecurityTxt = true;
+      const contactMatch = text.match(/^Contact:\s*(.+)$/im);
+      if (contactMatch) {
+        securityTxtContact = contactMatch[1].trim();
+      }
+    }
   }
 
   let hasAgentJson = false;
@@ -694,6 +713,6 @@ export async function analyzeAiPlugin(
     }
   }
 
-  if (!hasAiPlugin && !hasAgentJson) return undefined;
-  return { hasAiPlugin, hasAgentJson, aiPluginName, aiPluginDescription, agentJsonVersion };
+  if (!hasAiPlugin && !hasAgentJson && !hasSecurityTxt) return undefined;
+  return { hasAiPlugin, hasAgentJson, aiPluginName, aiPluginDescription, agentJsonVersion, hasSecurityTxt, securityTxtContact };
 }

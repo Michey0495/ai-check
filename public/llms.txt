@@ -107,7 +107,9 @@
 - Markdownレポート完全化（テキストレポートと同等の全セクション網羅: リダイレクト、SSL、canonical、PWA、CWV、画像最適化、ファビコン、OGプレビュー、見出し構造、リンク品質、リッチリザルト等）
 - スニペット制御検出（meta robotsの max-snippet、max-image-preview、max-video-preview ディレクティブを検出。AI検索エンジンがコンテンツを引用・表示する際の制限を可視化）
 - OpenSearch記述ファイル検出（link rel="search" type="application/opensearchdescription+xml" の存在を検出。ブラウザやAIエージェントのサイト内検索対応状況を表示）
-- AI連携プロトコル検出（ai-plugin.json（ChatGPTプラグインマニフェスト）と agent.json（A2A Agent Card）の存在を検出。プラグイン名・説明・バージョンを表示。AIエージェントがサービスを自動発見・利用できる状態かを可視化）
+- Well-Knownファイル検出（agent.json A2A Agent Card、ai-plugin.json ChatGPTプラグイン、security.txt RFC 9116 の存在を検出。バージョン・プラグイン名・連絡先を表示。AIエージェントの自動発見・セキュリティ対応状況を可視化）
+- security.txt（RFC 9116）検出（/.well-known/security.txt の存在を検出。脆弱性報告の連絡先情報をレポートに表示）
+- robots.txt生成ツール AIクローラー11種対応（GPTBot, ChatGPT-User, ClaudeBot, anthropic-ai, PerplexityBot, Google-Extended, Amazonbot, Applebot-Extended, cohere-ai, Bytespider, CCBot）
 
 ## API
 - GET /api/check?url=URL: URLのGEOスコアチェック（GETメソッド対応、ブラウザから直接アクセス可）。CORS対応
@@ -118,7 +120,7 @@
 - GET /api/badge?url=URL&style=flat|card: GEOスコアバッジ（SVG画像）
 
 ## 対応AIクローラー検出
-GPTBot, ChatGPT-User, ClaudeBot, anthropic-ai, PerplexityBot, Google-Extended, Bytespider, CCBot, Applebot-Extended, cohere-ai
+GPTBot, ChatGPT-User, ClaudeBot, anthropic-ai, PerplexityBot, Google-Extended, Amazonbot, Bytespider, CCBot, Applebot-Extended, cohere-ai
 
 ## 技術スタック
 - Next.js 16, TypeScript, Tailwind CSS, shadcn/ui, Vercel
