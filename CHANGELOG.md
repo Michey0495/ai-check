@@ -2,6 +2,16 @@
 
 ## 2026-03-16
 
+### Maintenance (16th pass)
+
+- **fix**: Removed stale `public/robots.txt` again (wrong domain `web-url-a.ezoai.jp`, overrides dynamic `src/app/robots.ts` which uses correct `ai-check.ezoai.jp`)
+- **check**: Build passes, TypeScript clean, ESLint clean, 0 npm vulnerabilities
+- **check**: No open GitHub issues
+- **check**: AI public files verified (robots.ts dynamic route, llms.txt, agent.json all valid)
+- **check**: No TODO/FIXME/HACK comments, no stale dates, no hardcoded secrets
+- **check**: No safe dependency updates available (eslint 9→10, @types/node 20→25 are major — skipped)
+- **note**: DNS for `ai-check.ezoai.jp` still needs CNAME → `cname.vercel-dns.com`
+
 ### Maintenance (15th pass)
 
 - **fix(a11y)**: Restore keyboard focus to ExportDropdown trigger button on Escape key close
