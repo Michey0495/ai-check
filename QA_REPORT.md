@@ -1,11 +1,11 @@
 # QA Report - web-url-a (AI Check)
 
-**Date**: 2026-03-17 (15th QA pass)
+**Date**: 2026-03-17 (16th QA pass)
 **Project**: web-url-a (ai-check.ezoai.jp)
 
 ## Summary
 
-6 fixes applied (1 security, 2 SEO/PWA, 2 accessibility, 1 robustness). Build and lint pass cleanly.
+1 fix applied (SEO: robots.txt domain mismatch). Full audit confirms build, lint, a11y, security, and SEO all clean.
 
 ## Checklist
 
@@ -16,6 +16,23 @@
 - [x] 404ページ - not-found.tsx 実装済み (メタデータ付き)
 - [x] ローディング状態 - loading.tsx 実装済み (aria-label付きスピナー)
 - [x] エラー状態 - error.tsx, global-error.tsx 両方実装済み
+
+## Issues Found & Fixed (Pass 16)
+
+### Low
+
+| # | Issue | File | Fix |
+|---|-------|------|-----|
+| 1 | Static `public/robots.txt` fallback references `web-url-a.ezoai.jp` instead of `ai-check.ezoai.jp` | `public/robots.txt:2,32` | Updated domain to `ai-check.ezoai.jp` in header comment and Sitemap URL |
+
+### Verified Clean (No Issues Found)
+
+- All generator textareas have appropriate `maxLength` limits
+- All decorative SVGs have `aria-hidden="true"`
+- All meaningful SVGs have `role="img"` and `aria-label`
+- Footer is already a Server Component (no unnecessary "use client")
+- API error messages are specific and localized (RATE_LIMITED, SSRF_BLOCKED, SITE_UNREACHABLE etc.)
+- Edge case handling: URL validation, empty input, special characters all properly handled
 
 ## Issues Found & Fixed (Pass 15)
 
