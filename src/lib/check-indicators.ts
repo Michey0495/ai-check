@@ -290,6 +290,13 @@ export type CheckReport = {
     maxVideoPreview?: number;
   };
   hasLlmsFull?: boolean; // llms-full.txt (detailed version) detected
+  formAccessibility?: {
+    formCount: number;
+    fieldCount: number;
+    fieldsWithLabel: number;
+    fieldsWithAutocomplete: number;
+  };
+  nosnippetCount?: number;
   openSearch?: string; // title of OpenSearch description
   aiProtocolFiles?: {
     hasAiPlugin: boolean;

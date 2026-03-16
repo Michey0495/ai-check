@@ -136,7 +136,7 @@ export default function Home() {
       {/* Hero */}
       <section className="py-16 text-center">
         <p className="mb-4 inline-block rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-semibold tracking-wide text-primary">
-          Google AI Mode・ChatGPT・Perplexity -- AI検索がWeb検索の主流に
+          Google AI Mode・ChatGPT・Perplexity -- AI検索への対応が重要に
         </p>
         <h1 className="mb-4 text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl">
           あなたのサイトは
@@ -192,10 +192,10 @@ export default function Home() {
       {/* Why Now - Urgency */}
       <section className="py-16">
         <h2 className="mb-2 text-center text-2xl font-bold text-white">
-          なぜ今GEO対策が急務なのか
+          なぜ今GEO対策が重要なのか
         </h2>
         <p className="mb-10 text-center text-white/50">
-          AI検索の普及で、従来のSEOだけでは検索トラフィックを維持できなくなっています
+          AI検索エンジンの普及により、従来のSEOに加えた新たな対策が求められています
         </p>
         <div className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-3">
           <div className="rounded-lg border border-white/10 bg-white/5 p-6 text-center">
@@ -413,8 +413,8 @@ export default function Home() {
           あなたのサイトのGEOスコアは?
         </h2>
         <p className="mx-auto mb-8 max-w-lg text-white/50">
-          AI検索で競合だけが表示される前に、今すぐ対応状況を確認。
-          URLを入れるだけ。30秒で7指標のスコアと修正コードを取得できます。
+          AI検索への対応状況を今すぐ確認。
+          URLを入れるだけで7指標のスコアと修正コードを取得できます。
         </p>
         <div className="mx-auto max-w-xl">
           <UrlCheckForm size="lg" />

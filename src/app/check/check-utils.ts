@@ -401,6 +401,23 @@ export function generateReportText(report: CheckReport): string {
     lines.push(`humans.txt: ${ap.hasHumansTxt ? "検出" : "未検出"}`);
   }
 
+  if (report.formAccessibility) {
+    lines.push("");
+    lines.push("--- フォームアクセシビリティ ---");
+    const fa = report.formAccessibility;
+    lines.push(`フォーム数: ${fa.formCount}`);
+    lines.push(`入力フィールド数: ${fa.fieldCount}`);
+    const labelRate = fa.fieldCount > 0 ? Math.round((fa.fieldsWithLabel / fa.fieldCount) * 100) : 0;
+    const autoRate = fa.fieldCount > 0 ? Math.round((fa.fieldsWithAutocomplete / fa.fieldCount) * 100) : 0;
+    lines.push(`ラベル設定率: ${labelRate}% (${fa.fieldsWithLabel}/${fa.fieldCount})`);
+    lines.push(`autocomplete設定率: ${autoRate}% (${fa.fieldsWithAutocomplete}/${fa.fieldCount})`);
+  }
+
+  if (report.nosnippetCount) {
+    lines.push("");
+    lines.push(`data-nosnippet: ${report.nosnippetCount}箇所で検出（スニペット/AI引用から除外される要素）`);
+  }
+
   const failItems = report.results.filter((r) => r.status === "fail");
   const warnItems = report.results.filter((r) => r.status === "warn");
 
@@ -681,6 +698,25 @@ export function generateMarkdownReport(report: CheckReport): string {
     }
     lines.push(`- **security.txt (RFC 9116)**: ${ap.hasSecurityTxt ? "検出" : "未検出"}${ap.securityTxtContact ? ` (連絡先: ${ap.securityTxtContact})` : ""}`);
     lines.push(`- **humans.txt**: ${ap.hasHumansTxt ? "検出" : "未検出"}`);
+  }
+
+  if (report.formAccessibility) {
+    lines.push("", "## フォームアクセシビリティ", "");
+    const fa = report.formAccessibility;
+    const labelRate = fa.fieldCount > 0 ? Math.round((fa.fieldsWithLabel / fa.fieldCount) * 100) : 0;
+    const autoRate = fa.fieldCount > 0 ? Math.round((fa.fieldsWithAutocomplete / fa.fieldCount) * 100) : 0;
+    lines.push(`| 項目 | 値 |`);
+    lines.push(`|------|------|`);
+    lines.push(`| フォーム数 | ${fa.formCount} |`);
+    lines.push(`| 入力フィールド | ${fa.fieldCount} |`);
+    lines.push(`| ラベル設定率 | ${labelRate}% (${fa.fieldsWithLabel}/${fa.fieldCount}) |`);
+    lines.push(`| autocomplete設定率 | ${autoRate}% (${fa.fieldsWithAutocomplete}/${fa.fieldCount}) |`);
+  }
+
+  if (report.nosnippetCount) {
+    lines.push("", "## data-nosnippet 検出", "");
+    lines.push(`- **${report.nosnippetCount}箇所**で \`data-nosnippet\` 属性が検出されました`);
+    lines.push("- この属性が設定された要素のテキストは、Googleスニペット・AI検索の引用から除外されます");
   }
 
   const failItems = report.results.filter((r) => r.status === "fail");

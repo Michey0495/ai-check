@@ -31,4 +31,6 @@ export {
   analyzeSnippetControl,
   detectOpenSearch,
   analyzeAiPlugin,
+  analyzeFormAccessibility,
+  analyzeNosnippet,
 } from "./analyzers";

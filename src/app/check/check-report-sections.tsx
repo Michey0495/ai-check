@@ -1188,3 +1188,71 @@ export function AiProtocolFilesSection({ report }: { report: CheckReport }) {
     </div>
   );
 }
+
+export function FormAccessibilitySection({ report }: { report: CheckReport }) {
+  const fa = report.formAccessibility;
+  if (!fa) return null;
+
+  const labelRate = fa.fieldCount > 0 ? Math.round((fa.fieldsWithLabel / fa.fieldCount) * 100) : 0;
+  const autocompleteRate = fa.fieldCount > 0 ? Math.round((fa.fieldsWithAutocomplete / fa.fieldCount) * 100) : 0;
+
+  return (
+    <div id="sec-form-accessibility" className="scroll-mt-16 rounded-lg border border-white/10 bg-white/5 p-6">
+      <h2 className="mb-3 text-lg font-semibold text-white">フォームアクセシビリティ</h2>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="rounded-lg bg-white/[0.03] p-3 text-center">
+          <p className="text-2xl font-bold text-primary">{fa.formCount}</p>
+          <p className="text-xs text-white/40">フォーム数</p>
+        </div>
+        <div className="rounded-lg bg-white/[0.03] p-3 text-center">
+          <p className="text-2xl font-bold text-white">{fa.fieldCount}</p>
+          <p className="text-xs text-white/40">入力フィールド</p>
+        </div>
+        <div className="rounded-lg bg-white/[0.03] p-3 text-center">
+          <p className={`text-2xl font-bold ${labelRate >= 80 ? "text-green-400" : labelRate >= 50 ? "text-yellow-400" : "text-red-400"}`}>
+            {labelRate}%
+          </p>
+          <p className="text-xs text-white/40">ラベル設定率</p>
+        </div>
+        <div className="rounded-lg bg-white/[0.03] p-3 text-center">
+          <p className={`text-2xl font-bold ${autocompleteRate >= 50 ? "text-green-400" : autocompleteRate > 0 ? "text-yellow-400" : "text-white/50"}`}>
+            {autocompleteRate}%
+          </p>
+          <p className="text-xs text-white/40">autocomplete設定率</p>
+        </div>
+      </div>
+      {labelRate < 100 && (
+        <p className="mt-3 text-xs text-white/40">
+          ラベルなしの入力フィールドがあります。aria-label、label要素、placeholder等を設定すると、スクリーンリーダーの読み上げ精度が向上します。
+        </p>
+      )}
+      {autocompleteRate === 0 && fa.fieldCount > 0 && (
+        <p className="mt-1 text-xs text-white/40">
+          autocomplete属性を設定すると、ブラウザの自動入力が正確に動作し、ユーザー体験が向上します。
+        </p>
+      )}
+    </div>
+  );
+}
+
+export function NosnippetSection({ report }: { report: CheckReport }) {
+  if (!report.nosnippetCount) return null;
+
+  return (
+    <div id="sec-nosnippet" className="scroll-mt-16 rounded-lg border border-yellow-500/20 bg-yellow-500/5 p-6">
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-white">data-nosnippet 検出</h2>
+        <span className="rounded-full bg-yellow-500/10 px-3 py-1 text-xs text-yellow-400">
+          {report.nosnippetCount}箇所
+        </span>
+      </div>
+      <p className="text-sm text-white/50">
+        <code className="rounded bg-white/10 px-1 text-xs">data-nosnippet</code> 属性が{report.nosnippetCount}箇所で検出されました。
+        この属性が設定された要素のテキストは、Google検索のスニペットおよびAI検索の引用から除外されます。
+      </p>
+      <p className="mt-2 text-xs text-white/40">
+        意図的な設定であれば問題ありませんが、重要なコンテンツに設定されている場合はAI検索での引用機会を逃す可能性があります。
+      </p>
+    </div>
+  );
+}

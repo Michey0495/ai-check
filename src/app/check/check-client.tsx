@@ -53,6 +53,8 @@ import {
   MetaRefreshSection,
   SnippetControlSection,
   AiProtocolFilesSection,
+  FormAccessibilitySection,
+  NosnippetSection,
 } from "./check-report-sections";
 
 function downloadFile(filename: string, content: string, mimeType: string) {
@@ -637,7 +639,7 @@ export function CheckPageClient() {
           {/* Content & SEO */}
           <CollapsibleGroup
             title="コンテンツ & SEO"
-            sectionCount={[report.aiContentPreview, report.contentMetrics?.wordCount, report.headingTree?.length, report.jsonLdBlocks?.blockCount, report.richResultsEligibility?.length, report.linkQuality, report.duplicateMetaTags?.length, report.feedDetection, report.ogPreview || report.ogImage, report.snippetControl || report.openSearch].filter(Boolean).length}
+            sectionCount={[report.aiContentPreview, report.contentMetrics?.wordCount, report.headingTree?.length, report.jsonLdBlocks?.blockCount, report.richResultsEligibility?.length, report.linkQuality, report.duplicateMetaTags?.length, report.feedDetection, report.ogPreview || report.ogImage, report.snippetControl || report.openSearch, report.nosnippetCount].filter(Boolean).length}
           >
             <AiContentPreviewSection report={report} />
             <ContentMetricsSection report={report} />
@@ -646,6 +648,7 @@ export function CheckPageClient() {
             <RichResultsSection report={report} />
             <LinkQualitySection report={report} />
             <SnippetControlSection report={report} />
+            <NosnippetSection report={report} />
             <DuplicateMetaTagsSection report={report} />
             <OgPreviewSection report={report} />
             <FeedDetectionSection report={report} />
@@ -654,7 +657,7 @@ export function CheckPageClient() {
           {/* Tech & Social */}
           <CollapsibleGroup
             title="テクノロジー & ソーシャル"
-            sectionCount={[report.detectedTech?.length, report.pwaManifest?.exists, report.socialMeta, report.faviconAnalysis, report.accessibility?.imgCount || report.accessibility?.ariaLandmarks, report.aiProtocolFiles].filter(Boolean).length}
+            sectionCount={[report.detectedTech?.length, report.pwaManifest?.exists, report.socialMeta, report.faviconAnalysis, report.accessibility?.imgCount || report.accessibility?.ariaLandmarks, report.aiProtocolFiles, report.formAccessibility].filter(Boolean).length}
           >
             <DetectedTechSection report={report} />
             <AiProtocolFilesSection report={report} />
@@ -662,6 +665,7 @@ export function CheckPageClient() {
             <SocialMetaSection report={report} />
             <FaviconAnalysisSection report={report} />
             <AccessibilitySection report={report} />
+            <FormAccessibilitySection report={report} />
           </CollapsibleGroup>
 
           {/* Score breakdown chart */}

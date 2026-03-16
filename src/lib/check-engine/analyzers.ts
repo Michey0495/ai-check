@@ -614,6 +614,47 @@ export function detectOpenSearch(html: string): string | undefined {
   return titleMatch?.[1] ?? "OpenSearch";
 }
 
+export function analyzeFormAccessibility(html: string) {
+  const formTags = html.match(/<form[^>]*>/gi) ?? [];
+  const formCount = formTags.length;
+  const inputTags = html.match(/<input[^>]*>/gi) ?? [];
+  const textareaTags = html.match(/<textarea[^>]*>/gi) ?? [];
+  const selectTags = html.match(/<select[^>]*>/gi) ?? [];
+  const allFormFields = [...inputTags, ...textareaTags, ...selectTags];
+  // Exclude hidden, submit, button, reset, image types
+  const meaningfulFields = allFormFields.filter((tag) => {
+    const typeMatch = tag.match(/\btype=["']([^"']+)["']/i);
+    const t = typeMatch?.[1]?.toLowerCase() ?? "text";
+    return !["hidden", "submit", "button", "reset", "image"].includes(t);
+  });
+  const fieldCount = meaningfulFields.length;
+
+  // Check for associated labels (id+for or aria-label or aria-labelledby or placeholder)
+  const fieldsWithLabel = meaningfulFields.filter((tag) => {
+    const hasAriaLabel = /\baria-label=/i.test(tag);
+    const hasAriaLabelledby = /\baria-labelledby=/i.test(tag);
+    const hasPlaceholder = /\bplaceholder=/i.test(tag);
+    const hasTitle = /\btitle=/i.test(tag);
+    const idMatch = tag.match(/\bid=["']([^"']+)["']/i);
+    const hasLinkedLabel = idMatch ? new RegExp(`<label[^>]*for=["']${idMatch[1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["']`, 'i').test(html) : false;
+    return hasAriaLabel || hasAriaLabelledby || hasPlaceholder || hasTitle || hasLinkedLabel;
+  }).length;
+
+  // Check autocomplete attribute
+  const fieldsWithAutocomplete = meaningfulFields.filter((tag) => /\bautocomplete=/i.test(tag)).length;
+
+  if (fieldCount === 0) return undefined;
+  return { formCount, fieldCount, fieldsWithLabel, fieldsWithAutocomplete };
+}
+
+export function analyzeNosnippet(html: string) {
+  // Detect data-nosnippet attribute (Google-specific content exclusion from snippets)
+  const nosnippetElements = html.match(/data-nosnippet/gi) ?? [];
+  const nosnippetCount = nosnippetElements.length;
+  if (nosnippetCount === 0) return undefined;
+  return { nosnippetCount };
+}
+
 export function analyzeMetaRefresh(html: string): { delay: number; url?: string } | undefined {
   const match = html.match(/<meta[^>]*http-equiv=["']refresh["'][^>]*content=["'](\d+)(?:\s*;\s*url=([^"']+))?["']/i)
     ?? html.match(/<meta[^>]*content=["'](\d+)(?:\s*;\s*url=([^"']+))?["'][^>]*http-equiv=["']refresh["']/i);

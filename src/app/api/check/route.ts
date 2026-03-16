@@ -48,6 +48,8 @@ import {
   analyzeSnippetControl,
   detectOpenSearch,
   analyzeAiPlugin,
+  analyzeFormAccessibility,
+  analyzeNosnippet,
 } from "@/lib/check-engine";
 
 export async function OPTIONS() {
@@ -257,6 +259,8 @@ export async function POST(request: NextRequest) {
     const metaRefresh = analyzeMetaRefresh(html);
     const snippetControl = analyzeSnippetControl(html, responseHdrs);
     const openSearch = detectOpenSearch(html);
+    const formAccessibility = analyzeFormAccessibility(html);
+    const nosnippetData = analyzeNosnippet(html);
     const aiProtocolFiles = await analyzeAiPlugin(baseUrl, agentRes);
 
     const report: CheckReport = {
@@ -326,6 +330,8 @@ export async function POST(request: NextRequest) {
       metaRefresh,
       snippetControl,
       hasLlmsFull: hasLlmsFull || undefined,
+      formAccessibility: formAccessibility || undefined,
+      nosnippetCount: nosnippetData?.nosnippetCount,
       openSearch: openSearch || undefined,
       aiProtocolFiles: aiProtocolFiles || undefined,
     };

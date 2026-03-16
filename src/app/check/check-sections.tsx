@@ -347,6 +347,8 @@ export function SectionNav({ report }: { report: CheckReport }) {
       { id: "sec-link-quality", label: "リンク品質", exists: !!report.linkQuality },
       { id: "sec-rich-results", label: "リッチリザルト", exists: !!(report.richResultsEligibility && report.richResultsEligibility.length > 0) },
       { id: "sec-snippet-control", label: "スニペット制御", exists: !!(report.snippetControl || report.openSearch) },
+      { id: "sec-nosnippet", label: "nosnippet", exists: !!report.nosnippetCount },
+      { id: "sec-form-accessibility", label: "フォーム", exists: !!report.formAccessibility },
       { id: "sec-ai-protocols", label: "Well-Known", exists: !!report.aiProtocolFiles },
     ];
     return s.filter((x) => x.exists);
