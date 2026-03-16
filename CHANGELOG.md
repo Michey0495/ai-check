@@ -2,6 +2,15 @@
 
 ## 2026-03-17
 
+### Maintenance (20th pass)
+
+- **check**: Build passes, TypeScript clean, ESLint clean, 0 npm vulnerabilities
+- **check**: No open GitHub issues
+- **check**: AI public files verified (robots.ts dynamic route with 16 named crawlers + wildcard, llms.txt, agent.json all valid)
+- **check**: Site live and healthy on Vercel (`web-url-a.vercel.app`)
+- **check**: No safe dependency updates available (eslint 9→10, @types/node 20→25 are major — skipped)
+- **note**: DNS for `ai-check.ezoai.jp` still needs CNAME → `cname.vercel-dns.com` at Xserver (SSL cert mismatch persists)
+
 ### Maintenance (19th pass)
 
 - **fix**: Removed static `public/robots.txt` (recurring issue — wrong domain `web-url-a.ezoai.jp`, overrides dynamic `src/app/robots.ts` with correct `ai-check.ezoai.jp` and 15 crawlers)
