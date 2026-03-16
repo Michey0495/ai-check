@@ -2,6 +2,13 @@
 
 ## 2026-03-17
 
+### Maintenance (18th pass)
+
+- **fix**: Removed static `public/robots.txt` (7 crawlers) that was overriding dynamic `src/app/robots.ts` (15 crawlers including Diffbot, Meta-ExternalAgent, OAI-SearchBot, GoogleOther, Twitterbot)
+- **chore**: Updated `shadcn` 4.0.7 → 4.0.8
+- **check**: Build passes, TypeScript clean, 0 npm vulnerabilities, no open GitHub issues
+- **check**: AI public files verified (robots.ts dynamic route, llms.txt, agent.json all valid)
+
 ### Maintenance (17th pass)
 
 - **fix**: Converted 8 remaining hardcoded `dateModified` values in page-level JSON-LD to dynamic `new Date().toISOString().split("T")[0]` (guides/geo, geo-vs-seo, glossary, quick-start, checklist, industry + check/[indicator] + for/[industry])
