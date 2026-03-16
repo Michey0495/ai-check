@@ -61,7 +61,7 @@ export function getHistory(): HistoryEntry[] {
 export function getPreviousScore(url: string): number | undefined {
   const history = getHistory();
   const prev = history.find((h) => h.url === url);
-  return prev ? Math.round((prev.totalScore / prev.maxScore) * 100) : undefined;
+  return prev ? (prev.maxScore > 0 ? Math.round((prev.totalScore / prev.maxScore) * 100) : 0) : undefined;
 }
 
 export function saveToHistory(report: CheckReport) {
@@ -73,7 +73,7 @@ export function saveToHistory(report: CheckReport) {
     maxScore: report.maxScore,
     grade: report.grade,
     checkedAt: report.checkedAt,
-    previousScore: previous ? Math.round((previous.totalScore / previous.maxScore) * 100) : undefined,
+    previousScore: previous ? (previous.maxScore > 0 ? Math.round((previous.totalScore / previous.maxScore) * 100) : 0) : undefined,
   };
   const filtered = history.filter((h) => h.url !== entry.url);
   filtered.unshift(entry);
@@ -85,7 +85,7 @@ export function saveToHistory(report: CheckReport) {
 }
 
 export function generateReportText(report: CheckReport): string {
-  const pct = Math.round((report.totalScore / report.maxScore) * 100);
+  const pct = report.maxScore > 0 ? Math.round((report.totalScore / report.maxScore) * 100) : 0;
   const htmlSizeText = report.htmlSizeKB != null ? ` | HTML: ${report.htmlSizeKB}KB` : "";
   const httpsText = report.isHttps !== undefined ? ` | ${report.isHttps ? "HTTPS" : "HTTP"}` : "";
   const dnsText = report.dnsResolutionMs != null ? ` | DNS: ${report.dnsResolutionMs}ms` : "";
@@ -419,7 +419,7 @@ export function generateReportText(report: CheckReport): string {
 }
 
 export function generateMarkdownReport(report: CheckReport): string {
-  const pct = Math.round((report.totalScore / report.maxScore) * 100);
+  const pct = report.maxScore > 0 ? Math.round((report.totalScore / report.maxScore) * 100) : 0;
   const lines = [
     `# AI Check - GEOスコアレポート`,
     ``,

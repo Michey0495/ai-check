@@ -208,7 +208,7 @@ export function CheckHistory({ currentUrl }: { currentUrl: string }) {
 }
 
 export function QuickFixGuide({ report }: { report: CheckReport }) {
-  const pct = Math.round((report.totalScore / report.maxScore) * 100);
+  const pct = report.maxScore > 0 ? Math.round((report.totalScore / report.maxScore) * 100) : 0;
   const failItems = report.results.filter((r) => r.status === "fail");
   const warnItems = report.results.filter((r) => r.status === "warn");
 
@@ -415,8 +415,8 @@ export function ScoreSimulator({ report }: { report: CheckReport }) {
     if (fixed.has(r.id)) return sum + r.maxScore;
     return sum + r.score;
   }, 0);
-  const simulatedPct = Math.round((simulatedScore / report.maxScore) * 100);
-  const currentPct = Math.round((report.totalScore / report.maxScore) * 100);
+  const simulatedPct = report.maxScore > 0 ? Math.round((simulatedScore / report.maxScore) * 100) : 0;
+  const currentPct = report.maxScore > 0 ? Math.round((report.totalScore / report.maxScore) * 100) : 0;
   const improvement = simulatedPct - currentPct;
   const simulatedGrade = simulatedPct >= 90 ? "A" : simulatedPct >= 75 ? "B" : simulatedPct >= 60 ? "C" : simulatedPct >= 40 ? "D" : "F";
 

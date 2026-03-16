@@ -1,11 +1,11 @@
 # QA Report - web-url-a (AI Check)
 
-**Date**: 2026-03-17 (17th QA pass)
+**Date**: 2026-03-17 (18th QA pass)
 **Project**: web-url-a (ai-check.ezoai.jp)
 
 ## Summary
 
-6 fixes applied across generators and UI. Badge generator URL normalization, JSON-LD validation improvements, design system compliance fixes.
+Pass 18: Fixed division-by-zero risk across 10 locations in score calculation code. All previous checklist items remain passing.
 
 ## Checklist
 
@@ -16,6 +16,23 @@
 - [x] 404ページ - not-found.tsx 実装済み (メタデータ付き)
 - [x] ローディング状態 - loading.tsx 実装済み (aria-label付きスピナー)
 - [x] エラー状態 - error.tsx, global-error.tsx 両方実装済み
+
+## Issues Found & Fixed (Pass 18)
+
+### Medium
+
+| # | Issue | File | Fix |
+|---|-------|------|-----|
+| 1 | Division by zero in `getPreviousScore()` when `maxScore === 0` | `check/check-utils.ts:64` | Added `maxScore > 0` guard |
+| 2 | Division by zero in `saveToHistory()` previousScore calculation | `check/check-utils.ts:76` | Added `maxScore > 0` guard |
+| 3 | Division by zero in `generateReportText()` | `check/check-utils.ts:88` | Added `maxScore > 0` guard |
+| 4 | Division by zero in `generateMarkdownReport()` | `check/check-utils.ts:422` | Added `maxScore > 0` guard |
+| 5 | Division by zero in `getShareUrl()` callback | `check/check-client.tsx:294` | Added `maxScore > 0` guard |
+| 6 | Division by zero in `handleShareX()` | `check/check-client.tsx:300` | Added `maxScore > 0` guard |
+| 7 | Division by zero in `handleShareLINE()` | `check/check-client.tsx:312` | Added `maxScore > 0` guard |
+| 8 | Division by zero in sr-only accessibility text | `check/check-client.tsx:369` | Added `maxScore > 0` guard |
+| 9 | Division by zero in score trend display | `check/check-client.tsx:440` | Added `maxScore > 0` guard |
+| 10 | Division by zero in `QuickFixGuide` and `ScoreSimulator` | `check/check-sections.tsx:211,418-419` | Added `maxScore > 0` guard |
 
 ## Issues Found & Fixed (Pass 17)
 

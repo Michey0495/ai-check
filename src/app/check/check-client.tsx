@@ -291,13 +291,13 @@ export function CheckPageClient() {
   }, [report]);
 
   const getShareUrl = useCallback((report: CheckReport) => {
-    const pct = Math.round((report.totalScore / report.maxScore) * 100);
+    const pct = report.maxScore > 0 ? Math.round((report.totalScore / report.maxScore) * 100) : 0;
     return `https://ai-check.ezoai.jp/check?url=${encodeURIComponent(report.url)}&score=${pct}&grade=${report.grade}`;
   }, []);
 
   const handleShareX = useCallback(() => {
     if (!report) return;
-    const pct = Math.round((report.totalScore / report.maxScore) * 100);
+    const pct = report.maxScore > 0 ? Math.round((report.totalScore / report.maxScore) * 100) : 0;
     const text = `AI検索対応度チェック結果: ${report.grade}ランク (${pct}/100)\n${report.url}\n\n#GEO対策 #AI検索`;
     const shareUrl = getShareUrl(report);
     window.open(
@@ -309,7 +309,7 @@ export function CheckPageClient() {
 
   const handleShareLINE = useCallback(() => {
     if (!report) return;
-    const pct = Math.round((report.totalScore / report.maxScore) * 100);
+    const pct = report.maxScore > 0 ? Math.round((report.totalScore / report.maxScore) * 100) : 0;
     const shareUrl = getShareUrl(report);
     const text = `AI検索対応度チェック結果: ${report.grade}ランク (${pct}/100) ${shareUrl}`;
     window.open(
@@ -366,7 +366,7 @@ export function CheckPageClient() {
       {report && (
         <div className="space-y-8" aria-live="polite">
           <p className="sr-only">
-            チェック完了: {report.url} のGEOスコアは{Math.round((report.totalScore / report.maxScore) * 100)}点、グレード{report.grade}です。
+            チェック完了: {report.url} のGEOスコアは{report.maxScore > 0 ? Math.round((report.totalScore / report.maxScore) * 100) : 0}点、グレード{report.grade}です。
           </p>
           {/* Site preview with OG image */}
           {(report.ogImage || report.siteTitle) && (
@@ -437,7 +437,7 @@ export function CheckPageClient() {
             </p>
             {/* Score trend */}
             {prevScore !== undefined && (() => {
-              const currentPct = Math.round((report.totalScore / report.maxScore) * 100);
+              const currentPct = report.maxScore > 0 ? Math.round((report.totalScore / report.maxScore) * 100) : 0;
               const diff = currentPct - prevScore;
               if (diff === 0) return <p className="mt-1 text-xs text-white/40">前回と同じスコアです</p>;
               return (
