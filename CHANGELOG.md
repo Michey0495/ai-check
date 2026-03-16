@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-03-17
+
+### Maintenance (17th pass)
+
+- **fix**: Converted 8 remaining hardcoded `dateModified` values in page-level JSON-LD to dynamic `new Date().toISOString().split("T")[0]` (guides/geo, geo-vs-seo, glossary, quick-start, checklist, industry + check/[indicator] + for/[industry])
+- **chore**: Updated `agent.json` dateUpdated to 2026-03-17
+- **check**: Build passes, TypeScript clean, ESLint clean, 0 npm vulnerabilities
+- **check**: No open GitHub issues
+- **check**: AI public files verified (robots.ts dynamic route, llms.txt, agent.json all present and valid)
+- **check**: No safe dependency updates available (eslint 9→10, @types/node 20→25 are major — skipped)
+- **note**: DNS for `ai-check.ezoai.jp` still needs CNAME → `cname.vercel-dns.com` at Xserver
+- **deployed**: Vercel production deploy successful (`web-url-a.ezoai.jp`)
+
 ## 2026-03-16
 
 ### Maintenance (16th pass)
