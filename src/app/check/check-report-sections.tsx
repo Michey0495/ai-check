@@ -43,7 +43,7 @@ export function AiCrawlerStatusSection({ report }: { report: CheckReport }) {
             }`}
           >
             <p className={`text-sm font-medium ${crawler.allowed ? "text-green-400" : "text-red-400"}`}>
-              {crawler.allowed ? "+" : "-"}
+              {crawler.allowed ? "許可" : "拒否"}
             </p>
             <p className="mt-1 text-xs font-medium text-white/70">
               {AI_CRAWLER_LABELS[crawler.name] ?? crawler.name}

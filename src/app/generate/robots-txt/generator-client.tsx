@@ -89,6 +89,7 @@ export function RobotsTxtGenerator() {
           <Label htmlFor="robots-sitemap-url" className="mb-1.5 text-white/70">サイトマップURL（任意）</Label>
           <Input
             id="robots-sitemap-url"
+            type="url"
             value={sitemapUrl}
             onChange={(e) => setSitemapUrl(e.target.value)}
             placeholder="https://example.com/sitemap.xml"

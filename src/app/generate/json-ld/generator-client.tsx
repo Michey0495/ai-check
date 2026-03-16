@@ -299,6 +299,8 @@ export function JsonLdGenerator() {
   const [fields, setFields] = useState<FieldValues>({});
   const [output, setOutput] = useState("");
   const [copied, setCopied] = useState(false);
+  const [urlError, setUrlError] = useState("");
+  const [warning, setWarning] = useState("");
 
   function handleTypeChange(newType: string) {
     setSchemaType(newType);
@@ -335,6 +337,29 @@ export function JsonLdGenerator() {
   function generate() {
     if (needsName && !siteName.trim()) return;
     if (needsUrl && !siteUrl.trim()) return;
+    setWarning("");
+
+    if (needsUrl) {
+      const trimmedUrl = siteUrl.trim();
+      const normalized = /^https?:\/\//.test(trimmedUrl) ? trimmedUrl : "https://" + trimmedUrl;
+      try {
+        new URL(normalized);
+        setUrlError("");
+      } catch {
+        setUrlError("有効なURLを入力してください");
+        return;
+      }
+    }
+
+    if (schemaType === "FAQPage" && !(fields.faq || "").includes("|")) {
+      setWarning("FAQ項目が空です。「質問|回答」の形式で入力してください。");
+    }
+    if (schemaType === "BreadcrumbList" && !(fields.items || "").includes("|")) {
+      setWarning("パンくず項目が空です。「名前|URL」の形式で入力してください。");
+    }
+    if (schemaType === "HowTo" && !(fields.steps || "").trim()) {
+      setWarning("手順が空です。1行1ステップで入力してください。");
+    }
 
     const jsonLd = buildJsonLd(schemaType, siteName.trim(), siteUrl.trim(), description.trim(), fields);
     const cleaned = JSON.parse(JSON.stringify(jsonLd));
@@ -399,12 +424,14 @@ export function JsonLdGenerator() {
             <Label htmlFor="jsonld-url" className="mb-1.5 text-white/70">{urlLabel} *</Label>
             <Input
               id="jsonld-url"
+              type="url"
               value={siteUrl}
-              onChange={(e) => setSiteUrl(e.target.value)}
+              onChange={(e) => { setSiteUrl(e.target.value); setUrlError(""); }}
               placeholder="https://example.com"
               maxLength={2048}
               className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
             />
+            {urlError && <p className="mt-1 text-xs text-red-400">{urlError}</p>}
           </div>
         )}
         {needsDescription && (
@@ -459,6 +486,11 @@ export function JsonLdGenerator() {
       <div>
         {output ? (
           <div className="space-y-3">
+            {warning && (
+              <p className="rounded-lg border border-yellow-500/20 bg-yellow-500/5 px-4 py-2 text-xs text-yellow-400">
+                {warning}
+              </p>
+            )}
             <div className="flex items-center justify-between">
               <span className="text-sm font-semibold text-white">生成結果</span>
               <div className="flex gap-2">

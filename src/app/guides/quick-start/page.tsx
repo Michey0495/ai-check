@@ -345,7 +345,7 @@ export default function QuickStartGuidePage() {
         {/* Step 4: Re-check */}
         <div id="step-4">
           <div className="mb-4 flex items-center gap-3">
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-green-500/20 text-lg font-bold text-green-400">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/20 text-lg font-bold text-primary">
               4
             </span>
             <div>

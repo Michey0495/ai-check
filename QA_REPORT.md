@@ -1,11 +1,11 @@
 # QA Report - web-url-a (AI Check)
 
-**Date**: 2026-03-17 (16th QA pass)
+**Date**: 2026-03-17 (17th QA pass)
 **Project**: web-url-a (ai-check.ezoai.jp)
 
 ## Summary
 
-1 fix applied (SEO: robots.txt domain mismatch). Full audit confirms build, lint, a11y, security, and SEO all clean.
+6 fixes applied across generators and UI. Badge generator URL normalization, JSON-LD validation improvements, design system compliance fixes.
 
 ## Checklist
 
@@ -17,6 +17,36 @@
 - [x] ローディング状態 - loading.tsx 実装済み (aria-label付きスピナー)
 - [x] エラー状態 - error.tsx, global-error.tsx 両方実装済み
 
+## Issues Found & Fixed (Pass 17)
+
+### Medium
+
+| # | Issue | File | Fix |
+|---|-------|------|-----|
+| 1 | Badge generator embed code displays unnormalized URL (missing `https://` prefix) in Markdown/HTML preview | `generate/badge/generator-client.tsx:154,171` | Added URL normalization in display code to match copy behavior |
+| 2 | JSON-LD generator missing URL validation on siteUrl field | `generate/json-ld/generator-client.tsx:400-407` | Added URL validation with error message, `type="url"` on input |
+| 3 | JSON-LD generator silently produces empty arrays for FAQPage/BreadcrumbList/HowTo with no items | `generate/json-ld/generator-client.tsx:123-286` | Added warning messages when structured data fields are empty |
+| 4 | Quick-start guide step 4 uses `bg-green-500/20` instead of primary color (design system violation) | `guides/quick-start/page.tsx:348` | Changed to `bg-primary/20 text-primary` to match other steps |
+
+### Low
+
+| # | Issue | File | Fix |
+|---|-------|------|-----|
+| 5 | Badge generator URL input missing maxLength constraint | `generate/badge/generator-client.tsx:74` | Added `maxLength={2048}` |
+| 6 | Robots.txt generator sitemap URL input missing `type="url"` | `generate/robots-txt/generator-client.tsx:91` | Added `type="url"` for browser validation |
+| 7 | Crawler status uses `+`/`-` symbols instead of semantic text labels | `check/check-report-sections.tsx:46` | Changed to `許可`/`拒否` text labels |
+
+### Verified Clean (No Issues Found)
+
+- Design system: black bg, white text, single accent color throughout
+- No emoji or icon library usage detected
+- All generator textareas have appropriate `maxLength` limits
+- All decorative SVGs have `aria-hidden="true"`
+- All meaningful SVGs have `role="img"` and `aria-label`
+- API error messages are specific and localized
+- SSRF protection in place across all API routes
+- Rate limiting applied to check and feedback APIs
+
 ## Issues Found & Fixed (Pass 16)
 
 ### Low
@@ -24,15 +54,6 @@
 | # | Issue | File | Fix |
 |---|-------|------|-----|
 | 1 | Static `public/robots.txt` fallback references `web-url-a.ezoai.jp` instead of `ai-check.ezoai.jp` | `public/robots.txt:2,32` | Updated domain to `ai-check.ezoai.jp` in header comment and Sitemap URL |
-
-### Verified Clean (No Issues Found)
-
-- All generator textareas have appropriate `maxLength` limits
-- All decorative SVGs have `aria-hidden="true"`
-- All meaningful SVGs have `role="img"` and `aria-label`
-- Footer is already a Server Component (no unnecessary "use client")
-- API error messages are specific and localized (RATE_LIMITED, SSRF_BLOCKED, SITE_UNREACHABLE etc.)
-- Edge case handling: URL validation, empty input, special characters all properly handled
 
 ## Issues Found & Fixed (Pass 15)
 

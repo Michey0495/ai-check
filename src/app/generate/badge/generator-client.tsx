@@ -75,6 +75,7 @@ export function BadgeGenerator() {
             placeholder="https://example.com"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
+            maxLength={2048}
             className="mt-1 border-white/10 bg-white/5 text-white placeholder:text-white/30"
             onKeyDown={(e) => { if (e.key === "Enter") generate(); }}
           />
@@ -151,7 +152,7 @@ export function BadgeGenerator() {
                 </Button>
               </div>
               <pre className="overflow-x-auto text-xs text-white/50">
-                <code>{`[![GEO Score](${badgeUrl})](https://ai-check.ezoai.jp/check?url=${encodeURIComponent(url.trim())})`}</code>
+                <code>{`[![GEO Score](${badgeUrl})](https://ai-check.ezoai.jp/check?url=${encodeURIComponent(/^https?:\/\//.test(url.trim()) ? url.trim() : "https://" + url.trim())})`}</code>
               </pre>
             </div>
 
@@ -168,7 +169,7 @@ export function BadgeGenerator() {
                 </Button>
               </div>
               <pre className="overflow-x-auto text-xs text-white/50">
-                <code>{`<a href="https://ai-check.ezoai.jp/check?url=${encodeURIComponent(url.trim())}"><img src="${badgeUrl}" alt="GEO Score" /></a>`}</code>
+                <code>{`<a href="https://ai-check.ezoai.jp/check?url=${encodeURIComponent(/^https?:\/\//.test(url.trim()) ? url.trim() : "https://" + url.trim())}"><img src="${badgeUrl}" alt="GEO Score" /></a>`}</code>
               </pre>
             </div>
 
