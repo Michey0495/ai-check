@@ -29,7 +29,7 @@ const howToJsonLd = {
   description:
     "ChatGPT、Perplexity、GeminiなどのAI検索エンジンに自サイトの情報を正しく参照してもらうための7ステップガイド。",
   datePublished: "2026-03-15",
-  dateModified: "2026-03-16",
+  dateModified: new Date().toISOString().split("T")[0],
   step: [
     {
       "@type": "HowToStep",

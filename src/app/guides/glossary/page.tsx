@@ -141,7 +141,7 @@ const definitionListJsonLd = {
   description: "GEO対策・AI検索最適化に関する用語集",
   url: "https://ai-check.ezoai.jp/guides/glossary",
   datePublished: "2026-03-15",
-  dateModified: "2026-03-16",
+  dateModified: new Date().toISOString().split("T")[0],
   hasDefinedTerm: glossaryTerms.map((t) => ({
     "@type": "DefinedTerm",
     name: t.term,

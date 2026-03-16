@@ -1413,7 +1413,7 @@ export default async function IndustryPage({
     description: data.metaDescription,
     url: `https://ai-check.ezoai.jp/for/${slug}`,
     datePublished: "2026-03-15",
-    dateModified: "2026-03-16",
+    dateModified: new Date().toISOString().split("T")[0],
     publisher: {
       "@type": "Organization",
       name: "AI Check",
