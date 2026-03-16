@@ -295,6 +295,7 @@ export type CheckReport = {
     agentJsonVersion?: string;
     hasSecurityTxt: boolean;
     securityTxtContact?: string;
+    hasHumansTxt: boolean;
   };
 };
 

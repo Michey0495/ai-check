@@ -663,16 +663,19 @@ export async function analyzeAiPlugin(
   agentJsonVersion?: string;
   hasSecurityTxt: boolean;
   securityTxtContact?: string;
+  hasHumansTxt: boolean;
 } | undefined> {
   let hasAiPlugin = false;
   let aiPluginName: string | undefined;
   let aiPluginDescription: string | undefined;
   let hasSecurityTxt = false;
   let securityTxtContact: string | undefined;
+  let hasHumansTxt = false;
 
-  const [aiPluginRes, securityTxtRes] = await Promise.all([
+  const [aiPluginRes, securityTxtRes, humansTxtRes] = await Promise.all([
     safeFetch(`${baseUrl}/.well-known/ai-plugin.json`),
     safeFetch(`${baseUrl}/.well-known/security.txt`),
+    safeFetch(`${baseUrl}/humans.txt`),
   ]);
 
   try {
@@ -713,6 +716,13 @@ export async function analyzeAiPlugin(
     }
   }
 
-  if (!hasAiPlugin && !hasAgentJson && !hasSecurityTxt) return undefined;
-  return { hasAiPlugin, hasAgentJson, aiPluginName, aiPluginDescription, agentJsonVersion, hasSecurityTxt, securityTxtContact };
+  if (humansTxtRes.ok && humansTxtRes.text.length > 10) {
+    const text = humansTxtRes.text.toLowerCase();
+    if (text.includes("team") || text.includes("site") || text.includes("author") || text.includes("developer")) {
+      hasHumansTxt = true;
+    }
+  }
+
+  if (!hasAiPlugin && !hasAgentJson && !hasSecurityTxt && !hasHumansTxt) return undefined;
+  return { hasAiPlugin, hasAgentJson, aiPluginName, aiPluginDescription, agentJsonVersion, hasSecurityTxt, securityTxtContact, hasHumansTxt };
 }

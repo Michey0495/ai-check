@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { corsHeaders, corsOptionsResponse } from "@/lib/cors";
+import { createRateLimiter } from "@/lib/check-engine";
+
+const checkGenerateRateLimit = createRateLimiter(20);
 
 function sanitizeLine(str: string): string {
   return str.replace(/[\r\n]/g, " ").trim();
@@ -13,6 +16,24 @@ export async function OPTIONS() {
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    const rl = checkGenerateRateLimit(ip);
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: "レート制限を超えました。しばらくしてから再試行してください。" },
+        {
+          status: 429,
+          headers: {
+            ...corsHeaders(),
+            "X-RateLimit-Limit": "20",
+            "X-RateLimit-Remaining": String(rl.remaining),
+            "X-RateLimit-Reset": String(Math.ceil(rl.resetAt / 1000)),
+            "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)),
+          },
+        }
+      );
+    }
+
     const { type, data } = await request.json();
 
     if (!type || !data) {

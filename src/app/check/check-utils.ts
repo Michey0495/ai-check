@@ -394,6 +394,7 @@ export function generateReportText(report: CheckReport): string {
     lines.push(`agent.json (A2A): ${ap.hasAgentJson ? "検出" : "未検出"}${ap.agentJsonVersion ? ` (v${ap.agentJsonVersion})` : ""}`);
     lines.push(`ai-plugin.json (ChatGPT): ${ap.hasAiPlugin ? "検出" : "未検出"}${ap.aiPluginName ? ` (${ap.aiPluginName})` : ""}`);
     lines.push(`security.txt (RFC 9116): ${ap.hasSecurityTxt ? "検出" : "未検出"}${ap.securityTxtContact ? ` (${ap.securityTxtContact})` : ""}`);
+    lines.push(`humans.txt: ${ap.hasHumansTxt ? "検出" : "未検出"}`);
   }
 
   const failItems = report.results.filter((r) => r.status === "fail");
@@ -671,6 +672,7 @@ export function generateMarkdownReport(report: CheckReport): string {
       lines.push(`  - ${ap.aiPluginDescription.slice(0, 200)}`);
     }
     lines.push(`- **security.txt (RFC 9116)**: ${ap.hasSecurityTxt ? "検出" : "未検出"}${ap.securityTxtContact ? ` (連絡先: ${ap.securityTxtContact})` : ""}`);
+    lines.push(`- **humans.txt**: ${ap.hasHumansTxt ? "検出" : "未検出"}`);
   }
 
   const failItems = report.results.filter((r) => r.status === "fail");

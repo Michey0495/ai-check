@@ -40,6 +40,31 @@ export function checkRateLimit(ip: string, cost = 1): { allowed: boolean; remain
 
 export { RATE_LIMIT };
 
+// Generic rate limiter factory for non-check endpoints
+export function createRateLimiter(limit: number, windowMs = 60_000) {
+  const map = new Map<string, { count: number; resetAt: number }>();
+  let lastClean = Date.now();
+
+  return function check(ip: string): { allowed: boolean; remaining: number; resetAt: number } {
+    const now = Date.now();
+    if (map.size > RATE_LIMIT_MAX_ENTRIES || now - lastClean > CLEANUP_INTERVAL_MS) {
+      cleanupExpired(map, now);
+      lastClean = now;
+    }
+    const entry = map.get(ip);
+    if (!entry || now > entry.resetAt) {
+      const resetAt = now + windowMs;
+      map.set(ip, { count: 1, resetAt });
+      return { allowed: true, remaining: limit - 1, resetAt };
+    }
+    if (entry.count >= limit) {
+      return { allowed: false, remaining: 0, resetAt: entry.resetAt };
+    }
+    entry.count += 1;
+    return { allowed: true, remaining: limit - entry.count, resetAt: entry.resetAt };
+  };
+}
+
 export function isPrivateHostname(hostname: string): boolean {
   const h = hostname.replace(/^\[|\]$/g, "");
   if (h === "localhost" || h === "127.0.0.1" || h === "::1" || h === "0.0.0.0") return true;

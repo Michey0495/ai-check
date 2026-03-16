@@ -394,7 +394,7 @@ Sitemap: https://example.com/sitemap.xml`,
   "url": "https://taskflow.example.com",
   "screenshot": "https://taskflow.example.com/images/dashboard.png",
   "softwareVersion": "3.2.0",
-  "datePublished": "2026-03-15",
+  "datePublished": "2026-03-17",
   "offers": [
     {
       "@type": "Offer",
@@ -486,8 +486,8 @@ Sitemap: https://example.com/sitemap.xml`,
     "jobTitle": "生産性コンサルタント",
     "description": "大手IT企業でのマネジメント経験(実績年数)年。リモートワーク導入支援(実績数)社以上。"
   },
-  "datePublished": "2026-03-15",
-  "dateModified": "2026-03-16",
+  "datePublished": "2026-03-17",
+  "dateModified": "2026-03-17",
   "image": "https://example.com/images/remote-work.jpg",
   "publisher": {
     "@type": "Organization",
@@ -619,8 +619,8 @@ Sitemap: https://example.com/sitemap.xml`,
       "url": "https://example.com/logo.png"
     }
   },
-  "datePublished": "2026-03-15",
-  "dateModified": "2026-03-16",
+  "datePublished": "2026-03-17",
+  "dateModified": "2026-03-17",
   "mainEntityOfPage": "https://example.com/articles/remote-productivity",
   "image": "https://example.com/images/remote-work-hero.jpg",
   "articleSection": "リモートワーク",
@@ -1022,7 +1022,7 @@ Sitemap: https://example.com/sitemap.xml`,
     {
       "@type": "Review",
       "author": { "@type": "Person", "name": "（実際のレビュー投稿者名）" },
-      "datePublished": "2026-03-15",
+      "datePublished": "2026-03-17",
       "reviewRating": {
         "@type": "Rating",
         "ratingValue": "（実際の評価値を入力）"
@@ -1412,7 +1412,7 @@ export default async function IndustryPage({
     headline: `${data.name}のGEO対策 - AI検索で見つけてもらうために`,
     description: data.metaDescription,
     url: `https://ai-check.ezoai.jp/for/${slug}`,
-    datePublished: "2026-03-15",
+    datePublished: "2026-03-17",
     dateModified: new Date().toISOString().split("T")[0],
     publisher: {
       "@type": "Organization",

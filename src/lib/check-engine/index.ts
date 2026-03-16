@@ -1,4 +1,4 @@
-export { checkRateLimit, isPrivateHostname, RATE_LIMIT } from "./security";
+export { checkRateLimit, isPrivateHostname, RATE_LIMIT, createRateLimiter } from "./security";
 export { safeFetch, detectRedirectChain, detectSslCertificate, detectHttpVersion, measureDnsResolution } from "./network";
 export type { FetchResult, RedirectInfo, SslCertInfo } from "./network";
 export { checkRobotsTxt, checkLlmsTxt, checkStructuredData, checkMetaTags, checkContentStructure, checkSSR, checkSitemap, analyzeAiCrawlerStatus, analyzeCrawlDelay } from "./checkers";

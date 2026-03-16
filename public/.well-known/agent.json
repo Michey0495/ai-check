@@ -2,7 +2,7 @@
   "name": "AI Check",
   "description": "WebサイトのAI検索対応度をチェックし、llms.txt・robots.txt・JSON-LD構造化データ・agent.jsonを自動生成するツール",
   "url": "https://ai-check.ezoai.jp",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "dateUpdated": "2026-03-17",
   "capabilities": [
     "GEOスコアチェック（7指標 + llms-full.txt検出 + スキーマタイプ識別 + noindex/nofollow検出）",
@@ -110,7 +110,9 @@
     "MCP Serverルート型安全性向上（eslint-disableを排除、Record<string, unknown>による型安全なツール引数処理）",
     "JSON-LD @graph対応（WordPress/Yoast/Rank Math等のCMSが使用する@graphパターン内のスキーマタイプを正確に検出・バリデーション）",
     ".well-known/llms.txt代替パス検出（ルート/llms.txt未設置でも/.well-known/llms.txtにフォールバック検出）",
-    "hasLlmsFullフィールド追加（llms-full.txt検出状態をレポートにバッジ表示）"
+    "hasLlmsFullフィールド追加（llms-full.txt検出状態をレポートにバッジ表示）",
+    "humans.txt検出（サイト制作者・チーム情報ファイルの存在を検出・Well-Knownファイルセクションに表示）",
+    "/api/generate・/api/mcp レート制限追加（IP単位、20リクエスト/分）"
   ],
   "endpoints": {
     "mcp": "https://ai-check.ezoai.jp/api/mcp",

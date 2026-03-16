@@ -34,12 +34,12 @@ interface FieldDef {
 const EXTRA_FIELDS: Record<string, FieldDef[]> = {
   Article: [
     { key: "author", label: "著者名", placeholder: "山田太郎" },
-    { key: "datePublished", label: "公開日", placeholder: "2026-03-15" },
+    { key: "datePublished", label: "公開日", placeholder: "2026-03-17" },
     { key: "image", label: "アイキャッチ画像URL", placeholder: "https://example.com/image.jpg" },
   ],
   NewsArticle: [
     { key: "author", label: "著者名", placeholder: "山田太郎" },
-    { key: "datePublished", label: "公開日", placeholder: "2026-03-15" },
+    { key: "datePublished", label: "公開日", placeholder: "2026-03-17" },
     { key: "image", label: "アイキャッチ画像URL", placeholder: "https://example.com/image.jpg" },
     { key: "publisher", label: "メディア名", placeholder: "日経新聞" },
   ],
@@ -70,7 +70,7 @@ const EXTRA_FIELDS: Record<string, FieldDef[]> = {
   ],
   VideoObject: [
     { key: "thumbnailUrl", label: "サムネイルURL", placeholder: "https://example.com/thumb.jpg" },
-    { key: "uploadDate", label: "公開日", placeholder: "2026-03-15" },
+    { key: "uploadDate", label: "公開日", placeholder: "2026-03-17" },
     { key: "duration", label: "再生時間（ISO 8601）", placeholder: "PT10M30S" },
     { key: "embedUrl", label: "埋め込みURL", placeholder: "https://www.youtube.com/embed/xxx" },
   ],

@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { corsHeaders, corsOptionsResponse } from "@/lib/cors";
+import { createRateLimiter } from "@/lib/check-engine";
+
+const checkMcpRateLimit = createRateLimiter(20);
 
 export async function OPTIONS() {
   return corsOptionsResponse();
@@ -115,6 +118,15 @@ function jsonRpcResponse(data: object, status = 200) {
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    const rl = checkMcpRateLimit(ip);
+    if (!rl.allowed) {
+      return jsonRpcResponse(
+        { jsonrpc: "2.0", error: { code: -32000, message: "Rate limit exceeded. Try again later." }, id: null },
+        429
+      );
+    }
+
     let body: Record<string, unknown>;
     try {
       body = await request.json();

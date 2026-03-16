@@ -82,7 +82,7 @@ const howToJsonLd = {
     },
   ],
   totalTime: "PT2H",
-  datePublished: "2026-03-15",
+  datePublished: "2026-03-17",
   dateModified: new Date().toISOString().split("T")[0],
 };
 
