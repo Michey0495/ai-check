@@ -2,6 +2,14 @@
 
 ## 2026-03-17
 
+### Maintenance (19th pass)
+
+- **fix**: Removed static `public/robots.txt` (recurring issue — wrong domain `web-url-a.ezoai.jp`, overrides dynamic `src/app/robots.ts` with correct `ai-check.ezoai.jp` and 15 crawlers)
+- **fix**: Added `public/robots.txt` to `.gitignore` to permanently prevent this recurring issue (dynamic route is authoritative)
+- **check**: Build passes, TypeScript clean, 0 npm vulnerabilities, no open GitHub issues
+- **check**: AI public files verified (robots.ts dynamic route, llms.txt, agent.json all valid)
+- **check**: No safe dependency updates available (eslint 9→10, @types/node 20→25 are major — skipped)
+
 ### Maintenance (18th pass)
 
 - **fix**: Removed static `public/robots.txt` (7 crawlers) that was overriding dynamic `src/app/robots.ts` (15 crawlers including Diffbot, Meta-ExternalAgent, OAI-SearchBot, GoogleOther, Twitterbot)
