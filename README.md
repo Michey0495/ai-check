@@ -598,3 +598,10 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - チェック強化: .well-known/llms.txt代替パス検出追加（ルート/llms.txt未設置でも/.well-known/llms.txtにフォールバック検出、ルートへの配置推奨メッセージ表示）
 - チェック強化: hasLlmsFullフィールドをCheckReportに追加（llms-full.txt検出状態をレポートのサイト情報バッジに表示）
 - AI公開チャネル: agent.json v6.0.0に更新、llms.txtに@graph対応・llms.txt代替パス検出情報追記
+
+### Night 66 (完了)
+- チェック強化: セキュリティヘッダー分析を5→8項目に拡大（Permissions-Policy、Cross-Origin-Opener-Policy、Cross-Origin-Resource-Policy の3ヘッダーを追加検出）
+- チェック強化: HTTP/3対応検出追加（Alt-SvcレスポンスヘッダーからHTTP/3サポート状況を検出・SSL/TLS証明書セクションに表示）
+- UX: セキュリティヘッダーセクションを8項目対応のグリッドレイアウトに更新（スコア表示 /8）
+- レポート: テキストレポート・Markdownレポートに新規3セキュリティヘッダー・Alt-Svc情報を追加
+- AI公開チャネル: agent.json v6.2.0に更新、llms.txtにPermissions-Policy・Cross-Origin・HTTP/3情報追記

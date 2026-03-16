@@ -140,12 +140,15 @@ export function generateReportText(report: CheckReport): string {
   if (report.securityHeaders) {
     const s = report.securityHeaders;
     lines.push("");
-    lines.push(`--- セキュリティヘッダー (${s.score}/5) ---`);
+    lines.push(`--- セキュリティヘッダー (${s.score}/8) ---`);
     lines.push(`HSTS: ${s.hasHsts ? "あり" : "なし"}`);
     lines.push(`CSP: ${s.hasCsp ? "あり" : "なし"}`);
     lines.push(`X-Frame-Options: ${s.hasXFrameOptions ? "あり" : "なし"}`);
     lines.push(`X-Content-Type-Options: ${s.hasXContentTypeOptions ? "あり" : "なし"}`);
     lines.push(`Referrer-Policy: ${s.hasReferrerPolicy ? "あり" : "なし"}`);
+    lines.push(`Permissions-Policy: ${s.hasPermissionsPolicy ? "あり" : "なし"}`);
+    lines.push(`Cross-Origin-Opener-Policy: ${s.hasCrossOriginOpenerPolicy ? "あり" : "なし"}`);
+    lines.push(`Cross-Origin-Resource-Policy: ${s.hasCrossOriginResourcePolicy ? "あり" : "なし"}`);
   }
 
   if (report.performanceHints) {
@@ -196,10 +199,11 @@ export function generateReportText(report: CheckReport): string {
     if (report.canonicalMismatch) lines.push("⚠ canonical URLとアクセスURLが一致しません");
   }
 
-  if (report.contentEncoding || report.serverHeader || report.httpVersion) {
+  if (report.contentEncoding || report.serverHeader || report.httpVersion || report.altSvc) {
     lines.push("");
     lines.push("--- サーバー情報 ---");
     if (report.httpVersion) lines.push(`HTTPプロトコル: ${report.httpVersion}`);
+    if (report.altSvc) lines.push(`HTTP/3対応: あり (Alt-Svc: ${report.altSvc.slice(0, 80)})`);
     if (report.contentEncoding) lines.push(`コンテンツ圧縮: ${report.contentEncoding}`);
     if (report.serverHeader) lines.push(`Server: ${report.serverHeader}`);
   }
@@ -447,13 +451,16 @@ export function generateMarkdownReport(report: CheckReport): string {
   }
 
   if (report.securityHeaders) {
-    lines.push("", `## セキュリティヘッダー (${report.securityHeaders.score}/5)`, "");
+    lines.push("", `## セキュリティヘッダー (${report.securityHeaders.score}/8)`, "");
     const headers = [
       { label: "HSTS", ok: report.securityHeaders.hasHsts },
       { label: "CSP", ok: report.securityHeaders.hasCsp },
       { label: "X-Frame-Options", ok: report.securityHeaders.hasXFrameOptions },
       { label: "X-Content-Type-Options", ok: report.securityHeaders.hasXContentTypeOptions },
       { label: "Referrer-Policy", ok: report.securityHeaders.hasReferrerPolicy },
+      { label: "Permissions-Policy", ok: report.securityHeaders.hasPermissionsPolicy },
+      { label: "Cross-Origin-Opener-Policy", ok: report.securityHeaders.hasCrossOriginOpenerPolicy },
+      { label: "Cross-Origin-Resource-Policy", ok: report.securityHeaders.hasCrossOriginResourcePolicy },
     ];
     lines.push("| ヘッダー | 設定 |");
     lines.push("|----------|------|");
@@ -489,9 +496,10 @@ export function generateMarkdownReport(report: CheckReport): string {
     if (report.canonicalMismatch) lines.push("- **警告**: canonical URLとアクセスURLが一致しません");
   }
 
-  if (report.contentEncoding || report.serverHeader || report.httpVersion) {
+  if (report.contentEncoding || report.serverHeader || report.httpVersion || report.altSvc) {
     lines.push("", "## サーバー情報", "");
     if (report.httpVersion) lines.push(`- HTTPプロトコル: ${report.httpVersion}`);
+    if (report.altSvc) lines.push(`- HTTP/3対応: あり (Alt-Svc)`);
     if (report.contentEncoding) lines.push(`- コンテンツ圧縮: ${report.contentEncoding}`);
     if (report.serverHeader) lines.push(`- Server: ${report.serverHeader}`);
   }

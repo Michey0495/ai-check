@@ -172,8 +172,11 @@ export function analyzeSecurityHeaders(responseHdrs: Record<string, string>): Ch
   const hasXFrameOptions = !!responseHdrs["x-frame-options"];
   const hasXContentTypeOptions = responseHdrs["x-content-type-options"]?.includes("nosniff") ?? false;
   const hasReferrerPolicy = !!responseHdrs["referrer-policy"];
-  const score = [hasHsts, hasCsp, hasXFrameOptions, hasXContentTypeOptions, hasReferrerPolicy].filter(Boolean).length;
-  return { hasHsts, hasCsp, hasXFrameOptions, hasXContentTypeOptions, hasReferrerPolicy, score };
+  const hasPermissionsPolicy = !!responseHdrs["permissions-policy"];
+  const hasCrossOriginOpenerPolicy = !!responseHdrs["cross-origin-opener-policy"];
+  const hasCrossOriginResourcePolicy = !!responseHdrs["cross-origin-resource-policy"];
+  const score = [hasHsts, hasCsp, hasXFrameOptions, hasXContentTypeOptions, hasReferrerPolicy, hasPermissionsPolicy, hasCrossOriginOpenerPolicy, hasCrossOriginResourcePolicy].filter(Boolean).length;
+  return { hasHsts, hasCsp, hasXFrameOptions, hasXContentTypeOptions, hasReferrerPolicy, hasPermissionsPolicy, hasCrossOriginOpenerPolicy, hasCrossOriginResourcePolicy, score };
 }
 
 export function analyzeImages(html: string) {

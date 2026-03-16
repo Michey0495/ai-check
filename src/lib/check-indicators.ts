@@ -140,7 +140,10 @@ export type CheckReport = {
     hasXFrameOptions: boolean;
     hasXContentTypeOptions: boolean;
     hasReferrerPolicy: boolean;
-    score: number; // 0-5
+    hasPermissionsPolicy: boolean;
+    hasCrossOriginOpenerPolicy: boolean;
+    hasCrossOriginResourcePolicy: boolean;
+    score: number; // 0-8
   };
   performanceHints?: {
     preconnectCount: number;
@@ -192,6 +195,7 @@ export type CheckReport = {
   contentEncoding?: string;
   serverHeader?: string;
   httpVersion?: string; // e.g. "HTTP/2", "HTTP/1.1"
+  altSvc?: string; // Alt-Svc header (HTTP/3 support indicator)
   sslCertificate?: {
     issuer: string;
     validFrom: string;

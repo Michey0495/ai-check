@@ -301,6 +301,7 @@ export async function POST(request: NextRequest) {
       contentEncoding: responseHdrs["content-encoding"] || undefined,
       serverHeader: responseHdrs["server"] || undefined,
       httpVersion: httpVersion || undefined,
+      altSvc: responseHdrs["alt-svc"] || undefined,
       sslCertificate: sslCertificate || undefined,
       coreWebVitals,
       contentMetrics,

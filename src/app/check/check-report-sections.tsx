@@ -220,20 +220,23 @@ export function SecurityHeadersSection({ report }: { report: CheckReport }) {
       <div className="mb-3 flex items-center justify-between">
         <h2 className="text-lg font-semibold text-white">セキュリティヘッダー</h2>
         <span className={`rounded-full px-3 py-1 text-xs ${
-          report.securityHeaders.score >= 4 ? "bg-green-500/10 text-green-400"
-            : report.securityHeaders.score >= 2 ? "bg-yellow-500/10 text-yellow-400"
+          report.securityHeaders.score >= 6 ? "bg-green-500/10 text-green-400"
+            : report.securityHeaders.score >= 3 ? "bg-yellow-500/10 text-yellow-400"
             : "bg-red-500/10 text-red-400"
         }`}>
-          {report.securityHeaders.score}/5
+          {report.securityHeaders.score}/8
         </span>
       </div>
-      <div className="grid gap-2 sm:grid-cols-5">
+      <div className="grid gap-2 sm:grid-cols-4">
         {([
           { label: "HSTS", ok: report.securityHeaders.hasHsts, desc: "通信の暗号化を強制" },
           { label: "CSP", ok: report.securityHeaders.hasCsp, desc: "XSS攻撃の防止" },
           { label: "X-Frame", ok: report.securityHeaders.hasXFrameOptions, desc: "クリックジャッキング防止" },
           { label: "Nosniff", ok: report.securityHeaders.hasXContentTypeOptions, desc: "MIMEスニッフィング防止" },
           { label: "Referrer", ok: report.securityHeaders.hasReferrerPolicy, desc: "リファラー情報の制御" },
+          { label: "Permissions", ok: report.securityHeaders.hasPermissionsPolicy, desc: "ブラウザ機能の制限" },
+          { label: "COOP", ok: report.securityHeaders.hasCrossOriginOpenerPolicy, desc: "クロスオリジン分離" },
+          { label: "CORP", ok: report.securityHeaders.hasCrossOriginResourcePolicy, desc: "リソース読み込み制御" },
         ] as const).map((h) => (
           <div key={h.label} className="rounded-lg bg-white/[0.03] p-3 text-center">
             <p className={`text-sm font-medium ${h.ok ? "text-green-400" : "text-white/30"}`}>
@@ -243,7 +246,7 @@ export function SecurityHeadersSection({ report }: { report: CheckReport }) {
           </div>
         ))}
       </div>
-      {report.securityHeaders.score < 3 && (
+      {report.securityHeaders.score < 4 && (
         <p className="mt-3 text-xs text-white/40">
           セキュリティヘッダーの追加により、サイトの信頼性が向上し、AI検索エンジンからの評価にも好影響があります。
         </p>
@@ -321,6 +324,15 @@ export function SslCertificateSection({ report }: { report: CheckReport }) {
           {!report.httpVersion.includes("2") && !report.httpVersion.includes("3") && (
             <span className="text-xs text-white/30">HTTP/2以上への移行を推奨</span>
           )}
+        </div>
+      )}
+      {report.altSvc && (
+        <div className="mt-3 flex items-center gap-2">
+          <span className="text-xs text-white/40">Alt-Svc:</span>
+          <span className="rounded-full bg-green-500/10 px-2 py-0.5 text-xs text-green-400">
+            HTTP/3対応
+          </span>
+          <span className="text-xs text-white/30">{report.altSvc.length > 60 ? report.altSvc.slice(0, 60) + "..." : report.altSvc}</span>
         </div>
       )}
     </div>

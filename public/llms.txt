@@ -57,7 +57,8 @@
 - 改善コードまとめ表示
 - アクセシビリティ概要（画像alt属性、スキップナビゲーション、ARIAランドマーク）
 - X-Robots-Tagレスポンスヘッダーによるnoindex検出
-- セキュリティヘッダー分析（HSTS、CSP、X-Frame-Options、X-Content-Type-Options、Referrer-Policy）
+- セキュリティヘッダー分析（HSTS、CSP、X-Frame-Options、X-Content-Type-Options、Referrer-Policy、Permissions-Policy、Cross-Origin-Opener-Policy、Cross-Origin-Resource-Policy の8項目）
+- HTTP/3対応検出（Alt-SvcレスポンスヘッダーからHTTP/3サポート状況を検出・表示）
 - パフォーマンスヒント（preconnect/prefetch数、画像遅延読み込み、スクリプト最適化、font-display検出）
 - 多言語対応検出（Content-Languageヘッダー、hreflangタグ）
 - CMS/フレームワーク検出（WordPress, Next.js, Shopify, Nuxt.js, React, Angular, Vue.js, SvelteKit, Astro, Qwik, Ghost, Webflow, Jekyll, Contentful, Strapi, Hugo, Wix, Squarespace等をHTMLソースとレスポンスヘッダーから自動判定。Hotjar, Plausible Analytics等の分析ツールも検出）
