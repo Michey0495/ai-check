@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { corsHeaders, corsOptionsResponse } from "@/lib/cors";
 
 const feedbackRateMap = new Map<string, { count: number; resetAt: number }>();
 const FEEDBACK_RATE_LIMIT = 5;
@@ -98,5 +99,9 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true }, { headers: corsHeaders() });
+}
+
+export function OPTIONS() {
+  return corsOptionsResponse();
 }

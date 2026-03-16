@@ -66,7 +66,7 @@ function downloadFile(filename: string, content: string, mimeType: string) {
 }
 
 function getHostname(url: string): string {
-  try { return new URL(url).hostname; } catch { return "site"; }
+  try { return new URL(url).hostname.replace(/[^a-zA-Z0-9.-]/g, "_"); } catch { return "site"; }
 }
 
 function dateSuffix(): string {

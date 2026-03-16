@@ -1,11 +1,11 @@
 # QA Report - web-url-a (AI Check)
 
-**Date**: 2026-03-16 (14th QA pass)
+**Date**: 2026-03-17 (15th QA pass)
 **Project**: web-url-a (ai-check.ezoai.jp)
 
 ## Summary
 
-5 fixes applied (2 security, 2 robustness, 1 UX). Build and lint pass cleanly.
+6 fixes applied (1 security, 2 SEO/PWA, 2 accessibility, 1 robustness). Build and lint pass cleanly.
 
 ## Checklist
 
@@ -16,6 +16,24 @@
 - [x] 404ページ - not-found.tsx 実装済み (メタデータ付き)
 - [x] ローディング状態 - loading.tsx 実装済み (aria-label付きスピナー)
 - [x] エラー状態 - error.tsx, global-error.tsx 両方実装済み
+
+## Issues Found & Fixed (Pass 15)
+
+### Medium
+
+| # | Issue | File | Fix |
+|---|-------|------|-----|
+| 1 | Sitemap `lastModified` hardcoded to stale date instead of dynamic | `src/app/sitemap.ts:5` | Changed to `new Date().toISOString()` |
+| 2 | Feedback API missing OPTIONS handler (CORS preflight fails) | `src/app/api/feedback/route.ts` | Added `OPTIONS` export and CORS headers |
+| 3 | Footer links use `focus:outline-none` removing keyboard focus indicator | `src/components/footer.tsx` | Changed all `focus:` to `focus-visible:` (26 links) |
+
+### Low
+
+| # | Issue | File | Fix |
+|---|-------|------|-----|
+| 4 | Download filenames could contain special characters from hostname | `src/app/check/check-client.tsx:69` | Added `.replace(/[^a-zA-Z0-9.-]/g, "_")` sanitization |
+| 5 | PWA manifest missing `scope`, `prefer_related_applications`, icon `purpose` | `public/manifest.json` | Added missing PWA fields |
+| 6 | SSRF: 192.88.99.0/24 (6to4 relay anycast) not blocked | `src/lib/check-engine/security.ts` | Added explicit check |
 
 ## Issues Found & Fixed (Pass 14)
 
@@ -105,7 +123,7 @@
 - [x] JSON-LD: Organization, WebSite, FAQ, HowTo, WebApplication スキーマ
 - [x] Dynamic OG images: 全ルートに `opengraph-image.tsx`
 - [x] robots.ts: 15 AI クローラーを明示許可
-- [x] sitemap.ts: 全32ページカバー (priority/changeFrequency設定済み)
+- [x] sitemap.ts: 全43ページカバー (priority/changeFrequency設定済み)
 - [x] llms.txt: 14KB、全ページ・API・機能を網羅
 - [x] agent.json: A2A Agent Card v5.6.0 設置済み (.well-known)
 - [x] /api/mcp: MCP Server エンドポイント
