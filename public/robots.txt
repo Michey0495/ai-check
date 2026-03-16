@@ -1,0 +1,39 @@
+# AI Check - AI & Search Engine Crawlers Welcome
+# https://ai-check.ezoai.jp
+# NOTE: This static file is overridden by src/app/robots.ts in production.
+
+User-agent: *
+Allow: /
+
+# AI Crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+Sitemap: https://ai-check.ezoai.jp/sitemap.xml

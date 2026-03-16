@@ -1,11 +1,11 @@
 # QA Report - web-url-a (AI Check)
 
-**Date**: 2026-03-17 (18th QA pass)
+**Date**: 2026-03-17 (19th QA pass)
 **Project**: web-url-a (ai-check.ezoai.jp)
 
 ## Summary
 
-Pass 18: Fixed division-by-zero risk across 10 locations in score calculation code. All previous checklist items remain passing.
+Pass 19: Comprehensive QA review. All checklist items passing. One minor fix applied (static robots.txt crawler list synced with dynamic route). No critical or medium issues found.
 
 ## Checklist
 
@@ -16,6 +16,27 @@ Pass 18: Fixed division-by-zero risk across 10 locations in score calculation co
 - [x] 404ページ - not-found.tsx 実装済み (メタデータ付き)
 - [x] ローディング状態 - loading.tsx 実装済み (aria-label付きスピナー)
 - [x] エラー状態 - error.tsx, global-error.tsx 両方実装済み
+
+## Issues Found & Fixed (Pass 19)
+
+### Low
+
+| # | Issue | File | Fix |
+|---|-------|------|-----|
+| 1 | Static `public/robots.txt` crawler list out of sync with dynamic `robots.ts` (missing ClaudeBot, Amazonbot, etc.) | `public/robots.txt` | Updated to match dynamic route's 16 crawler list, confirmed correct domain |
+
+### Verified Clean
+
+- Build: PASS (all routes compile)
+- Lint: PASS (no errors)
+- All 22 pages have metadata exports
+- All 22 opengraph-image.tsx present
+- Form validation: URL length, format, protocol, SSRF blocking all intact
+- Accessibility: skip links, aria-labels, keyboard nav, roles all present
+- Responsive: sm/md/lg breakpoints used consistently
+- No TODO/FIXME comments in code
+- No console.log (only appropriate console.error in error boundaries)
+- No hardcoded test data in production code
 
 ## Issues Found & Fixed (Pass 18)
 
@@ -177,7 +198,7 @@ Pass 18: Fixed division-by-zero risk across 10 locations in score calculation co
 - [x] Metadata: 全ページに title, description, OGP 設定済み (keywords: 109個)
 - [x] JSON-LD: Organization, WebSite, FAQ, HowTo, WebApplication スキーマ
 - [x] Dynamic OG images: 全ルートに `opengraph-image.tsx`
-- [x] robots.ts: 15 AI クローラーを明示許可
+- [x] robots.ts: 16 AI クローラーを明示許可
 - [x] sitemap.ts: 全43ページカバー (priority/changeFrequency設定済み)
 - [x] llms.txt: 14KB、全ページ・API・機能を網羅
 - [x] agent.json: A2A Agent Card v5.6.0 設置済み (.well-known)
