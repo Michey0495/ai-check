@@ -123,6 +123,18 @@ export function detectTechnologies(html: string, responseHdrs: Record<string, st
   if (html.includes("squarespace.com") || html.includes("squarespace-cdn")) {
     tech.push("Squarespace");
   }
+  if (html.includes("sites/default/files") || html.includes("drupal.js") || html.includes("Drupal.settings") || html.includes('content="Drupal')) {
+    tech.push("Drupal");
+  }
+  if (html.includes("/media/jui/") || html.includes("com_content") || html.includes('content="Joomla')) {
+    tech.push("Joomla");
+  }
+  if (html.includes("framer-") || html.includes("framerusercontent.com")) {
+    tech.push("Framer");
+  }
+  if (html.includes("11ty") || html.includes("eleventy")) {
+    tech.push("Eleventy");
+  }
   if (html.includes("googletagmanager.com") || html.includes("google-analytics.com") || html.includes("gtag")) {
     tech.push("Google Analytics");
   }

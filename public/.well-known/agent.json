@@ -2,7 +2,7 @@
   "name": "AI Check",
   "description": "WebサイトのAI検索対応度をチェックし、llms.txt・robots.txt・JSON-LD構造化データ・agent.jsonを自動生成するツール",
   "url": "https://ai-check.ezoai.jp",
-  "version": "6.3.0",
+  "version": "6.4.0",
   "dateUpdated": "2026-03-17",
   "capabilities": [
     "GEOスコアチェック（7指標 + llms-full.txt検出 + スキーマタイプ識別 + noindex/nofollow検出）",
@@ -43,7 +43,7 @@
     "多言語対応検出（Content-Languageヘッダー、hreflangタグ）",
     "PWA対応（Web App Manifest）",
     "LINEシェア対応",
-    "CMS/フレームワーク検出（WordPress, Next.js, Shopify, Nuxt.js, React, Angular, Vue.js, SvelteKit, Astro, Qwik, Ghost, Webflow, Jekyll, Contentful, Strapi等）",
+    "CMS/フレームワーク検出（WordPress, Next.js, Shopify, Nuxt.js, React, Angular, Vue.js, SvelteKit, Astro, Qwik, Ghost, Webflow, Jekyll, Contentful, Strapi, Drupal, Joomla, Framer, Eleventy等）",
     "OG画像アクセス可否検証（og:image URLのHEADリクエスト検証）",
     "Core Web Vitalsヒント（LCP候補検出、CLSリスク要因分析、レンダーブロッキングリソース数、fetchpriority検出）",
     "チェック履歴ページ（/history）",
@@ -114,7 +114,8 @@
     "humans.txt検出（サイト制作者・チーム情報ファイルの存在を検出・Well-Knownファイルセクションに表示）",
     "/api/generate・/api/mcp レート制限追加（IP単位、20リクエスト/分）",
     "セキュリティヘッダー分析拡大（Permissions-Policy、Cross-Origin-Opener-Policy、Cross-Origin-Resource-Policy の3ヘッダーを追加、計8項目検出）",
-    "HTTP/3対応検出（Alt-SvcレスポンスヘッダーからHTTP/3サポート状況を検出・表示）"
+    "HTTP/3対応検出（Alt-SvcレスポンスヘッダーからHTTP/3サポート状況を検出・表示）",
+    "Microdata/RDFa構造化データ検出（JSON-LD未設置でもitemscope/itemtype属性やRDFa vocab/typeofによるSchema.org構造化データを検出・スコア反映、JSON-LDへの移行を推奨）"
   ],
   "endpoints": {
     "mcp": "https://ai-check.ezoai.jp/api/mcp",

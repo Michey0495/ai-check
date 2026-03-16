@@ -605,3 +605,11 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - UX: セキュリティヘッダーセクションを8項目対応のグリッドレイアウトに更新（スコア表示 /8）
 - レポート: テキストレポート・Markdownレポートに新規3セキュリティヘッダー・Alt-Svc情報を追加
 - AI公開チャネル: agent.json v6.2.0に更新、llms.txtにPermissions-Policy・Cross-Origin・HTTP/3情報追記
+
+### Night 67 (完了)
+- チェック強化: Microdata構造化データ検出追加（itemscope/itemtype属性によるSchema.org Microdataを検出・スコア反映、JSON-LDへの移行を推奨）
+- チェック強化: RDFa構造化データ検出追加（vocab/typeof属性によるSchema.org RDFaを検出・スコア反映）
+- チェック強化: 構造化データ未検出メッセージ改善（JSON-LD・Microdata・RDFaすべて未検出時の明確なメッセージに変更）
+- チェック強化: テクノロジー検出拡張（Drupal、Joomla、Framer、Eleventy追加）
+- 修正: チェック項目別ページのコード例内の古い日付を2026-03-17に更新（article:published_time、article:modified_time、sitemap lastmod）
+- AI公開チャネル: agent.json v6.4.0に更新、llms.txtにMicrodata/RDFa検出・テクノロジー検出拡張情報追記

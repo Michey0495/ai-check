@@ -304,13 +304,62 @@ export function checkStructuredData(html: string, baseUrl: string): CheckResult 
       details: `JSON-LD構造化データが適切に設置されています。${typesText}AI検索エンジンがコンテンツを正確に理解できます。${parseErrorText}`,
     };
   }
+  // Check for Microdata (itemscope/itemtype) as fallback
+  const microdataTypes = html.match(/itemtype=["']https?:\/\/schema\.org\/([^"']+)["']/gi) ?? [];
+  const microdataSchemas = microdataTypes.map((m) => {
+    const match = m.match(/schema\.org\/([^"']+)/i);
+    return match?.[1] ?? "";
+  }).filter(Boolean);
+  const uniqueMicrodataSchemas = [...new Set(microdataSchemas)];
+
+  // Check for RDFa (typeof with schema.org vocab)
+  const rdfaTypes = html.match(/typeof=["'][^"']*["'][^>]*vocab=["']https?:\/\/schema\.org/gi) ?? [];
+  const rdfaTypesAlt = html.match(/vocab=["']https?:\/\/schema\.org["'][^>]*typeof=["']([^"']+)["']/gi) ?? [];
+  const hasRdfa = rdfaTypes.length > 0 || rdfaTypesAlt.length > 0;
+
+  if (uniqueMicrodataSchemas.length > 0) {
+    const typesText = `Microdata検出: ${uniqueMicrodataSchemas.join(", ")}。`;
+    if (uniqueMicrodataSchemas.length >= 2) {
+      return {
+        id: "structured-data",
+        score: 15,
+        maxScore: 20,
+        status: "warn",
+        message: `構造化データ: Microdata ${uniqueMicrodataSchemas.length}件検出（JSON-LD推奨）`,
+        details: `${typesText}構造化データはMicrodata形式で設置されています。AI検索エンジンはJSON-LD形式をより正確に解析できるため、JSON-LDへの移行を推奨します。`,
+        code: `<script type="application/ld+json">\n{\n  "@context": "https://schema.org",\n  "@type": "${uniqueMicrodataSchemas[0]}",\n  "name": "サイト名",\n  "url": "${baseUrl}"\n}\n</script>`,
+      };
+    }
+    return {
+      id: "structured-data",
+      score: 10,
+      maxScore: 20,
+      status: "warn",
+      message: `構造化データ: Microdata検出（JSON-LD推奨）`,
+      details: `${typesText}Microdata形式の構造化データが検出されました。GoogleはJSON-LD形式を推奨しており、AIエージェントもJSON-LDをより効率的に処理します。`,
+      code: `<script type="application/ld+json">\n{\n  "@context": "https://schema.org",\n  "@type": "${uniqueMicrodataSchemas[0]}",\n  "name": "サイト名",\n  "url": "${baseUrl}"\n}\n</script>`,
+    };
+  }
+
+  if (hasRdfa) {
+    return {
+      id: "structured-data",
+      score: 10,
+      maxScore: 20,
+      status: "warn",
+      message: "構造化データ: RDFa検出（JSON-LD推奨）",
+      details: "RDFa形式の構造化データが検出されました。AI検索エンジンとの互換性を高めるため、JSON-LD形式の併用または移行を推奨します。",
+      code: `<script type="application/ld+json">\n{\n  "@context": "https://schema.org",\n  "@type": "WebSite",\n  "name": "サイト名",\n  "url": "${baseUrl}",\n  "description": "サイトの説明"\n}\n</script>`,
+    };
+  }
+
   return {
     id: "structured-data",
     score: 0,
     maxScore: 20,
     status: "fail",
-    message: "構造化データ: JSON-LD未検出",
-    details: "JSON-LD構造化データが見つかりません。AI検索エンジンがコンテンツを正確に理解するために設置を推奨します。",
+    message: "構造化データ: 未検出",
+    details: "JSON-LD・Microdata・RDFaいずれの構造化データも見つかりません。AI検索エンジンがコンテンツを正確に理解するためにJSON-LD形式での設置を推奨します。",
     code: `<script type="application/ld+json">\n{\n  "@context": "https://schema.org",\n  "@type": "WebSite",\n  "name": "サイト名",\n  "url": "${baseUrl}",\n  "description": "サイトの説明"\n}\n</script>`,
   };
 }
