@@ -592,3 +592,9 @@ Vercel にデプロイ。ドメイン: `ai-check.ezoai.jp`
 - アクセシビリティ: CodeCopyButtonにaria-label追加
 - UX: クリップボード操作の全catchブロックにフォールバック状態リセット追加（サイレントエラー解消）
 - 修正: suggestedSchemasの非nullアサーション（!）をオプショナルチェーン（?.）に修正
+
+### Night 65 (完了)
+- チェック強化: JSON-LD @graph対応追加（WordPress/Yoast/Rank Math等のCMSが生成する@graphパターン内のスキーマタイプを正確に検出・バリデーション。スコア計算精度向上）
+- チェック強化: .well-known/llms.txt代替パス検出追加（ルート/llms.txt未設置でも/.well-known/llms.txtにフォールバック検出、ルートへの配置推奨メッセージ表示）
+- チェック強化: hasLlmsFullフィールドをCheckReportに追加（llms-full.txt検出状態をレポートのサイト情報バッジに表示）
+- AI公開チャネル: agent.json v6.0.0に更新、llms.txtに@graph対応・llms.txt代替パス検出情報追記

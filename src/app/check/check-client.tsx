@@ -548,6 +548,11 @@ export function CheckPageClient() {
                   フィード: {[report.feedDetection.hasRss && "RSS", report.feedDetection.hasAtom && "Atom"].filter(Boolean).join("+")}
                 </span>
               )}
+              {report.hasLlmsFull && (
+                <span className="rounded-full bg-green-500/10 px-3 py-1 text-xs text-green-400">
+                  llms-full.txt 検出
+                </span>
+              )}
             </div>
             <div className="mt-4 flex flex-wrap justify-center gap-3">
               <Button

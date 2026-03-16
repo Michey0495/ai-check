@@ -133,10 +133,11 @@ export async function POST(request: NextRequest) {
     const startTime = Date.now();
 
     // Fetch all resources concurrently
-    const [robotsRes, llmsRes, llmsFullRes, pageRes, sitemapRes, agentRes, manifestRes, redirectInfo, sslCertificate, httpVersion, dnsResolutionMs] = await Promise.all([
+    const [robotsRes, llmsRes, llmsFullRes, llmsWellKnownRes, pageRes, sitemapRes, agentRes, manifestRes, redirectInfo, sslCertificate, httpVersion, dnsResolutionMs] = await Promise.all([
       safeFetch(`${baseUrl}/robots.txt`),
       safeFetch(`${baseUrl}/llms.txt`),
       safeFetch(`${baseUrl}/llms-full.txt`),
+      safeFetch(`${baseUrl}/.well-known/llms.txt`),
       safeFetch(url, 15000, true),
       safeFetch(`${baseUrl}/sitemap.xml`),
       safeFetch(`${baseUrl}/.well-known/agent.json`),
@@ -156,13 +157,18 @@ export async function POST(request: NextRequest) {
     }
 
     const robotsText = robotsRes.ok ? robotsRes.text : null;
-    const llmsText = llmsRes.ok ? llmsRes.text : null;
+    // Check llms.txt at root, fallback to .well-known/llms.txt
+    const llmsText = llmsRes.ok ? llmsRes.text : (llmsWellKnownRes.ok ? llmsWellKnownRes.text : null);
+    const llmsLocation = llmsRes.ok ? "/llms.txt" : (llmsWellKnownRes.ok ? "/.well-known/llms.txt" : null);
     const hasLlmsFull = llmsFullRes.ok && llmsFullRes.text.length > 50;
     const html = pageRes.text;
     const sitemapText = sitemapRes.ok ? sitemapRes.text : null;
 
     // Run 7 indicator checks
     const llmsResult = checkLlmsTxt(llmsText, parsedUrl.hostname, baseUrl);
+    if (llmsLocation === "/.well-known/llms.txt" && llmsResult.status !== "fail") {
+      llmsResult.details += " （.well-known/llms.txt で検出。ルート /llms.txt への配置も推奨します。）";
+    }
     if (hasLlmsFull) {
       llmsResult.details += " llms-full.txt（詳細版）も検出されました。";
     }
@@ -318,6 +324,7 @@ export async function POST(request: NextRequest) {
       crawlDelay,
       metaRefresh,
       snippetControl,
+      hasLlmsFull: hasLlmsFull || undefined,
       openSearch: openSearch || undefined,
       aiProtocolFiles: aiProtocolFiles || undefined,
     };

@@ -220,25 +220,38 @@ export function checkStructuredData(html: string, baseUrl: string): CheckResult 
     let parseErrors = 0;
     const missingProps: string[] = [];
 
+    const processItem = (item: Record<string, unknown>) => {
+      totalCount++;
+      if (item["@type"]) {
+        const rawType = item["@type"];
+        const t = Array.isArray(rawType) ? rawType.join(", ") : String(rawType);
+        schemaTypes.push(t);
+        const validation = validateJsonLdItem(item);
+        if (validation.valid) {
+          validCount++;
+        } else if (validation.missing.length > 0) {
+          missingProps.push(`${t}: ${validation.missing.join(", ")}が未設定`);
+        }
+      } else {
+        missingProps.push("@type未設定のJSON-LDあり");
+      }
+      // Process @graph nested items (used by WordPress/Yoast, Rank Math, etc.)
+      if (Array.isArray(item["@graph"])) {
+        for (const node of item["@graph"]) {
+          if (node && typeof node === "object") {
+            processItem(node as Record<string, unknown>);
+          }
+        }
+      }
+    };
+
     for (const match of jsonLdMatches) {
       const content = match.replace(/<script[^>]*>|<\/script>/gi, "");
       try {
         const parsed = JSON.parse(content);
         const items = Array.isArray(parsed) ? parsed : [parsed];
         for (const item of items) {
-          totalCount++;
-          if (item["@type"]) {
-            const t = Array.isArray(item["@type"]) ? item["@type"].join(", ") : item["@type"];
-            schemaTypes.push(t);
-            const validation = validateJsonLdItem(item as Record<string, unknown>);
-            if (validation.valid) {
-              validCount++;
-            } else if (validation.missing.length > 0) {
-              missingProps.push(`${t}: ${validation.missing.join(", ")}が未設定`);
-            }
-          } else {
-            missingProps.push("@type未設定のJSON-LDあり");
-          }
+          processItem(item as Record<string, unknown>);
         }
       } catch {
         parseErrors++;

@@ -285,6 +285,7 @@ export type CheckReport = {
     maxImagePreview?: "none" | "standard" | "large";
     maxVideoPreview?: number;
   };
+  hasLlmsFull?: boolean; // llms-full.txt (detailed version) detected
   openSearch?: string; // title of OpenSearch description
   aiProtocolFiles?: {
     hasAiPlugin: boolean;
